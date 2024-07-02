@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxTracker.Core", "UxTracker
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxTracker.Web", "UxTracker.Web\UxTracker.Web.csproj", "{0564C4BC-7673-476B-B3AF-4AAB844A2FE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxTracker.Tests", "UxTracker.Tests\UxTracker.Tests.csproj", "{87916D8C-66F4-4A22-9BBD-AA29C95B94C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxTracker.Tests", "UxTracker.Tests\UxTracker.Tests.csproj", "{2D6F51A4-808C-4B37-8762-A7B3FF52256B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +38,9 @@ Global
 		{0564C4BC-7673-476B-B3AF-4AAB844A2FE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0564C4BC-7673-476B-B3AF-4AAB844A2FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0564C4BC-7673-476B-B3AF-4AAB844A2FE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87916D8C-66F4-4A22-9BBD-AA29C95B94C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87916D8C-66F4-4A22-9BBD-AA29C95B94C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87916D8C-66F4-4A22-9BBD-AA29C95B94C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87916D8C-66F4-4A22-9BBD-AA29C95B94C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6F51A4-808C-4B37-8762-A7B3FF52256B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6F51A4-808C-4B37-8762-A7B3FF52256B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6F51A4-808C-4B37-8762-A7B3FF52256B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6F51A4-808C-4B37-8762-A7B3FF52256B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
