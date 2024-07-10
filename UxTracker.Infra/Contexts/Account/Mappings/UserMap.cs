@@ -64,7 +64,7 @@ public class UserMap : IEntityTypeConfiguration<User>
             .Property(x => x.Hash)
             .HasColumnName("PasswordHash")
             .HasColumnType("NVARCHAR")
-            .HasMaxLength(32)
+            .HasMaxLength(75)
             .IsRequired(true);
 
         builder
