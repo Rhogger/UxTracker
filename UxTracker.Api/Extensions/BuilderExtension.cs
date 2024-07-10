@@ -16,13 +16,21 @@ public static class BuilderExtensions
 
         Configuration.Secrets.ApiKey =
             builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") ?? string.Empty;
-
-        Configuration.Secrets.ApiKey =
+        Configuration.Secrets.JwtPrivateKey =
             builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey")
             ?? string.Empty;
-
-        Configuration.Secrets.ApiKey =
+        Configuration.Secrets.PasswordSaltKey =
             builder.Configuration.GetSection("Secrets").GetValue<string>("PasswordSaltKey")
+            ?? string.Empty;
+
+        Configuration.SendGrid.ApiKey =
+            builder.Configuration.GetSection("SendGrid").GetValue<string>("ApiKey") ?? string.Empty;
+
+        Configuration.Email.DefaultFromEmail =
+            builder.Configuration.GetSection("Email").GetValue<string>("DefaultFromEmail")
+            ?? string.Empty;
+        Configuration.Email.DefaultFromName =
+            builder.Configuration.GetSection("Email").GetValue<string>("DefaultFromName")
             ?? string.Empty;
     }
 
@@ -59,5 +67,12 @@ public static class BuilderExtensions
             });
 
         builder.Services.AddAuthorization();
+    }
+
+    public static void AddMediator(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMediatR(x =>
+            x.RegisterServicesFromAssembly(typeof(Configuration).Assembly)
+        );
     }
 }
