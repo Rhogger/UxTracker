@@ -19,12 +19,12 @@ public class Password : ValueObject
     private const string Special = "!@#$%^&*(){}[];çÇ";
 
     public string Hash { get; } = string.Empty;
-    public string ResetCode { get; } = Guid.NewGuid().ToString("N")[0..8].ToUpper();
+    public string ResetCode { get; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
 
     private static string Generate(
         short length = 16,
         bool includeSpecialChars = true,
-        bool upperCase = true
+        bool upperCase = false
     )
     {
         var chars = includeSpecialChars ? (Valid + Special) : Valid;

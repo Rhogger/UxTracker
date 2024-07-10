@@ -23,22 +23,20 @@ public partial class Email : ValueObject
             throw new Exception("E-mail inválido");
     }
 
-    public const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
+    private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
     public string Address { get; }
     public string Hash => Address.ToBase64();
     public Verification Verification { get; private set; } = new();
 
-    public void ResendVerification()
-    {
+    public void ResendVerification() =>
         Verification = new Verification();
-    }
 
     public static implicit operator string(Email email) => email.ToString();
 
     public static implicit operator Email(string address) => new(address);
 
-    public override string ToString() => Address.Trim().ToLower();
+    public override string ToString() => Address;
 
     [GeneratedRegex(Pattern)]
-    public static partial Regex EmailRegex();
+    private static partial Regex EmailRegex();
 }

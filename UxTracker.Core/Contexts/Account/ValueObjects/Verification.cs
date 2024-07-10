@@ -1,12 +1,9 @@
-using System.ComponentModel;
 using UxTracker.Core.Contexts.Shared.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.ValueObjects;
 
 public class Verification : ValueObject
 {
-    public Verification() { }
-
     //TODO: Criar Exceptions customizadas
     public void Verify(string code)
     {
@@ -23,8 +20,8 @@ public class Verification : ValueObject
         VerifiedAt = DateTime.UtcNow;
     }
 
-    public string Code { get; } = Guid.NewGuid().ToString("N")[0..6].ToUpper();
+    public string Code { get; } = Guid.NewGuid().ToString("N")[..6].ToUpper();
     public DateTime? ExpireAt { get; private set; } = DateTime.UtcNow.AddMinutes(5);
-    public DateTime? VerifiedAt { get; private set; } = null;
+    public DateTime? VerifiedAt { get; private set; }
     public bool IsActive => VerifiedAt != null && ExpireAt == null;
 }

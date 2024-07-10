@@ -7,6 +7,13 @@ public class User : Entity
 {
     protected User() { }
 
+    public User(string name, Email email, Password password = null!)
+    {
+        Name = name;
+        Email = email;
+        Password = password;
+    }
+
     public User(string email, string? password = null)
     {
         Email = email;
