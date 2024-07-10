@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\UxTracker.Core\UxTracker.Core.csproj" />
@@ -17,6 +17,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b8f6925c-ea9f-42b7-927d-1f2210ba0173</UserSecretsId>
   </PropertyGroup>
 
 </Project>
