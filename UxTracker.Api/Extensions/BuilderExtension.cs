@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using UxTracker.Core;
+using UxTracker.Core.Services;
+using UxTracker.Infra.Services;
 using UxTracker.Infra.Data;
 
 namespace UxTracker.Api.Extensions;
@@ -74,5 +76,10 @@ public static class BuilderExtensions
         builder.Services.AddMediatR(x =>
             x.RegisterServicesFromAssembly(typeof(Configuration).Assembly)
         );
+    }
+
+    public static void AddServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<ISendGridService, SendGridService>();
     }
 }

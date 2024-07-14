@@ -3,6 +3,7 @@ using UxTracker.Api.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfiguration();
+builder.AddServices();
 builder.AddDatabase();
 builder.AddJwtAuthentication();
 
