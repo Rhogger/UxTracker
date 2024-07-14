@@ -7,37 +7,50 @@ public class Password : ValueObject
 {
     protected Password() { }
 
-    public Password(string? text = null)
+    // Caso quiser gerar senha
+    // public Password(string? password = null)
+    // {
+    //     if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
+    //         password = Generate();
+    //
+    //     Hash = Hashing(password);
+    // }
+    
+    public Password(string password)
     {
-        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
-            text = Generate();
+        if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
+            throw new Exception("A senha não pode ser nula");
 
-        Hash = Hashing(text);
+        Hash = Hashing(password);
     }
 
-    private const string Valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    private const string Special = "!@#$%^&*(){}[];çÇ";
+    // Caso quiser usar o Generate
+    // private const string Valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    // private const string Special = "!@#$%^&*(){}[];çÇ";
 
     public string Hash { get; } = string.Empty;
-    public string ResetCode { get; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
+    public string ResetCode { get; private set; } = null!;
+    public DateTime? ExpireAt { get; private set; } = DateTime.UtcNow.AddMinutes(5);
+    public DateTime? ChangedAt { get; private set; }
 
-    private static string Generate(
-        short length = 16,
-        bool includeSpecialChars = true,
-        bool upperCase = false
-    )
-    {
-        var chars = includeSpecialChars ? (Valid + Special) : Valid;
-        var startRandom = upperCase ? 26 : 0;
-        var index = 0;
-        var passwordChars = new char[length];
-        var random = new Random();
-
-        while (index < length)
-            passwordChars[index++] = chars[random.Next(startRandom, chars.Length)];
-
-        return new string(passwordChars);
-    }
+    // FIX: REMOVER ESSA FUNCIONALIDADE
+    // private static string Generate(
+    //     short length = 16,
+    //     bool includeSpecialChars = true,
+    //     bool upperCase = false
+    // )
+    // {
+    //     var chars = includeSpecialChars ? (Valid + Special) : Valid;
+    //     var startRandom = upperCase ? 26 : 0;
+    //     var index = 0;
+    //     var passwordChars = new char[length];
+    //     var random = new Random();
+    //
+    //     while (index < length)
+    //         passwordChars[index++] = chars[random.Next(startRandom, chars.Length)];
+    //
+    //     return new string(passwordChars);
+    // }
 
     private static string Hashing(
         string password,
@@ -97,4 +110,21 @@ public class Password : ValueObject
 
         return keyToCheck.SequenceEqual(key);
     }
+
+    public bool IsValid(string plainTextPassword)
+        => Verify(Hash, plainTextPassword);
+
+    public void Verify(string code)
+    {
+        if (ExpireAt < DateTime.UtcNow)
+            throw new Exception("Esse código já expirou");
+
+        if (!string.Equals(code.Trim(), ResetCode.Trim(), StringComparison.CurrentCultureIgnoreCase))
+            throw new Exception("Código de recuperação inválido");
+
+        ExpireAt = null;
+        ChangedAt = DateTime.UtcNow;
+    }
+    
+    public void GenerateResetCode() => ResetCode = Guid.NewGuid().ToString("N")[..8].ToUpper();
 }

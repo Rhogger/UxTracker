@@ -13,7 +13,7 @@ public class Verification : ValueObject
         if (ExpireAt < DateTime.UtcNow)
             throw new Exception("Esse item já expirou");
 
-        if (!string.Equals(code.Trim(), Code.Trim(), StringComparison.CurrentCultureIgnoreCase))
+        if (!IsValid(code))
             throw new Exception("Código de verificação inválido");
 
         ExpireAt = null;
@@ -24,4 +24,7 @@ public class Verification : ValueObject
     public DateTime? ExpireAt { get; private set; } = DateTime.UtcNow.AddMinutes(5);
     public DateTime? VerifiedAt { get; private set; }
     public bool IsActive => VerifiedAt != null && ExpireAt == null;
+    
+    public bool IsValid(string verificationCode) 
+        => string.Equals(verificationCode.Trim(), Code.Trim(), StringComparison.CurrentCultureIgnoreCase);
 }

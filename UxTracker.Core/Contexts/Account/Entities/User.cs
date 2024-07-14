@@ -14,7 +14,7 @@ public class User : Entity
         Password = password;
     }
 
-    public User(string email, string? password = null)
+    public User(string email, string password)
     {
         Email = email;
         Password = new Password(password);
