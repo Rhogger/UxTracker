@@ -73,6 +73,18 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnName("PasswordResetCode")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(8)
-            .IsRequired(true);
+            .IsRequired(false);
+        
+        builder
+            .OwnsOne(x => x.Password)
+            .Property(x => x.ExpireAt)
+            .HasColumnName("PasswordResetExpireAt")
+            .IsRequired(false);
+        
+        builder
+            .OwnsOne(x => x.Password)
+            .Property(x => x.ChangedAt)
+            .HasColumnName("PasswordResetChangedAt")
+            .IsRequired(false);
     }
 }
