@@ -19,20 +19,23 @@ public class Handler : IRequestHandler<Request, Response>
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
+        
         try
         {
-            var res = Specification.Ensure(request);
+            var req = Specification.Ensure(request);
 
-            if (!res.IsValid)
-                return new Response("Requisição inválida", 400, res.Notifications);
+            if (!req.IsValid)
+                return new Response("Requisição inválida", 400, req.Notifications);
         }
         catch
         {
             return new Response("Não foi possível validar sua requisição", 500);
         }
+        
         #endregion
 
         #region 02. Gerar os Objetos
+        
         Email email;
         Password password;
         User user;
@@ -47,9 +50,11 @@ public class Handler : IRequestHandler<Request, Response>
         {
             return new Response(ex.Message, 400);
         }
+        
         #endregion
 
         #region 03. Verificar se o usuário existe no banco
+        
         try
         {
             var exists = await _repository.AnyAsync(request.Email, cancellationToken);
@@ -61,9 +66,11 @@ public class Handler : IRequestHandler<Request, Response>
         {
             return new Response("Falha ao verificar E-mail cadastrado", 500);
         }
+        
         #endregion
 
         #region 04. Persistir os dados
+        
         try
         {
             await _repository.SaveAsync(user, cancellationToken);
@@ -72,9 +79,11 @@ public class Handler : IRequestHandler<Request, Response>
         {
             return new Response("Falha ao persistir os dados", 500);
         }
+        
         #endregion
 
         #region 05. Envia E-mail de ativação
+        
         try
         {
             await _service.SendVerificationEmailAsync(user, cancellationToken);
@@ -83,6 +92,7 @@ public class Handler : IRequestHandler<Request, Response>
         {
             // Nada aqui
         }
+        
         #endregion
 
         return new Response("Conta criada", new ResponseData(user.Id, user.Name, user.Email));

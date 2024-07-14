@@ -11,7 +11,6 @@ public class Repository : IRepository
 
     public Repository(AppDbContext context) => _context = context;
 
-    //FIX: Ajustar o implicit convertion do Email
     public async Task<bool> AnyAsync(string email, CancellationToken cancellationToken) =>
         await _context
             .Users
