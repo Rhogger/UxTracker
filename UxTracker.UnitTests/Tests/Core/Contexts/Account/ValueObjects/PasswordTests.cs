@@ -1,6 +1,6 @@
 using UxTracker.Core.Contexts.Account.ValueObjects;
 
-namespace UxTracker.Tests.Core.Contexts.Account.Entities;
+namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects;
 
 [TestClass]
 public class PasswordTests
