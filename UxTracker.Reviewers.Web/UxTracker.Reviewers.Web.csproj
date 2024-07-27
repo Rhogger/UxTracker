@@ -10,6 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="7.4.0" />
+    <PackageReference Include="RestSharp" Version="111.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,10 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UxTracker.Core\UxTracker.Core.csproj" />
   </ItemGroup>
 
 </Project>
