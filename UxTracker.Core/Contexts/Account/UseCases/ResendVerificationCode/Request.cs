@@ -2,4 +2,11 @@ using MediatR;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
 
-public record Request(string Email): IRequest<Response>;
+public class Request() : IRequest<Response>
+{
+    public Request(string email) : this()
+    {
+        Email = email;
+    }
+    public string Email { get; set; } = string.Empty;
+}
