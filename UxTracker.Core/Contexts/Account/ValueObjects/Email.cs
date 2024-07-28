@@ -8,7 +8,6 @@ public partial class Email : ValueObject
 {
     protected Email() { }
 
-    //TODO: Criar Exceptions customizadas
     public Email(string address)
     {
         if (string.IsNullOrEmpty(address))

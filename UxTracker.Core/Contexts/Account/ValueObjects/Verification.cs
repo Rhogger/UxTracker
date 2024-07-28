@@ -4,7 +4,6 @@ namespace UxTracker.Core.Contexts.Account.ValueObjects;
 
 public class Verification : ValueObject
 {
-    //TODO: Criar Exceptions customizadas
     public void Verify(string code)
     {
         if (IsActive)
