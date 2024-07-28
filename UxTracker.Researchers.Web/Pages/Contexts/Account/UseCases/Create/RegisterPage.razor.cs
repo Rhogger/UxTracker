@@ -9,7 +9,6 @@ public partial class Register : ComponentBase
 {
     [Inject] protected NavigationManager Navigation { get; set; } 
     [Inject] protected ISnackbar Snackbar { get; set; }
-
     [Inject] protected IRestClient RestClient { get; set; }
 
     protected Request Req = new();
