@@ -6,3 +6,5 @@
 - [ ] Criar README
 - [ ] Criar Handlers das requisições no front
 - [X] Criar pasta Validations para validações para evitar repetição de codigo nos code behinds
+- [ ] Criar nomenclaturas para os erros 
+- [ ] Implementar os cookies no frontend
