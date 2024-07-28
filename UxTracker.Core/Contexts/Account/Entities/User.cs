@@ -41,11 +41,6 @@ public class User : Entity
         Password = password;
     }
 
-    public void UpdateEmail(string email)
-    {
-        Email = email;
-    }
-
     public void ChangePassword(string plainTextPassword)
     {
         var password = new Password(plainTextPassword);
