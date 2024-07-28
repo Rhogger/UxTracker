@@ -93,6 +93,6 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        return new Response("Código reenviado com sucesso", new ResponseData(user.Email.Verification.Code));
+        return new Response("Código reenviado com sucesso!", new ResponseData(user.Email.Verification.Code));
     }
 }
