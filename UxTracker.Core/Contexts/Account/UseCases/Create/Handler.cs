@@ -95,6 +95,6 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        return new Response("Conta criada", new ResponseData(user.Id, user.Name, user.Email));
+        return new Response("Conta criada com sucesso!", new ResponseData(user.Id, user.Name, user.Email));
     }
 }

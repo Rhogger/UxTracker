@@ -85,6 +85,6 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
 
-        return new Response("Conta verificada", 200);
+        return new Response("Conta verificada com sucesso!", 200);
     }
 }
