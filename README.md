@@ -2,6 +2,7 @@
 
 ### Boas Práticas:
 - [ ] Criar Exceptions Personalizadas em todos os projetos principais
-- [ ] Refatorar as validações dos Handlers e dos Forms
+- [X] Refatorar as validações dos Handlers e dos Forms
 - [ ] Criar README
 - [ ] Criar Handlers das requisições no front
+- [X] Criar pasta Validations para validações para evitar repetição de codigo nos code behinds
