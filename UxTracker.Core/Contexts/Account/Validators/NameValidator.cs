@@ -4,7 +4,7 @@ namespace UxTracker.Core.Contexts.Account.Validators;
 
 public static class NameValidator
 {
-    public static string? ValidateName(string name)
+    public static string? Validate(string name)
     {
         var contract = NameValidation.EnsureName(name);
 

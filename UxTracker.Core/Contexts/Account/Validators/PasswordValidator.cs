@@ -4,7 +4,7 @@ namespace UxTracker.Core.Contexts.Account.Validators;
 
 public static class PasswordValidator
 {
-    public static string? ValidatePassword(string password)
+    public static string? Validate(string password)
     {
         var contract = PasswordValidation.EnsurePassword(password);
 

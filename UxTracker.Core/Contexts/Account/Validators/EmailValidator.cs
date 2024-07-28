@@ -1,10 +1,10 @@
 using UxTracker.Core.Contexts.Account.Validations;
 
-namespace UxTracker.Researchers.Web.Pages.Contexts.Account.Validators;
+namespace UxTracker.Core.Contexts.Account.Validators;
 
 public static class EmailValidator
 {
-    public static string? ValidateEmail(string email)
+    public static string? Validate(string email)
     {
         var contract = EmailValidation.EnsureEmail(email);
 
