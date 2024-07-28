@@ -45,7 +45,7 @@ public partial class Register : ComponentBase
                 {
                     if (response.Data.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
-                            Snackbar.Add($"Obrigatório: {notification.Message}", Severity.Error);
+                            Snackbar.Add(notification.Message, Severity.Error);
                     else
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
@@ -89,49 +89,5 @@ public partial class Register : ComponentBase
             ConfirmPasswordInputIcon = Icons.Material.Filled.Visibility;
             ConfirmPasswordInput = InputType.Text;
         }
-    }
-
-    protected static string? ValidateEmail(string email)
-    {
-        var contract = Specification.EnsureEmail(email);
-
-        if (contract.IsValid)
-            return null;
-
-        var error = contract.Notifications.FirstOrDefault()?.Message;
-        return error;
-    }
-
-    protected static string? ValidateName(string name)
-    {
-        var contract = Specification.EnsureName(name);
-
-        if (contract.IsValid)
-            return null;
-
-        var error = contract.Notifications.FirstOrDefault()?.Message;
-        return error;
-    }
-
-    protected static string? ValidatePassword(string password)
-    {
-        var contract = Specification.EnsurePassword(password);
-
-        if (contract.IsValid)
-            return null;
-
-        var error = contract.Notifications.FirstOrDefault()?.Message;
-        return error;
-    }
-
-    protected static string? ComparePasswords(string password, string confirmPassword)
-    {
-        var contract = Specification.EnsureComparePasswords(password, confirmPassword);
-
-        if (contract.IsValid)
-            return null;
-
-        var error = contract.Notifications.FirstOrDefault()?.Message;
-        return error;
     }
 }

@@ -1,3 +1,6 @@
+@using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Researchers.Web.Pages.Contexts.Account.Validators
+
 @page "/register"
 @layout HeadlessLayout
 @inherits Register
@@ -32,7 +35,7 @@
                     RequiredError="O nome deve ser informado"
                     Immediate="true"
                     OnlyValidateIfDirty="true"
-                    Validation="@ValidateName"
+                    Validation="@NameValidator.ValidateName"
                 />
 
                 <MudTextField
@@ -46,7 +49,7 @@
                     RequiredError="O e-mail deve ser informado"
                     Immediate="true"
                     OnlyValidateIfDirty="true"
-                    Validation="@ValidateEmail"
+                    Validation="@EmailValidator.ValidateEmail"
                 />
 
                 <MudTextField
@@ -61,7 +64,7 @@
                     RequiredError="A senha deve ser informada"
                     Immediate="true"
                     OnlyValidateIfDirty="true"
-                    Validation="@ValidatePassword"
+                    Validation="@PasswordValidator.ValidatePassword"
                     Adornment="Adornment.End"
                     AdornmentIcon="@PasswordInputIcon"
                     AdornmentAriaLabel="Mostrar senha"
@@ -79,7 +82,7 @@
                     RequiredError="A senha deve ser informada"
                     Immediate="true"
                     OnlyValidateIfDirty="true"
-                    Validation="@((string confirmPassword) => ComparePasswords(Req.Password, confirmPassword))"
+                    Validation="@((string confirmPassword) => PasswordValidator.ComparePasswords(Req.Password, confirmPassword))"
                     Adornment="Adornment.End"
                     AdornmentIcon="@ConfirmPasswordInputIcon"
                     AdornmentAriaLabel="Mostrar senha"
