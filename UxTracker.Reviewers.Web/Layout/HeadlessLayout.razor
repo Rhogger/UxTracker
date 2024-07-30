@@ -1,0 +1,12 @@
+﻿@using UxTracker.Reviewers.Web.Theme
+@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme" />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudLayout Style="height: 100vh">
+    <MudMainContent Class="mud-height-full pa-0">
+        @Body
+    </MudMainContent>
+</MudLayout>

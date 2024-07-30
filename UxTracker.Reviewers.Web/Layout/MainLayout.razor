@@ -1,16 +1,41 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@using UxTracker.Reviewers.Web.Theme
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudLayout Style="height: 100vh">
+    <MudAppBar>
+        <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
+
+        <MudSpacer />
+
+        <MudIconButton Icon="@Icon" OnClick="ChangeMode" Color="Color.Inherit" />
+        <MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" />
+        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" />
+    </MudAppBar>
+    <MudMainContent Class="mud-height-full pa-0">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    private bool IsDarkMode = true;
+    private string Icon = Icons.Material.Filled.WbSunny;
+
+    private void ChangeMode()
+    {
+        if (IsDarkMode)
+        {
+            Icon = Icons.Material.Filled.DarkMode;
+            IsDarkMode = false;
+        }
+        else
+        {
+            Icon = Icons.Material.Filled.WbSunny;
+            IsDarkMode = true;
+        }
+    }
+}

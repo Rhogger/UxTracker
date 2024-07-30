@@ -1,0 +1,49 @@
+@page "/reviewers/register"
+@layout HeadlessLayout
+@inherits UxTracker.Reviewers.Web.Pages.Contexts.Account.UseCases.Authenticate.Register
+
+<MudContainer MaxWidth="MaxWidth.Small"
+  Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+  <MudText Typo="Typo.h4" Align="Align.Center">
+    Formulário de registro
+  </MudText>
+
+  <MudContainer MaxWidth="MaxWidth.Small">
+    <MudPaper Class="pa-6 rounded-lg" Outlined="true">
+      <MudForm Class="d-flex flex-column gap-7" OnValidSubmit="HandleValidSubmit">
+        <MudGrid>
+          <MudItem xs="12" sm="6" Class="gap-4 d-flex flex-wrap" MaxWidth="560px" Elevation="0">
+            <MudTextField @bind-Value="Email" ShrinkLabel T="string" Label="Email" InputType="InputType.Email"
+              Variant="Variant.Filled" />
+            <MudSelect @bind-Value="Gender" T="string" Label="Sexo" AnchorOrigin="Origin.BottomCenter"
+              Variant="Variant.Filled">
+              <MudSelectItem Value="@("Masculino")">Masculino</MudSelectItem>
+              <MudSelectItem Value="@("Feminino")">Feminino</MudSelectItem>
+              <MudSelectItem Value="@("Prefiro não informar")">Prefiro não informar</MudSelectItem>
+            </MudSelect>
+            <MudDatePicker @bind-Date="BirthDate" Label="Data de nascimento" ShowToolbar="false"
+              Variant="Variant.Filled" />
+          </MudItem>
+
+          <MudItem xs="12" sm="6" Class="gap-4 d-flex flex-wrap" MaxWidth="560px" Elevation="0">
+            <MudTextField @bind-Value="Country" ShrinkLabel T="string" Label="País" InputType="InputType.Text"
+              Variant="Variant.Filled" />
+            <MudTextField @bind-Value="State" ShrinkLabel T="string" Label="Estado" InputType="InputType.Text"
+              Variant="Variant.Filled" />
+            <MudTextField @bind-Value="City" ShrinkLabel T="string" Label="Cidade" InputType="InputType.Text"
+              Variant="Variant.Filled" />
+          </MudItem>
+        </MudGrid>
+
+        <div class="d-flex justify-center gap-4">
+          <MudButton Href="/reviewers/login" Variant="Variant.Filled" Color="Color.Secondary" Class="py-2 px-15">
+            Voltar
+          </MudButton>
+          <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="py-2 px-15">
+            Salvar
+          </MudButton>
+        </div>
+      </MudForm>
+    </MudPaper>
+  </MudContainer>
+</MudContainer>
