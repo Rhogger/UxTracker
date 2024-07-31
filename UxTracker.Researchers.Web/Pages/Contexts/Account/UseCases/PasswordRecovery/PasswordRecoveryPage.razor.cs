@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using RestSharp;
@@ -8,6 +9,7 @@ namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.PasswordReco
 public partial class PasswordRecovery : ComponentBase
 {
     [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected ILocalStorageService LocalStorage { get; set; }
     [Inject] protected ISnackbar Snackbar { get; set; }
     [Inject] protected IRestClient RestClient { get; set; }
     
@@ -16,7 +18,12 @@ public partial class PasswordRecovery : ComponentBase
     protected bool IsValid;
     
     protected Request Req = new();
-    
+
+    protected override async  Task OnInitializedAsync()
+    {
+        Req.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+    }
+
     protected async Task VerifyAsync()
     {
         var request = new RestRequest("/api/v1/password-recover/verify", Method.Patch)
@@ -58,7 +65,6 @@ public partial class PasswordRecovery : ComponentBase
     
     protected async Task ResendResetCodeAsync()
     {
-        //TODO: Alterar essa passagem de parametros como o email que está nos cookies
         Core.Contexts.Account.UseCases.ResendResetCode.Request req = new(Req.Email);
         
         var request = new RestRequest("/api/v1/password-recover/resend-reset-code", Method.Patch)

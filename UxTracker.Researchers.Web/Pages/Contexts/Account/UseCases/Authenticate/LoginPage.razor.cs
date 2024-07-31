@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using RestSharp;
@@ -8,6 +9,7 @@ namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.Authenticate
 public partial class Login : ComponentBase
 {
     [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected ILocalStorageService LocalStorage { get; set; }
     [Inject] protected ISnackbar Snackbar { get; set; }
     [Inject] protected IRestClient RestClient { get; set; }
     
@@ -21,6 +23,11 @@ public partial class Login : ComponentBase
     protected string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
     protected bool IsPasswordShow;
 
+    protected override async  Task OnInitializedAsync()
+    {
+        Req.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+    }
+    
     //TODO: Utilizar cookies para armazenar o token jwt
     protected async Task AuthenticateAsync()
     {
@@ -53,10 +60,9 @@ public partial class Login : ComponentBase
         }
     }
 
-    //TODO: Ajustar aqui, ele deve atualizar a data de expiração quando gera um novo codigo
     protected async Task SendResetCodeAsync()
     {
-        var request = new RestRequest("/api/v1/recover-password", Method.Patch)
+        var request = new RestRequest("/api/v1/password-recover", Method.Patch)
             .AddJsonBody(Req);
         
         try
@@ -69,6 +75,7 @@ public partial class Login : ComponentBase
                     if (response.Data.StatusCode == 200)
                     {
                         Snackbar.Add(response.Data.Message, Severity.Success);
+                        await LocalStorage.SetItemAsync("email",Req.Email);
                         Navigation.NavigateTo("/recover");
                     }
                     else

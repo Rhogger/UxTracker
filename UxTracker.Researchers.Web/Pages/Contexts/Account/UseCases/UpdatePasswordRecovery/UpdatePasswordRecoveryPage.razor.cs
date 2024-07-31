@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using RestSharp;
@@ -8,6 +9,7 @@ namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.UpdatePasswo
 public partial class UpdatePasswordRecovery : ComponentBase
 {
     [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected ILocalStorageService LocalStorage { get; set; }
     [Inject] protected ISnackbar Snackbar { get; set; }
     [Inject] protected IRestClient RestClient { get; set; }
     
@@ -21,6 +23,10 @@ public partial class UpdatePasswordRecovery : ComponentBase
     protected string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
     protected bool IsPasswordShow;
     
+    protected override async  Task OnInitializedAsync()
+    {
+        Req.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+    }
     protected async Task UpdatePasswordAsync()
     {
         var request = new RestRequest("/api/v1/account/update-password", Method.Patch)
