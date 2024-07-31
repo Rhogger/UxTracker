@@ -29,8 +29,8 @@ public class Password : ValueObject
     // private const string Special = "!@#$%^&*(){}[];çÇ";
 
     public string Hash { get; } = string.Empty;
-    public string ResetCode { get; private set; } = null!;
-    public DateTime? ExpireAt { get; private set; } = DateTime.UtcNow.AddMinutes(5);
+    public string? ResetCode { get; private set; }
+    public DateTime? ExpireAt { get; private set; }
     public DateTime? ChangedAt { get; private set; }
 
     // FIX: REMOVER ESSA FUNCIONALIDADE
@@ -78,7 +78,7 @@ public class Password : ValueObject
         return $"{iterations}{splitChar}{salt}{splitChar}{key}";
     }
 
-    private static bool Verify(
+    private static bool VerifyPassword(
         string hash,
         string password,
         short keySize = 32,
@@ -112,19 +112,27 @@ public class Password : ValueObject
     }
 
     public bool IsValid(string plainTextPassword)
-        => Verify(Hash, plainTextPassword);
+        => VerifyPassword(Hash, plainTextPassword);
+    
+    public bool IsValidResetCode(string verificationCode) 
+        => string.Equals(verificationCode.Trim(), ResetCode?.Trim(), StringComparison.CurrentCultureIgnoreCase);
 
     public void Verify(string code)
     {
         if (ExpireAt < DateTime.UtcNow)
             throw new Exception("Esse código já expirou");
 
-        if (!string.Equals(code.Trim(), ResetCode.Trim(), StringComparison.CurrentCultureIgnoreCase))
+        if (!string.Equals(code.Trim(), ResetCode?.Trim(), StringComparison.CurrentCultureIgnoreCase))
             throw new Exception("Código de recuperação inválido");
 
+        ResetCode = null;
         ExpireAt = null;
         ChangedAt = DateTime.UtcNow;
     }
-    
-    public void GenerateResetCode() => ResetCode = Guid.NewGuid().ToString("N")[..8].ToUpper();
+
+    public void GenerateResetCode()
+    {
+        ResetCode = Guid.NewGuid().ToString("N")[..8].ToUpper();
+        ExpireAt = DateTime.UtcNow.AddMinutes(5);
+    } 
 }
