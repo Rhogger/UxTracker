@@ -25,25 +25,8 @@ public class User : Entity
     public Password Password { get; private set; } = null!;
     public string Image { get; private set; } = string.Empty;
 
-    public void UpdatePassword(string plainTextPassword, string code)
+    public void UpdatePassword(string plainTextPassword)
     {
-        if (
-            !string.Equals(
-                code.Trim(),
-                Password.ResetCode.Trim(),
-                StringComparison.CurrentCultureIgnoreCase
-            )
-        )
-            throw new Exception("Código de restauração inválido");
-
-        var password = new Password(plainTextPassword);
-
-        Password = password;
-    }
-
-    public void ChangePassword(string plainTextPassword)
-    {
-        var password = new Password(plainTextPassword);
-        Password = password;
+        Password = new Password(plainTextPassword);
     }
 }

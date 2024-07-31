@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using RestSharp;
-using UxTracker.Core;
-using UxTracker.Core.Contexts.Account.Validations;
 
 namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.Verify;
 
@@ -61,7 +59,6 @@ public partial class AccountVerification: ComponentBase
     protected async Task ResendVerificationCodeAsync()
     {
         //TODO: Alterar essa passagem de parametros como o email que está nos cookies
-        //TODO: Corrigir validação, porque essa requisição só pode ser feita se o campo do codigo de verificação for validado
         Core.Contexts.Account.UseCases.ResendVerificationCode.Request req = new(Req.Email);
         
         var request = new RestRequest("/api/v1/resend-verification-code", Method.Patch)
@@ -92,6 +89,4 @@ public partial class AccountVerification: ComponentBase
             Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
         }
     }
-    
-
 }

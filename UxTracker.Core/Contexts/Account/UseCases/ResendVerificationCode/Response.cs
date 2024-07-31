@@ -7,7 +7,6 @@ public class Response: Shared.UseCases.Response
 {
     protected Response(){}
     
-    [JsonConstructor]
     public Response(string message, int statusCode, IEnumerable<Notification>? notifications = null)
     {
         Message = message;
