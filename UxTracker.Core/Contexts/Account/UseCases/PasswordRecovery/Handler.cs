@@ -51,7 +51,21 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
         
-        #region 03. Gerar código de recuperação
+        #region 03. Checar se a conta está verificada
+
+        try
+        {
+            if (!user.Email.Verification.IsActive)
+                return new Response("Esta conta não está verificada", 400);
+        }
+        catch
+        {
+            return new Response("Não foi possível verificar seu perfil", 500);
+        }
+
+        #endregion
+        
+        #region 04. Gerar código de recuperação
 
         try
         {
@@ -66,7 +80,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
         
-        #region 04. Enviar o código por e-mail
+        #region 05. Enviar o código por e-mail
 
         try
         {
