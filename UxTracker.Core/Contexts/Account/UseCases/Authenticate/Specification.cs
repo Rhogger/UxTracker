@@ -10,6 +10,6 @@ public static class Specification
         => new Contract<Notification>()
             .Requires()
             .IsLowerThan(request.Password.Length, 40, "Password", "A senha deve conter no máximo 40 caracteres")
-            .IsGreaterThan(request.Password.Length, 8, "Password", "A senha deve conter pelo menos 8 caracteres")
+            .IsGreaterThan(request.Password.Length, 7, "Password", "A senha deve conter pelo menos 8 caracteres")
             .IsEmail(request.Email, "Email", "E-mail inválida");
 }
