@@ -63,6 +63,37 @@ public static class AccountContextExtension
         >();
 
         #endregion
+        
+        #region PasswordRecoveryVerify
+
+        builder.Services.AddTransient<
+            Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Contracts.IRepository,
+            Infra.Contexts.Account.UseCases.PasswordRecoveryVerify.Repository
+        >();
+
+        #endregion
+        
+        #region ResendResetCode
+
+        builder.Services.AddTransient<
+            Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IRepository,
+            Infra.Contexts.Account.UseCases.ResendResetCode.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IService,
+            Infra.Contexts.Account.UseCases.ResendResetCode.Service
+        >();
+
+        #endregion
+        
+        #region UpdatePassword
+
+        builder.Services.AddTransient<
+            Core.Contexts.Account.UseCases.UpdatePassword.Contracts.IRepository,
+            Infra.Contexts.Account.UseCases.UpdatePassword.Repository
+        >();
+        #endregion
     }
 
     public static void MapAccountEndpoints(this WebApplication app)
@@ -155,12 +186,72 @@ public static class AccountContextExtension
         
         #region PasswordRecovery
         app.MapPatch(
-            "api/v1/recover-password",
+            "api/v1/password-recover",
             async (
                 Core.Contexts.Account.UseCases.PasswordRecovery.Request request,
                 IRequestHandler<
                     Core.Contexts.Account.UseCases.PasswordRecovery.Request,
                     Core.Contexts.Account.UseCases.PasswordRecovery.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region PasswordRecoveryVerify
+        app.MapPatch(
+            "api/v1/password-recover/verify",
+            async (
+                Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Request request,
+                IRequestHandler<
+                    Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Request,
+                    Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region ResendResetCode
+        app.MapPatch(
+            "api/v1/recover-password/resend-reset-code",
+            async (
+                Core.Contexts.Account.UseCases.ResendResetCode.Request request,
+                IRequestHandler<
+                    Core.Contexts.Account.UseCases.ResendResetCode.Request,
+                    Core.Contexts.Account.UseCases.ResendResetCode.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region UpdatePassword
+        app.MapPatch(
+            "api/v1/account/update-password",
+            async (
+                Core.Contexts.Account.UseCases.UpdatePassword.Request request,
+                IRequestHandler<
+                    Core.Contexts.Account.UseCases.UpdatePassword.Request,
+                    Core.Contexts.Account.UseCases.UpdatePassword.Response
                 > handler
             ) =>
             {
