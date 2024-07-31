@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using RestSharp;
@@ -18,5 +19,6 @@ public static class BuilderExtension
         });
         
         builder.Services.AddMudServices();
+        builder.Services.AddBlazoredLocalStorage();
     }
 }
