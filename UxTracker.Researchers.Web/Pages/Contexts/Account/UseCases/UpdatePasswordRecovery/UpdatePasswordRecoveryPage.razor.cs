@@ -29,7 +29,7 @@ public partial class UpdatePasswordRecovery : ComponentBase
     }
     protected async Task UpdatePasswordAsync()
     {
-        var request = new RestRequest("/api/v1/account/update-password", Method.Patch)
+        var request = new RestRequest("/api/v1/password-recover/update-password", Method.Patch)
             .AddJsonBody(Req);
         try
         {
