@@ -19,8 +19,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseSecurity();
 app.UseCors(Configuration.Cors.CorsPolicyName);
 
 if (app.Environment.IsDevelopment())

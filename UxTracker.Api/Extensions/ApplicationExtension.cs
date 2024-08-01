@@ -15,4 +15,10 @@ public static class ApplicationExtension
             opt.RoutePrefix = "api-docs";
         });
     }
+    
+    public static void UseSecurity(this WebApplication app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
+    }
 }
