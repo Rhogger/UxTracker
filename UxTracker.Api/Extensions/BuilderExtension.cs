@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using UxTracker.Core;
 using UxTracker.Core.Services;
 using UxTracker.Infra.Services;
@@ -77,7 +78,9 @@ public static class BuilderExtensions
                         Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey)
                     ),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
                 };
             });
 
@@ -115,9 +118,41 @@ public static class BuilderExtensions
     public static void AddDocumentation(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(x =>
+        builder.Services.AddSwaggerGen(options =>
         {
-            x.CustomSchemaIds(n => n.FullName);
+            options.CustomSchemaIds(n => n.FullName);
+            options.SwaggerDoc("v1", 
+                new OpenApiInfo()
+                {
+                    Version = "v1",
+                    Title = "UxTracker Api",
+                    Description = "Api de toda aplicação do Ux Tracker e seus submódulos"
+                }
+            );
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "O Header de Autenticação JWT está utilizando o Bearer Scheme. \r\n\r\nDigite 'Bearer' antes de colocar o token."
+            });
+            
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
         });
     }
 }
