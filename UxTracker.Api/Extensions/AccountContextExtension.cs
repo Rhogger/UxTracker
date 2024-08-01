@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UxTracker.Api.Extensions;
 
@@ -226,7 +227,7 @@ public static class AccountContextExtension
         
         #region ResendResetCode
         app.MapPatch(
-            "api/v1/recover-password/resend-reset-code",
+            "api/v1/password-recover/resend-reset-code",
             async (
                 Core.Contexts.Account.UseCases.ResendResetCode.Request request,
                 IRequestHandler<
@@ -244,10 +245,30 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region UpdatePassword
+        #region UpdatePasswordRecovery
+        app.MapPatch(
+            "api/v1/password-recover/update-password",
+            async (
+                Core.Contexts.Account.UseCases.UpdatePassword.Request request,
+                IRequestHandler<
+                    Core.Contexts.Account.UseCases.UpdatePassword.Request,
+                    Core.Contexts.Account.UseCases.UpdatePassword.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region UpdateAccountPassword
         app.MapPatch(
             "api/v1/account/update-password",
-            async (
+            [Authorize] async (
                 Core.Contexts.Account.UseCases.UpdatePassword.Request request,
                 IRequestHandler<
                     Core.Contexts.Account.UseCases.UpdatePassword.Request,
