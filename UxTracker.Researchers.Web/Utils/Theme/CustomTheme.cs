@@ -4,7 +4,7 @@ namespace UxTracker.Researchers.Web.Utils.Theme;
 
 public class CustomTheme
 {
-    public static MudTheme Theme = new MudTheme()
+    public static MudTheme Theme = new()
     {
         PaletteDark = new PaletteDark()
         {
@@ -19,7 +19,9 @@ public class CustomTheme
             TextSecondary = "rgba(255,255,255, 0.60)",
             AppbarText = "#FFF",
             
-            Success = "#2EA043"
+            Success = "#2EA043",
+            Info = "rgba(41,178,255, 0.60)",
+            InfoDarken = "#115277",
         },
         Typography = new Typography()
         {
