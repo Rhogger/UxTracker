@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using UxTracker.Core.Contexts.Shared.Extensions;
 using UxTracker.Core.Contexts.Shared.ValueObjects;
@@ -38,4 +40,16 @@ public partial class Email : ValueObject
 
     [GeneratedRegex(Pattern)]
     private static partial Regex EmailRegex();
+    
+    public string ToSha256Hash()
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(Address));
+
+        var builder = new StringBuilder();
+        foreach (var b in bytes)
+        {
+            builder.Append(b.ToString("x2"));
+        }
+        return builder.ToString();
+    }
 }

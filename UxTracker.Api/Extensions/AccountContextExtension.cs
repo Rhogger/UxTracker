@@ -54,18 +54,13 @@ public static class AccountContextExtension
         >();
         #endregion
         
-        #region ResendVerificationCode
+        #region GetUser
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.ResendVerificationCode.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.ResendVerificationCode.Repository
+            GetUser.Contracts.IRepository,
+            GetUserInfra.Repository
         >();
         
-        builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.ResendVerificationCode.Contracts.IService,
-            Infra.Contexts.Account.UseCases.ResendVerificationCode.Service
-        >();
-
         #endregion
         
         #region PasswordRecovery
@@ -122,10 +117,9 @@ public static class AccountContextExtension
         #region UpdateAccount
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IService,
-            Infra.Contexts.Account.UseCases.ResendResetCode.Service
+            UpdateAccount.Contracts.IRepository,
+            UpdateAccountInfra.Repository
         >();
-
         #endregion
         
         #region UpdatePassword
@@ -300,17 +294,25 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region ResendResetCode
+        #region UpdateAccount
         app.MapPatch(
-            "api/v1/password-recover/resend-reset-code",
-            async (
-                Core.Contexts.Account.UseCases.ResendResetCode.Request request,
+            "api/v1/account/",
+            [Authorize] async (
+                HttpContext httpContext,
+                UpdateAccount.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.ResendResetCode.Request,
-                    Core.Contexts.Account.UseCases.ResendResetCode.Response
+                    UpdateAccount.Request,
+                    UpdateAccount.Response
                 > handler
             ) =>
             {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.Id = userId;
+                
                 var result = await handler.Handle(request, new CancellationToken());
 
                 return result.IsSuccess
