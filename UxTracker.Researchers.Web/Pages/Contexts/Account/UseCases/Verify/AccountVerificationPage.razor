@@ -1,4 +1,7 @@
 @using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Researchers.Web.Components.TextFields
+@using UxTracker.Researchers.Web.Components.Forms
+
 
 @page "/verify"
 @layout HeadlessLayout
@@ -10,55 +13,26 @@
             
     <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column gap-4">
         <MudPaper Class="pa-6 rounded-lg" Outlined="true">
-            <MudForm 
-                @ref="Form"
-                @bind-IsValid="IsValid"
-                @bind-Errors="Errors"
-                Class="d-flex flex-column gap-7"
-            >
-                <MudTextField 
+            <ValidateForm SubmitFunction="VerifyAsync" TextButton="Verificar conta">
+                <EmailTextField @bind-Email="Request.Email" />
+
+                <MudTextField
+                    MaxLength="6"
                     ShrinkLabel="true"
                     T="string"
-                    Label="E-mail"
-                    InputType="InputType.Email"
+                    Label="Código de verificação"
+                    HelperText="O código deve ter 6 caracteres"
+                    HelperTextOnFocus
+                    InputType="InputType.Text"
                     Variant="Variant.Filled"
-                    @bind-Value="Req.Email"
-                    Required="true"
-                    RequiredError="O e-mail deve ser informado"
-                    Immediate="true"
-                    OnlyValidateIfDirty="true"
-                    Validation="@EmailValidator.Validate"
-                />
-                
-                <MudTextField 
-                    MaxLength="6" 
-                    ShrinkLabel="true" 
-                    T="string" 
-                    Label="Código de verificação" 
-                    HelperText="O código deve ter 6 caracteres" 
-                    HelperTextOnFocus 
-                    InputType="InputType.Text" 
-                    Variant="Variant.Filled" 
-                    @bind-Value="Req.VerificationCode"
+                    @bind-Value="Request.VerificationCode"
                     Required="true"
                     RequiredError="O código deve ser informado"
                     Immediate="true"
                     OnlyValidateIfDirty="true"
                     Validation="@VerificationCodeValidator.Validate"
-                />
-
-                <div class="d-flex justify-center">
-                    <MudButton
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Class="py-2 px-15"
-                        OnClick="VerifyAsync"
-                        Disabled="@(!IsValid)"
-                    >
-                        Verificar conta
-                    </MudButton>
-                </div>
-            </MudForm>
+                    />
+            </ValidateForm>
         </MudPaper>
 
         <MudPaper Class="pa-6 rounded-lg d-flex flex-column gap-3" Outlined="true">
