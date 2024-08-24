@@ -1,61 +1,48 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using RestSharp;
-using UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using UxTracker.Core.Contexts.Account.Handlers;
+using PasswordRecoveryVerifyUseCase = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using ResendResetCodeUseCase = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
 
 namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.PasswordRecovery;
 
-public partial class PasswordRecovery : ComponentBase
+public class PasswordRecovery : ComponentBase
 {
-    [Inject] protected NavigationManager Navigation { get; set; } 
-    [Inject] protected ILocalStorageService LocalStorage { get; set; }
-    [Inject] protected ISnackbar Snackbar { get; set; }
-    [Inject] protected IRestClient RestClient { get; set; }
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
-    protected MudForm Form;
-    protected string[] Errors = Array.Empty<string>();
-    protected bool IsValid;
-    
-    protected Request Req = new();
+    protected readonly PasswordRecoveryVerifyUseCase.Request Request = new();
 
     protected override async  Task OnInitializedAsync()
     {
-        Req.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+        Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     }
 
     protected async Task VerifyAsync()
     {
-        var request = new RestRequest("/api/v1/password-recover/verify", Method.Patch)
-            .AddJsonBody(Req);
         try
         {
-            var response = await RestClient.ExecuteAsync<Response>(request);
+            var response = await AccountContextHandler.PasswordRecoveryVerifyAsync(Request);
 
-            if (response.Data is not null)
-            {
+            if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    if (response.Data.StatusCode == 200)
-                    {
-                        Snackbar.Add(response.Data.Message, Severity.Success);
-                        Navigation.NavigateTo("/recover/reset-password");
-                    }
-                    else
-                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
-                
+                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    Navigation.NavigateTo("/recover/reset-password");
                 }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data!.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
-            }
             else
-                Snackbar.Add($"Erro: {response.StatusCode} - {response.Content}", Severity.Error);
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
@@ -65,33 +52,25 @@ public partial class PasswordRecovery : ComponentBase
     
     protected async Task ResendResetCodeAsync()
     {
-        Core.Contexts.Account.UseCases.ResendResetCode.Request req = new(Req.Email);
-        
-        var request = new RestRequest("/api/v1/password-recover/resend-reset-code", Method.Patch)
-            .AddJsonBody(req);
+        ResendResetCodeUseCase.Request request = new(Request.Email);
         
         try
         {
-            var response = await RestClient.ExecuteAsync<Core.Contexts.Account.UseCases.ResendResetCode.Response>(request);
+            var response = await AccountContextHandler.ResendResetCodeAsync(request);
 
-            if (response.Data is not null)
-            {
+            if (response is not null)
                 if (response.IsSuccessful)
-                    if (response.Data.StatusCode == 200)
-                        Snackbar.Add(response.Data.Message, Severity.Success);
-                    else
-                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                    Snackbar.Add(response.Data!.Message, Severity.Success);
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data!.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
-            }
             else
-                Snackbar.Add($"Erro: {response.StatusCode} - {response.Content}", Severity.Error);
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {

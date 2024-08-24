@@ -1,93 +1,47 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using RestSharp;
-using UxTracker.Core.Contexts.Account.UseCases.Create;
+using UxTracker.Core.Contexts.Account.Handlers;
+using CreateUseCase = UxTracker.Core.Contexts.Account.UseCases.Create;
 
 namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.Create;
 
-public partial class Register : ComponentBase
+public class Register : ComponentBase
 {
-    [Inject] protected NavigationManager Navigation { get; set; } 
-    [Inject] protected ISnackbar Snackbar { get; set; }
-    [Inject] protected IRestClient RestClient { get; set; }
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-    protected Request Req = new();
+    protected readonly CreateUseCase.Request Request = new();
     
-    protected MudForm Form;
-    protected string[] Errors = Array.Empty<string>();
-    protected bool IsValid;
+    protected readonly string ConfirmPassword = string.Empty;
 
-    protected InputType PasswordInput = InputType.Password;
-    protected string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-    protected bool IsPasswordShow;
-    protected InputType ConfirmPasswordInput = InputType.Password;
-    protected string ConfirmPasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-    protected bool IsConfirmPasswordShow;
-    protected string ConfirmPassword = string.Empty;
-
-    protected async Task CreateAsync()
+    protected async Task SignUpAsync()
     {
-        var request = new RestRequest("/api/v1/users", Method.Post)
-            .AddJsonBody(Req);
-        
         try
         {
-            var response = await RestClient.ExecuteAsync<Response>(request);
-            
-            if (response is { IsSuccessful: true, Data: not null })
-            {
-                if (response.Data.StatusCode == 201)
+            var response = await AccountContextHandler.SignUpAsync(Request);
+
+            if (response is not null)
+                if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data.Message, Severity.Success);
+                    Snackbar.Add(response.Data!.Message, Severity.Success);
                     Navigation.NavigateTo("/verify");
                 }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data!.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
-            }
             else
-                Snackbar.Add($"Erro: {response.StatusCode} - {response.Content}", Severity.Error);
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
-        }
-    }
-
-    public void ShowPassword()
-    {
-        if (IsPasswordShow)
-        {
-            IsPasswordShow = false;
-            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-            PasswordInput = InputType.Password;
-        }
-        else
-        {
-            IsPasswordShow = true;
-            PasswordInputIcon = Icons.Material.Filled.Visibility;
-            PasswordInput = InputType.Text;
-        }
-    }
-
-    public void ShowConfirmPassword()
-    {
-        if (IsConfirmPasswordShow)
-        {
-            IsConfirmPasswordShow = false;
-            ConfirmPasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-            ConfirmPasswordInput = InputType.Password;
-        }
-        else
-        {
-            IsConfirmPasswordShow = true;
-            ConfirmPasswordInputIcon = Icons.Material.Filled.Visibility;
-            ConfirmPasswordInput = InputType.Text;
         }
     }
 }

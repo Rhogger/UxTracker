@@ -1,4 +1,5 @@
 using Flunt.Notifications;
+using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.Verify;
 
@@ -12,5 +13,16 @@ public class Response: Shared.UseCases.Response
         StatusCode = statusCode;
         Notifications = notifications;
     }
+    
+    public Response(string message, Payload data)
+    {
+        Message = message;
+        StatusCode = 201;
+        Notifications = null;
+        Data = data;
+    }
+    
+    public Payload? Data { get; }
+
 }
 

@@ -1,4 +1,5 @@
-@using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Researchers.Web.Components.TextFields
+@using UxTracker.Researchers.Web.Components.Forms
 
 @page "/login"
 @layout HeadlessLayout
@@ -9,55 +10,11 @@
             
     <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column gap-4">
         <MudPaper Class="pa-6 rounded-lg" Outlined="true">
-            <MudForm
-                @ref="Form"
-                @bind-IsValid="IsValid"
-                @bind-Errors="Errors"
-                Class="d-flex flex-column gap-7"
-            >
-                <MudTextField 
-                    ShrinkLabel="true" 
-                    T="string" 
-                    Label="E-mail" 
-                    InputType="InputType.Email" 
-                    Variant="Variant.Filled"
-                    @bind-Value="Req.Email"
-                    Required="true"
-                    RequiredError="O e-mail deve ser informado"
-                    Immediate="true"
-                    OnlyValidateIfDirty="true"
-                    Validation="@EmailValidator.Validate"
-                />
-                
-                <MudTextField 
-                    ShrinkLabel="true" 
-                    T="string" 
-                    Label="Senha" 
-                    InputType="@PasswordInput" 
-                    Variant="Variant.Filled"
-                    @bind-Value="Req.Password"
-                    Required="true"
-                    RequiredError="A senha deve ser informada"
-                    Immediate="true"
-                    OnlyValidateIfDirty="true"
-                    Adornment="Adornment.End"
-                    AdornmentIcon="@PasswordInputIcon"
-                    AdornmentAriaLabel="Mostrar senha"
-                    OnAdornmentClick="ShowPassword"
-                />
-                
-                <div class="d-flex justify-center">
-                    <MudButton
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Class="py-2 px-15"
-                        OnClick="AuthenticateAsync"
-                        Disabled="@(!IsValid)"
-                    >
-                        Acessar
-                    </MudButton>
-                </div>
-            </MudForm>
+            <ValidateForm SubmitFunction="SignInAsync" TextButton="Acessar">
+                <EmailTextField @bind-Email="@Request.Email"/>
+
+                <PasswordTextField @bind-Password="@Request.Password"/>
+            </ValidateForm>
         </MudPaper>
 
         <MudPaper Class="px-4 py-7 rounded-lg d-flex flex-column gap-3" Outlined="true">

@@ -3,14 +3,14 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using UxTracker.Core;
-using UxTracker.Core.Contexts.Account.Entities;
-using UxTracker.Core.Contexts.Account.UseCases.Authenticate;
+using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Services;
 
-namespace UxTracker.Api.Extensions;
+namespace UxTracker.Infra.Services;
 
-public static class JwtExtension
+public class JwtService: IJwtService
 {
-    public static string Generate(ResponseData data)
+    public string Generate(Payload data)
     {
         var handler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey);
@@ -21,7 +21,7 @@ public static class JwtExtension
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = GenerateClaims(data),
-            Expires = DateTime.UtcNow.AddDays(1),
+            Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = credentials
         };
 
@@ -30,12 +30,10 @@ public static class JwtExtension
         return handler.WriteToken(token);
     }
 
-    private static ClaimsIdentity GenerateClaims(ResponseData user)
+    private static ClaimsIdentity GenerateClaims(Payload user)
     {
         var ci = new ClaimsIdentity();
         ci.AddClaim(new Claim("Id", user.Id));
-        ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
-        ci.AddClaim(new Claim(ClaimTypes.Name, user.Email));
 
         return ci;
     }

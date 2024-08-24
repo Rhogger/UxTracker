@@ -97,6 +97,7 @@ public static class BuilderExtensions
     public static void AddServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddTransient<ISendGridService, SendGridService>();
+        builder.Services.AddTransient<IJwtService, JwtService>();
     }
     
     public static void AddCrossOrigin(this WebApplicationBuilder builder)

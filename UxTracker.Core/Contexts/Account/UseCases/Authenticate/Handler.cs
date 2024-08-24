@@ -1,16 +1,19 @@
 using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.Authenticate.Contracts;
+using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 
 public class Handler: IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
+    private readonly IService _service;
 
-    public Handler(IRepository repository)
+    public Handler(IRepository repository, IService service)
     {
         _repository = repository;
+        _service = service;
     }
     
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
@@ -30,11 +33,11 @@ public class Handler: IRequestHandler<Request, Response>
         }
 
         #endregion
-
-        User? user;
-
+        
         #region 02. Recuperar usuário do banco
 
+        User? user;
+        
         try
         {
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
@@ -70,15 +73,29 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 05. Retornar os dados
+        #region 05. Gerar o token JWT
+
+        string token;
+        
+        try
+        {
+            token = _service.GenerateJwtToken(user, cancellationToken);
+        }
+        catch
+        {
+            return new Response("Não foi possível gerar as credenciais no servidor", 500);
+        }
+        
+        #endregion
+        
+        #region 06. Retornar os dados
 
         try
         {
-            var data = new ResponseData
+            var data = new Payload
             {
                 Id = user.Id.ToString(),
-                Name = user.Name,
-                Email = user.Email,
+                Token = token
             };
 
             return new Response(string.Empty, data);

@@ -1,16 +1,19 @@
 using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.Verify.Contracts;
+using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.Verify;
 
 public class Handler: IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
+    private readonly IService _service;
 
-    public Handler(IRepository repository)
+    public Handler(IRepository repository, IService service)
     {
         _repository = repository;
+        _service = service;
     }
     
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
@@ -85,6 +88,29 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
 
-        return new Response("Conta verificada com sucesso!", 200);
+        #region 06. Gerar o token JWT
+
+        string token;
+        
+        try
+        {
+            token = await _service.GenerateJwtToken(user, cancellationToken);
+        }
+        catch
+        {
+            return new Response("Não foi possível gerar as credenciais no servidor", 500);
+        }
+        
+        #endregion
+        
+        #region 06. Retornar os dados
+
+        return new Response("Conta verificada com sucesso!", new Payload
+        {
+            Id = user.Id.ToString(),
+            Token = token,
+        });
+
+        #endregion
     }
 }
