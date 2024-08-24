@@ -1,3 +1,5 @@
+using UxTracker.Core.Contexts.Account.ValueObjects;
+
 namespace UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 
 using Flunt.Notifications;
@@ -13,7 +15,7 @@ public class Response : Shared.UseCases.Response
         Notifications = notifications;
     }
 
-    public Response(string message, ResponseData data)
+    public Response(string message, Payload data)
     {
         Message = message;
         StatusCode = 200;
@@ -21,13 +23,5 @@ public class Response : Shared.UseCases.Response
         Data = data;
     }
 
-    public ResponseData? Data { get; set; }
+    public Payload? Data { get; }
 }
-
-public record ResponseData
-{
-    public string Token { get; set; } = string.Empty;
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-};
