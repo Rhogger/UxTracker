@@ -8,5 +8,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.AddServices();
+builder.AddSecurity();
+builder.AddHandlers();
 
 await builder.Build().RunAsync();
