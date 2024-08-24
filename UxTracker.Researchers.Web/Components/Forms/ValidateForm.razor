@@ -1,0 +1,59 @@
+<MudForm
+    @ref="Form"
+    @bind-IsValid="IsValid"
+    @bind-Errors="Errors"
+    Class="@Class"
+>
+    @ChildContent
+    
+    @if (!TwoOptions)
+    {
+        <div class="d-flex justify-center">
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Class="py-2 px-15"
+                OnClick="SubmitFunction"
+                Disabled="@(!IsValid)"
+            >
+                @TextButton
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex gap-9">
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Error"
+                Class="py-2"
+                FullWidth="true"
+                OnClick="SecondFunction">
+                @SecondTextButton
+            </MudButton>
+                    
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Success"
+                Class="py-2"
+                FullWidth="true"
+                OnClick="SubmitFunction">
+                @TextButton
+            </MudButton>
+        </div>
+    }
+</MudForm>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback SubmitFunction { get; set; }
+    [Parameter] public string TextButton { get; set; } = "Salvar";
+    [Parameter] public string Class { get; set; } = "d-flex flex-column gap-7";
+    [Parameter] public bool TwoOptions { get; set; }
+    [Parameter] public EventCallback SecondFunction { get; set; }
+    [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
+    
+    private MudForm Form = null!;
+    private string[] Errors = [];
+    private bool IsValid;
+}
