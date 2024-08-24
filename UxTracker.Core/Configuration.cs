@@ -8,6 +8,7 @@ public static class Configuration
     public static DatabaseConfiguration Database { get; set; } = new();
     public static ApplicationUrlConfiguration ApplicationUrl { get; set; } = new();
     public static CorsConfiguration Cors { get; set; } = new();
+    public static CookieConfiguration Cookie { get; set; } = new();
 
     public class SecretsConfiguration
     {
@@ -41,5 +42,10 @@ public static class Configuration
     public class CorsConfiguration
     {
         public string CorsPolicyName { get; set; } = string.Empty;
+    }
+    
+    public class CookieConfiguration
+    {
+        public string AccessTokenCookieName { get; set; } = "AccessToken";
     }
 }
