@@ -9,11 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all" />
-    <PackageReference Include="MudBlazor" Version="7.1.1" />
+    <PackageReference Include="MudBlazor" Version="7.6.0" />
     <PackageReference Include="RestSharp" Version="111.4.0" />
     <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="111.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
   </ItemGroup>
 
   <ItemGroup>
