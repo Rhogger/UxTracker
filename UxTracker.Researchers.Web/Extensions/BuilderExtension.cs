@@ -37,6 +37,7 @@ public static class BuilderExtension
     public static void AddHandlers(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddTransient<ICookieHandler, CookieHandler>();
+        builder.Services.AddTransient<IAccountContextHandler, AccountContextHandler>();
     }
     
     public static void AddSecurity(this WebAssemblyHostBuilder builder)
