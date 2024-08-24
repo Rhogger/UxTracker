@@ -1,0 +1,140 @@
+@page "/reviewers/research"
+@layout HeadlessLayout
+@using MudBlazor
+@using ApexCharts
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-4">
+  <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center">Título da pesquisa</MudText>
+  <MudPaper Class="pa-4 rounded-lg" Outlined="true">
+    <MudText Typo="Typo.body1">
+      Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+      has
+      been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+      scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
+      electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
+      Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+      PageMaker including versions of Lorem Ipsum.
+    </MudText>
+  </MudPaper>
+  <MudPaper Class="pa-4 rounded-lg mt-4" Outlined="true">
+    <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
+    <MudContainer Class="d-flex justify-center">
+      <ApexChart TItem="EvaluationData" Options="@options">
+        <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas" SeriesType="SeriesType.Line"
+          XValue="@(e => e.Day)" YValue="@(e => e.Rating)" />
+      </ApexChart>
+    </MudContainer>
+  </MudPaper>
+  <MudPaper Class="pa-4 rounded-lg mt-4" Outlined="true">
+    <MudForm @onsubmit="HandleSubmit">
+      <MudGrid>
+        <MudItem xs="12" md="4">
+          <MudSelect T="int" Label="Nota" Variant="Variant.Filled" @bind-Value="SelectedRating">
+            <MudSelectItem Value="1">1</MudSelectItem>
+            <MudSelectItem Value="2">2</MudSelectItem>
+            <MudSelectItem Value="3">3</MudSelectItem>
+            <MudSelectItem Value="4">4</MudSelectItem>
+            <MudSelectItem Value="5">5</MudSelectItem>
+            <MudSelectItem Value="6">6</MudSelectItem>
+            <MudSelectItem Value="7">7</MudSelectItem>
+            <MudSelectItem Value="8">8</MudSelectItem>
+            <MudSelectItem Value="9">9</MudSelectItem>
+            <MudSelectItem Value="10">10</MudSelectItem>
+          </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="8">
+          <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true" @bind-Value="Comment" />
+        </MudItem>
+      </MudGrid>
+      <div class="d-flex justify-center mt-4">
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"
+          Class="py-2 px-15">
+          Enviar
+        </MudButton>
+      </div>
+    </MudForm>
+  </MudPaper>
+</MudContainer>
+
+@code {
+  private List<EvaluationData> Evaluations { get; set; } = new();
+  private int SelectedRating { get; set; }
+  private ApexChartOptions<EvaluationData> options;
+  private string Comment { get; set; }
+
+  protected override void OnInitialized()
+  {
+    options = new ApexChartOptions<EvaluationData>
+      {
+        Chart = new Chart
+        {
+          Toolbar = new Toolbar
+          {
+            Show = false
+          },
+          DropShadow = new DropShadow
+          {
+            Enabled = true,
+            Color = "",
+            Top = 18,
+            Left = 7,
+            Blur = 10,
+            Opacity = 0.2d
+          }
+        },
+        DataLabels = new ApexCharts.DataLabels
+        {
+          OffsetY = -6d
+        },
+        Grid = new Grid
+        {
+          BorderColor = "#e7e7e7",
+          Row = new GridRow
+          {
+            Colors = new List<string> { "#f3f3f3", "transparent" },
+            Opacity = 0.5d
+          }
+        },
+
+        Colors = new List<string> { "#77B6EA", "#545454" },
+        Markers = new Markers { Shape = ShapeEnum.Circle, Size = 5, FillOpacity = new Opacity(0.8d) },
+        Stroke = new Stroke { Curve = Curve.Smooth },
+        Legend = new Legend
+        {
+          Position = LegendPosition.Top,
+          HorizontalAlign = ApexCharts.Align.Right,
+          Floating = true,
+          OffsetX = -5,
+          OffsetY = -25
+        },
+
+      };
+
+    Evaluations.Add(new EvaluationData { Day = 1, Rating = 8, Comment = "Nota de exemplo para o dia 1" });
+    Evaluations.Add(new EvaluationData { Day = 2, Rating = 6, Comment = "Nota de exemplo para o dia 2" });
+    Evaluations.Add(new EvaluationData { Day = 3, Rating = 9, Comment = "Nota de exemplo para o dia 3" });
+    Evaluations.Add(new EvaluationData { Day = 4, Rating = 7, Comment = "Nota de exemplo para o dia 4" });
+    Evaluations.Add(new EvaluationData { Day = 5, Rating = 10, Comment = "Nota de exemplo para o dia 5" });
+    Evaluations.Add(new EvaluationData { Day = 6, Rating = 1, Comment = "Nota de exemplo para o dia 6" });
+  }
+
+  private void HandleSubmit()
+  {
+    var currentDay = Evaluations.Count + 1;
+    if (Evaluations.Any(e => e.Day == currentDay))
+    {
+      return;
+    }
+
+    Evaluations.Add(new EvaluationData { Day = currentDay, Rating = SelectedRating, Comment = Comment });
+    SelectedRating = 0;
+    Comment = string.Empty;
+  }
+
+  public class EvaluationData
+  {
+    public int Day { get; set; }
+    public int Rating { get; set; }
+    public string Comment { get; set; }
+  }
+}
