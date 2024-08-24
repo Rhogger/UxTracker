@@ -1,5 +1,22 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
+using AuthenticateInfra = UxTracker.Infra.Contexts.Account.UseCases.Authenticate;
+using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
+using CreateInfra = UxTracker.Infra.Contexts.Account.UseCases.Create;
+using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
+using PasswordRecoveryInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecovery;
+using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using PasswordRecoveryVerifyInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
+using ResendResetCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendResetCode;
+using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
+using ResendVerificationCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCode;
+using UpdatePassword = UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
+using UpdatePasswordInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdatePassword;
+using Verify = UxTracker.Core.Contexts.Account.UseCases.Verify;
+using VerifyInfra = UxTracker.Infra.Contexts.Account.UseCases.Verify;
 
 namespace UxTracker.Api.Extensions;
 
@@ -7,34 +24,30 @@ public static class AccountContextExtension
 {
     public static void AddAccountContext(this WebApplicationBuilder builder)
     {
-        #region Create
-        builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.Create.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.Create.Repository
-        >();
-
-        builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.Create.Contracts.IService,
-            Infra.Contexts.Account.UseCases.Create.Service
-        >();
-        #endregion
-
         #region Authenticate
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.Authenticate.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.Authenticate.Repository
+            Authenticate.Contracts.IRepository,
+            AuthenticateInfra.Repository
+        >();       
+        
+        builder.Services.AddTransient<
+            Authenticate.Contracts.IService,
+            AuthenticateInfra.Service
         >();
 
         #endregion
         
-        #region Verify
-
+        #region Create
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.Verify.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.Verify.Repository
+            Create.Contracts.IRepository,
+            CreateInfra.Repository
         >();
 
+        builder.Services.AddTransient<
+            Create.Contracts.IService,
+            CreateInfra.Service
+        >();
         #endregion
         
         #region ResendVerificationCode
@@ -56,11 +69,13 @@ public static class AccountContextExtension
         builder.Services.AddTransient<
             Core.Contexts.Account.UseCases.PasswordRecovery.Contracts.IRepository,
             Infra.Contexts.Account.UseCases.PasswordRecovery.Repository
+            PasswordRecovery.Contracts.IRepository,
+            PasswordRecoveryInfra.Repository
         >();
         
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.PasswordRecovery.Contracts.IService,
-            Infra.Contexts.Account.UseCases.PasswordRecovery.Service
+            PasswordRecovery.Contracts.IService,
+            PasswordRecoveryInfra.Service
         >();
 
         #endregion
@@ -68,8 +83,8 @@ public static class AccountContextExtension
         #region PasswordRecoveryVerify
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.PasswordRecoveryVerify.Repository
+            PasswordRecoveryVerify.Contracts.IRepository,
+            PasswordRecoveryVerifyInfra.Repository
         >();
 
         #endregion
@@ -77,9 +92,31 @@ public static class AccountContextExtension
         #region ResendResetCode
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.ResendResetCode.Repository
+            ResendResetCode.Contracts.IRepository,
+            ResendResetCodeInfra.Repository
         >();
+        
+        builder.Services.AddTransient<
+            ResendResetCode.Contracts.IService,
+            ResendResetCodeInfra.Service
+        >();
+
+        #endregion
+        
+        #region ResendVerificationCode
+
+        builder.Services.AddTransient<
+            ResendVerificationCode.Contracts.IRepository,
+            ResendVerificationCodeInfra.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            ResendVerificationCode.Contracts.IService,
+            ResendVerificationCodeInfra.Service
+        >();
+        
+
+        #endregion
         
         builder.Services.AddTransient<
             Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IService,
@@ -91,108 +128,77 @@ public static class AccountContextExtension
         #region UpdatePassword
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.UpdatePassword.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.UpdatePassword.Repository
+            UpdatePassword.Contracts.IRepository,
+            UpdatePasswordInfra.Repository
         >();
+        #endregion
+        
+        #region Verify
+
+        builder.Services.AddTransient<
+            Verify.Contracts.IRepository,
+            VerifyInfra.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            Verify.Contracts.IService,
+            VerifyInfra.Service
+        >();
+
         #endregion
     }
 
     public static void MapAccountEndpoints(this WebApplication app)
     {
-        #region Create
+        #region Authenticate
         app.MapPost(
-            "api/v1/users",
+            "api/v1/authenticate",
             async (
-                Core.Contexts.Account.UseCases.Create.Request request,
+                Authenticate.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.Create.Request,
-                    Core.Contexts.Account.UseCases.Create.Response
+                    Authenticate.Request,
+                    Authenticate.Response
                 > handler
             ) =>
             {
                 var result = await handler.Handle(request, new CancellationToken());
 
                 return result.IsSuccess
-                    ? Results.Created($"/api/v1/users/{result.Data?.Id}", result)
+                    ? Results.Ok(result)
                     : Results.Json(result, statusCode: result.StatusCode);
             }
         );
-        #endregion  
+        #endregion
         
-        #region Authenticate
+        #region Create
         app.MapPost(
-            "api/v1/authenticate",
+            "api/v1/users",
             async (
-                Core.Contexts.Account.UseCases.Authenticate.Request request,
+                Create.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.Authenticate.Request,
-                    Core.Contexts.Account.UseCases.Authenticate.Response
+                    Create.Request,
+                    Create.Response
                 > handler
             ) =>
             {
                 var result = await handler.Handle(request, new CancellationToken());
 
-                if (!result.IsSuccess)
-                    return Results.Json(result, statusCode: result.StatusCode);
-                
-                if (result.Data is null)
-                    return Results.Json(result, statusCode: 500);
-
-                result.Data.Token = JwtExtension.Generate(result.Data);
-
-                return Results.Ok(result);
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
             }
         );
         #endregion
         
         #region Verify
-        app.MapPatch(
-            "api/v1/verify",
-            async (
-                Core.Contexts.Account.UseCases.Verify.Request request,
-                IRequestHandler<
-                    Core.Contexts.Account.UseCases.Verify.Request,
-                    Core.Contexts.Account.UseCases.Verify.Response
-                > handler
-            ) =>
-            {
-                var result = await handler.Handle(request, new CancellationToken());
-
-                return result.IsSuccess
-                    ? Results.Ok(result)
-                    : Results.Json(result, statusCode: result.StatusCode);
-            }
-        );
-        #endregion
-        
-        #region ResendVerificationCode
-        app.MapPatch(
-            "api/v1/resend-verification-code",
-            async (
-                Core.Contexts.Account.UseCases.ResendVerificationCode.Request request,
-                IRequestHandler<
-                    Core.Contexts.Account.UseCases.ResendVerificationCode.Request,
-                    Core.Contexts.Account.UseCases.ResendVerificationCode.Response
-                > handler
-            ) =>
-            {
-                var result = await handler.Handle(request, new CancellationToken());
-
-                return result.IsSuccess
-                    ? Results.Ok(result)
-                    : Results.Json(result, statusCode: result.StatusCode);
-            }
-        );
-        #endregion
-        
         #region PasswordRecovery
         app.MapPatch(
             "api/v1/password-recover",
             async (
-                Core.Contexts.Account.UseCases.PasswordRecovery.Request request,
+                PasswordRecovery.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.PasswordRecovery.Request,
-                    Core.Contexts.Account.UseCases.PasswordRecovery.Response
+                    PasswordRecovery.Request,
+                    PasswordRecovery.Response
                 > handler
             ) =>
             {
@@ -209,10 +215,50 @@ public static class AccountContextExtension
         app.MapPatch(
             "api/v1/password-recover/verify",
             async (
-                Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Request request,
+                PasswordRecoveryVerify.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Request,
-                    Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Response
+                    PasswordRecoveryVerify.Request,
+                    PasswordRecoveryVerify.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region ResendResetCode
+        app.MapPatch(
+            "api/v1/password-recover/resend-reset-code",
+            async (
+                ResendResetCode.Request request,
+                IRequestHandler<
+                    ResendResetCode.Request,
+                    ResendResetCode.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region ResendVerificationCode
+        app.MapPatch(
+            "api/v1/resend-verification-code",
+            async (
+                ResendVerificationCode.Request request,
+                IRequestHandler<
+                    ResendVerificationCode.Request,
+                    ResendVerificationCode.Response
                 > handler
             ) =>
             {
@@ -245,14 +291,14 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region UpdatePasswordRecovery
+        #region UpdatePassword
         app.MapPatch(
             "api/v1/password-recover/update-password",
             async (
-                Core.Contexts.Account.UseCases.UpdatePassword.Request request,
+                UpdatePassword.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.UpdatePassword.Request,
-                    Core.Contexts.Account.UseCases.UpdatePassword.Response
+                    UpdatePassword.Request,
+                    UpdatePassword.Response
                 > handler
             ) =>
             {
@@ -265,14 +311,14 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region UpdateAccountPassword
+        #region Verify
         app.MapPatch(
-            "api/v1/account/update-password",
-            [Authorize] async (
-                Core.Contexts.Account.UseCases.UpdatePassword.Request request,
+            "api/v1/verify",
+            async (
+                Verify.Request request,
                 IRequestHandler<
-                    Core.Contexts.Account.UseCases.UpdatePassword.Request,
-                    Core.Contexts.Account.UseCases.UpdatePassword.Response
+                    Verify.Request,
+                    Verify.Response
                 > handler
             ) =>
             {
