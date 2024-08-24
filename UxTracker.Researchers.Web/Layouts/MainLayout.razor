@@ -1,11 +1,12 @@
 @using UxTracker.Researchers.Web.Utils.Theme
 @inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme"/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
+<MudDialogProvider />
+<MudPopoverProvider />
+<MudSnackbarProvider />
 
-<MudLayout Style="height: 100vh">
+<MudLayout Class="mud-height-full">
     <MudAppBar>
         <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
 
@@ -24,7 +25,6 @@
 {
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
-
     private void ChangeMode()
     {
         if (IsDarkMode)
