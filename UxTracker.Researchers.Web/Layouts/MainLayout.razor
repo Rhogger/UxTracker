@@ -1,29 +1,69 @@
+@using UxTracker.Core.Contexts.Account.Handlers
+@using UxTracker.Core.Security
 @using UxTracker.Researchers.Web.Utils.Theme
+@using UxTracker.Researchers.Web.Components
 @inherits LayoutComponentBase
 
 <MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme"/>
 <MudDialogProvider/>
+<MudPopoverProvider/>
 <MudSnackbarProvider/>
 
-<MudLayout Style="height: 100vh">
-    <MudAppBar>
-        <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
+<AuthorizeView>
+    <Authorized>
+        
+        <MudLayout Style="height: 100vh">
+            <MudAppBar>
+                <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
 
-        <MudSpacer />
+                <MudSpacer/>
 
-        <MudIconButton Icon="@Icon" OnClick="ChangeMode" Color="Color.Inherit" />
-        <MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" />
-        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" />
-    </MudAppBar>
-    <MudMainContent Class="mud-height-full pa-0">
-        @Body
-    </MudMainContent>
-</MudLayout>
+                <MudIconButton 
+                    Icon="@Icon" 
+                    Color="Color.Inherit"
+                    OnClick="ChangeMode" 
+                />
+                
+                <MudIconButton 
+                    Icon="@Icons.Material.Filled.Person" 
+                    Color="Color.Inherit"
+                    Href="/account"
+                />
+                
+                <MudIconButton 
+                    Icon="@Icons.Material.Filled.Logout" 
+                    Color="Color.Inherit"
+                    OnClick="SignOutAsync"
+                />
+            </MudAppBar>
+            <MudMainContent Class="mud-height-full pa-0">
+                @Body
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin/>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code
 {
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
+    [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
+
+    
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
+    
+    protected override async  Task OnInitializedAsync()
+    {
+        var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        if (user.Identity is { IsAuthenticated: false })
+            Navigation.NavigateTo("/login");
+    }
 
     private void ChangeMode()
     {
@@ -37,5 +77,11 @@
             Icon = Icons.Material.Filled.WbSunny;
             IsDarkMode = true;
         }
+    }
+
+    private async void SignOutAsync()
+    {
+        await AccountContextHandler.SignOutAsync();
+        Navigation.NavigateTo("/login");
     }
 }
