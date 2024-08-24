@@ -95,6 +95,17 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        return new Response("Conta criada com sucesso!", new ResponseData(user.Id, user.Name, user.Email));
+        #region 06. Retornar os dados
+
+        try
+        {
+            return new Response("Conta criada com sucesso!", 200);
+        }
+        catch
+        {
+            return new Response("Não foi possível obter os dados do perfil", 500);
+        }
+
+        #endregion
     }
 }
