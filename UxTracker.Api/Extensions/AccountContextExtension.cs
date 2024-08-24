@@ -5,6 +5,8 @@ using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 using AuthenticateInfra = UxTracker.Infra.Contexts.Account.UseCases.Authenticate;
 using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
 using CreateInfra = UxTracker.Infra.Contexts.Account.UseCases.Create;
+using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
+using GetUserInfra = UxTracker.Infra.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
@@ -13,6 +15,8 @@ using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode
 using ResendResetCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendResetCode;
 using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
 using ResendVerificationCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCode;
+using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
+using UpdateAccountInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdateAccount;
 using UpdatePassword = UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
 using UpdatePasswordInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdatePassword;
 using Verify = UxTracker.Core.Contexts.Account.UseCases.Verify;
@@ -67,8 +71,6 @@ public static class AccountContextExtension
         #region PasswordRecovery
 
         builder.Services.AddTransient<
-            Core.Contexts.Account.UseCases.PasswordRecovery.Contracts.IRepository,
-            Infra.Contexts.Account.UseCases.PasswordRecovery.Repository
             PasswordRecovery.Contracts.IRepository,
             PasswordRecoveryInfra.Repository
         >();
@@ -114,10 +116,11 @@ public static class AccountContextExtension
             ResendVerificationCode.Contracts.IService,
             ResendVerificationCodeInfra.Service
         >();
-        
 
         #endregion
         
+        #region UpdateAccount
+
         builder.Services.AddTransient<
             Core.Contexts.Account.UseCases.ResendResetCode.Contracts.IService,
             Infra.Contexts.Account.UseCases.ResendResetCode.Service
@@ -190,7 +193,33 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region Verify
+        #region GetUser
+        app.MapGet(
+            "api/v1/account/",
+            [Authorize] async (
+                HttpContext httpContext, 
+                [FromServices] IRequestHandler<GetUser.Request, GetUser.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                var request = new GetUser.Request
+                {
+                    Id = userId
+                };
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
         #region PasswordRecovery
         app.MapPatch(
             "api/v1/password-recover",
