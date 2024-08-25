@@ -91,10 +91,7 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
-    public async Task SignOutAsync()
-    {
-        await CookieHandler.RemoveAuthTokenAsync();
-    }
+    public async Task SignOutAsync() => await CookieHandler.RemoveAuthTokenAsync();
 
     public async Task<RestResponse<PasswordRecovery.Response>?> SendResetCodeAsync(PasswordRecovery.Request requestModel)
     {
