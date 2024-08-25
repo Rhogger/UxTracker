@@ -11,7 +11,6 @@
 
 <AuthorizeView>
     <Authorized>
-        
         <MudLayout Style="height: 100vh">
             <MudAppBar>
                 <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
@@ -67,16 +66,8 @@
 
     private void ChangeMode()
     {
-        if (IsDarkMode)
-        {
-            Icon = Icons.Material.Filled.DarkMode;
-            IsDarkMode = false;
-        }
-        else
-        {
-            Icon = Icons.Material.Filled.WbSunny;
-            IsDarkMode = true;
-        }
+        IsDarkMode = !IsDarkMode;
+        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny ;
     }
 
     private async void SignOutAsync()
