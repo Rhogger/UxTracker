@@ -344,7 +344,7 @@ public static class AccountContextExtension
         
         #region Verify
         app.MapPatch(
-            "api/v1/verify",
+            "api/v1/account/researchers/verify",
             async (
                 Verify.Request request,
                 IRequestHandler<

@@ -129,7 +129,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/verify", Method.Patch)
+        var request = new RestRequest("/api/v1/account/researchers/verify", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
