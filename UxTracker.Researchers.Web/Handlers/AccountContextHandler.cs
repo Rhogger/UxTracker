@@ -64,7 +64,7 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<Create.Response>?> SignUpAsync(Create.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/users", Method.Post)
+        var request = new RestRequest("/api/v1/users/create", Method.Post)
             .AddJsonBody(requestModel);
 
         try

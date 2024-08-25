@@ -169,7 +169,7 @@ public static class AccountContextExtension
         
         #region Create
         app.MapPost(
-            "api/v1/users",
+            "api/v1/users/create",
             async (
                 Create.Request request,
                 IRequestHandler<
