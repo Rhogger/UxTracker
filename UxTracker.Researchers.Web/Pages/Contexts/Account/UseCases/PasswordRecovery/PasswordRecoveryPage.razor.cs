@@ -16,10 +16,8 @@ public class PasswordRecovery : ComponentBase
     
     protected readonly PasswordRecoveryVerifyUseCase.Request Request = new();
 
-    protected override async  Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
 
     protected async Task VerifyAsync()
     {
@@ -46,7 +44,7 @@ public class PasswordRecovery : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
     
@@ -74,7 +72,7 @@ public class PasswordRecovery : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 }

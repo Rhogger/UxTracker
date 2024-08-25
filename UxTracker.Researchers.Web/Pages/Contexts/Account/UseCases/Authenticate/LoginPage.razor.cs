@@ -18,10 +18,7 @@ public class Login : ComponentBase
     
     protected readonly AuthenticateUseCase.Request Request = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
+    protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
     protected async Task SignInAsync()
     {

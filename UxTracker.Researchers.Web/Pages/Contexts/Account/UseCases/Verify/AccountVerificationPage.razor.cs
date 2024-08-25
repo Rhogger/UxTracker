@@ -17,11 +17,9 @@ public class AccountVerification: ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyUseCase.Request Request = new();
-    
-    protected override async  Task OnInitializedAsync()
-    {
+
+    protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
 
     protected async Task VerifyAsync()
     {
