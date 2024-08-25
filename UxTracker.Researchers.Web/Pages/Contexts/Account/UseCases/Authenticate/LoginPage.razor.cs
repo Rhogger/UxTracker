@@ -83,7 +83,7 @@ public class Login : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 }

@@ -43,11 +43,11 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
-                return new Response("Perfil não encontrado", 404);
+                return new Response("Usuário não cadastrado", 404);
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion
@@ -90,8 +90,6 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 06. Retornar os dados
 
-        try
-        {
             var data = new Payload
             {
                 Id = user.Id.ToString(),
@@ -99,11 +97,6 @@ public class Handler: IRequestHandler<Request, Response>
             };
 
             return new Response(string.Empty, data);
-        }
-        catch
-        {
-            return new Response("Não foi possível obter os dados do perfil", 500);
-        }
 
         #endregion
     }

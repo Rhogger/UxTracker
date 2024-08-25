@@ -31,7 +31,7 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<Authenticate.Response>?> SignInAsync(Authenticate.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/authenticate", Method.Post)
+        var request = new RestRequest("/api/v1/users/researchers/authenticate", Method.Post)
             .AddJsonBody(requestModel);
 
         try
@@ -64,7 +64,7 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<Create.Response>?> SignUpAsync(Create.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/users/create", Method.Post)
+        var request = new RestRequest("/api/v1/users/researchers/create", Method.Post)
             .AddJsonBody(requestModel);
 
         try

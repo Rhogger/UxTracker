@@ -149,7 +149,7 @@ public static class AccountContextExtension
     {
         #region Authenticate
         app.MapPost(
-            "api/v1/authenticate",
+            "api/v1/users/researchers/authenticate",
             async (
                 Authenticate.Request request,
                 IRequestHandler<
@@ -169,7 +169,7 @@ public static class AccountContextExtension
         
         #region Create
         app.MapPost(
-            "api/v1/users/create",
+            "api/v1/users/researchers/create",
             async (
                 Create.Request request,
                 IRequestHandler<
