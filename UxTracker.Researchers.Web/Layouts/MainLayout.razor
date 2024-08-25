@@ -1,3 +1,4 @@
+@using Blazored.LocalStorage
 @using UxTracker.Core.Contexts.Account.Handlers
 @using UxTracker.Core.Security
 @using UxTracker.Researchers.Web.Utils.Theme
@@ -47,10 +48,10 @@
 
 @code
 {
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
     [Inject] protected NavigationManager Navigation { get; set; } 
-    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
-
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
@@ -59,9 +60,15 @@
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        
+
+            
         if (user.Identity is { IsAuthenticated: false })
             Navigation.NavigateTo("/login");
+        else
+        {
+            var currentUrl = Navigation.Uri;
+            await LocalStorage.SetItemAsync("currentUrl", currentUrl);
+        }
     }
 
     private void ChangeMode()
