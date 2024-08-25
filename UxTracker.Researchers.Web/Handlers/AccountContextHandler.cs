@@ -50,15 +50,14 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
     
@@ -81,15 +80,14 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 
@@ -118,16 +116,14 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 
@@ -150,16 +146,16 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 
@@ -182,16 +178,16 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 
@@ -212,16 +208,16 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 
@@ -245,16 +241,16 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
     
@@ -278,16 +274,16 @@ public class AccountContextHandler: IAccountContextHandler
                     }
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
     
@@ -306,16 +302,16 @@ public class AccountContextHandler: IAccountContextHandler
                         return response;
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
     
@@ -343,16 +339,16 @@ public class AccountContextHandler: IAccountContextHandler
                         return response;
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
     
@@ -371,16 +367,16 @@ public class AccountContextHandler: IAccountContextHandler
                         return response;
                     else
                         throw new Exception(
-                            $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     throw new Exception(
-                        $"Erro: Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
 
-            throw new Exception($"Erro: Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Exception: {ex.Message}");
+            throw new Exception($"{ex.Message}");
         }
     }
 }
