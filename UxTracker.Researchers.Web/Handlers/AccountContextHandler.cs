@@ -126,7 +126,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/account/researchers/verify", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/verify", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
@@ -145,8 +145,7 @@ public class AccountContextHandler: IAccountContextHandler
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                    return response;
 
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
@@ -158,7 +157,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<ResendVerificationCode.Response>?> ResendVerificationCodeAsync(ResendVerificationCode.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/resend-verification-code", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/verify/resend", Method.Patch)
             .AddJsonBody(requestModel);
 
         try

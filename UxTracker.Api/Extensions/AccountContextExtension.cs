@@ -276,7 +276,7 @@ public static class AccountContextExtension
         
         #region ResendVerificationCode
         app.MapPatch(
-            "api/v1/resend-verification-code",
+            "api/v1/users/researchers/verify/resend",
             async (
                 ResendVerificationCode.Request request,
                 IRequestHandler<
@@ -344,7 +344,7 @@ public static class AccountContextExtension
         
         #region Verify
         app.MapPatch(
-            "api/v1/account/researchers/verify",
+            "api/v1/users/researchers/verify",
             async (
                 Verify.Request request,
                 IRequestHandler<
