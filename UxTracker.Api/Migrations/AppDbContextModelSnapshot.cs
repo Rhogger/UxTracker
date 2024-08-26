@@ -30,9 +30,7 @@ namespace UxTracker.Api.Migrations
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("Image");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -101,24 +99,11 @@ namespace UxTracker.Api.Migrations
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<DateTime?>("ChangedAt")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("PasswordResetChangedAt");
-
-                            b1.Property<DateTime?>("ExpireAt")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("PasswordResetExpireAt");
-
                             b1.Property<string>("Hash")
                                 .IsRequired()
                                 .HasMaxLength(75)
                                 .HasColumnType("NVARCHAR")
                                 .HasColumnName("PasswordHash");
-
-                            b1.Property<string>("ResetCode")
-                                .HasMaxLength(8)
-                                .HasColumnType("NVARCHAR")
-                                .HasColumnName("PasswordResetCode");
 
                             b1.HasKey("UserId");
 
@@ -126,6 +111,34 @@ namespace UxTracker.Api.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
+
+                            b1.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Verification", "ResetCode", b2 =>
+                                {
+                                    b2.Property<Guid>("PasswordUserId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Code")
+                                        .HasMaxLength(8)
+                                        .HasColumnType("NVARCHAR")
+                                        .HasColumnName("PasswordResetCode");
+
+                                    b2.Property<DateTime?>("ExpireAt")
+                                        .HasColumnType("datetime2")
+                                        .HasColumnName("PasswordResetExpireAt");
+
+                                    b2.Property<DateTime?>("VerifiedAt")
+                                        .HasColumnType("datetime2")
+                                        .HasColumnName("PasswordResetVerifiedAt");
+
+                                    b2.HasKey("PasswordUserId");
+
+                                    b2.ToTable("Users");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("PasswordUserId");
+                                });
+
+                            b1.Navigation("ResetCode");
                         });
 
                     b.Navigation("Email")

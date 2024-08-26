@@ -20,13 +20,6 @@ public class UserMap : IEntityTypeConfiguration<User>
             .IsRequired(true);
 
         builder
-            .Property(x => x.Image)
-            .HasColumnName("Image")
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(255)
-            .IsRequired(true);
-
-        builder
             .OwnsOne(x => x.Email)
             .Property(x => x.Address)
             .HasColumnName("Email")
