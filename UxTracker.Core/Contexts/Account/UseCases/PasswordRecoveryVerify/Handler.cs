@@ -68,7 +68,7 @@ public class Handler: IRequestHandler<Request, Response>
         if (!user.Password.IsValidResetCode(request.ResetCode))
             return new Response("Código está incorreto", 400);
         
-        if (user.Password.ExpireAt < DateTime.UtcNow)
+        if (user.Password.ResetCode.ExpireAt < DateTime.UtcNow)
             return new Response("Código está expirado", 400);
 
         #endregion

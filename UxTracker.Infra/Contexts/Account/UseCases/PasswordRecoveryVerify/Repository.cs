@@ -19,7 +19,7 @@ public class Repository: IRepository
 
     public async Task ValidateResetCodeAsync(User user, CancellationToken cancellationToken)
     {
-        if (user.Password.ResetCode != null) user.Password.Verify(user.Password.ResetCode);
+        user.Password.ResetCode?.Verify(user.Password.ResetCode.Code);
 
         _context
             .Users

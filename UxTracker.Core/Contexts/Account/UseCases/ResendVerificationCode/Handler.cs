@@ -95,7 +95,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         #region 06. Retornar os dados
 
-        return new Response("Código reenviado com sucesso!", new ResponseData(user.Email.Verification.Code));
+        return new Response("Código reenviado com sucesso!", 200);
 
         #endregion
     }

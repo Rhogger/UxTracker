@@ -69,7 +69,8 @@ public class UserMap : IEntityTypeConfiguration<User>
 
         builder
             .OwnsOne(x => x.Password)
-            .Property(x => x.ResetCode)
+            .OwnsOne(x => x.ResetCode)
+            .Property(x => x.Code)
             .HasColumnName("PasswordResetCode")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(8)
@@ -77,14 +78,19 @@ public class UserMap : IEntityTypeConfiguration<User>
         
         builder
             .OwnsOne(x => x.Password)
+            .OwnsOne(x => x.ResetCode)
             .Property(x => x.ExpireAt)
             .HasColumnName("PasswordResetExpireAt")
             .IsRequired(false);
         
         builder
             .OwnsOne(x => x.Password)
-            .Property(x => x.ChangedAt)
-            .HasColumnName("PasswordResetChangedAt")
+            .OwnsOne(x => x.ResetCode)
+            .Property(x => x.VerifiedAt)
+            .HasColumnName("PasswordResetVerifiedAt")
             .IsRequired(false);
+        
+        builder.OwnsOne(x => x.Password).OwnsOne(x => x.ResetCode).Ignore(x => x.IsActive);
+
     }
 }

@@ -95,7 +95,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         #region 06. Retornar os dados
 
-        return new Response("Código enviado com sucesso", new ResponseData(user.Password.ResetCode));
+        return new Response("Código enviado com sucesso", 200);
 
         #endregion
     }
