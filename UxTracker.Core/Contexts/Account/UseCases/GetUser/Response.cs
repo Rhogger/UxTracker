@@ -24,4 +24,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(string Name, string Email, string Hash);
+public record ResponseData(string Id, string Name, string Email, string Hash);

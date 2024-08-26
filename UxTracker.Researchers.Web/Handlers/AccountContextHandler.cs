@@ -307,7 +307,7 @@ public class AccountContextHandler: IAccountContextHandler
     {
         try
         {
-            var request = new RestRequest("/api/v1/account/");
+            var request = new RestRequest("/api/v1/account");
 
             var token = await CookieHandler.GetAuthToken();
             if (!string.IsNullOrEmpty(token?.Value))
@@ -342,9 +342,19 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<UpdateAccount.Response>?> UpdateAccountAsync(UpdateAccount.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/account/", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/account/update", Method.Patch)
             .AddJsonBody(requestModel);
 
+        var token = await CookieHandler.GetAuthToken();
+        if (!string.IsNullOrEmpty(token?.Value))
+        {
+            request.AddHeader("Authorization", $"Bearer {token.Value}");
+        }
+        else
+        {
+            throw new Exception("Token JWT não encontrado.");
+        }
+        
         try
         {
             var response = await RestClient.ExecuteAsync<UpdateAccount.Response>(request);
@@ -357,9 +367,7 @@ public class AccountContextHandler: IAccountContextHandler
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
+                    return response;
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)

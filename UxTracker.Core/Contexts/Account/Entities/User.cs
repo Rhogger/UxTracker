@@ -24,6 +24,11 @@ public class User : Entity
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
 
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+    
     public void UpdatePassword(string plainTextPassword)
     {
         Password = new Password(plainTextPassword);

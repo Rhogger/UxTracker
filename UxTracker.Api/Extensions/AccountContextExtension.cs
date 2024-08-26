@@ -296,7 +296,7 @@ public static class AccountContextExtension
         
         #region UpdateAccount
         app.MapPatch(
-            "api/v1/account/",
+            "api/v1/users/researchers/account/update",
             [Authorize] async (
                 HttpContext httpContext,
                 UpdateAccount.Request request,
