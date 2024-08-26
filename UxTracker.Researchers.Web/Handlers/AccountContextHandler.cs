@@ -215,7 +215,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<PasswordRecoveryVerify.Response>?> PasswordRecoveryVerifyAsync(PasswordRecoveryVerify.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/password-recover/verify", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/recover/verify", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
@@ -228,16 +228,14 @@ public class AccountContextHandler: IAccountContextHandler
                     {
                         if (await LocalStorage.ContainKeyAsync("email") == false)
                             await LocalStorage.SetItemAsync("email", requestModel.Email);
-   
+
                         return response;
                     }
                     else
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
+                    return response;
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)
