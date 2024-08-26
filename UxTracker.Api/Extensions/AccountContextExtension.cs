@@ -189,7 +189,7 @@ public static class AccountContextExtension
         
         #region GetUser
         app.MapGet(
-            "api/v1/account/",
+            "api/v1/users/researchers/account/",
             [Authorize] async (
                 HttpContext httpContext, 
                 [FromServices] IRequestHandler<GetUser.Request, GetUser.Response> handler
@@ -296,7 +296,7 @@ public static class AccountContextExtension
         
         #region UpdateAccount
         app.MapPatch(
-            "api/v1/users/researchers/account/update",
+            "api/v1/users/researchers/account",
             [Authorize] async (
                 HttpContext httpContext,
                 UpdateAccount.Request request,

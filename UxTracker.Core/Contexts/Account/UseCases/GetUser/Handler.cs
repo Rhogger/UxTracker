@@ -46,7 +46,7 @@ public class Handler: IRequestHandler<Request, Response>
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion

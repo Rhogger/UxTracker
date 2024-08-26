@@ -307,7 +307,7 @@ public class AccountContextHandler: IAccountContextHandler
     {
         try
         {
-            var request = new RestRequest("/api/v1/account");
+            var request = new RestRequest("/api/v1/users/researchers/account/");
 
             var token = await CookieHandler.GetAuthToken();
             if (!string.IsNullOrEmpty(token?.Value))
@@ -342,7 +342,7 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<UpdateAccount.Response>?> UpdateAccountAsync(UpdateAccount.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/users/researchers/account/update", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/account", Method.Patch)
             .AddJsonBody(requestModel);
 
         var token = await CookieHandler.GetAuthToken();
