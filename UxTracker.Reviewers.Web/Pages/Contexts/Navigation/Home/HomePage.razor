@@ -16,7 +16,7 @@
       PageMaker including versions of Lorem Ipsum.
     </MudText>
   </MudPaper>
-  <MudPaper Class="pa-4 rounded-lg mt-4" Outlined="true">
+  <MudPaper Class="pa-4 rounded-lg mt-1" Outlined="true">
     <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
     <MudContainer Class="d-flex justify-center">
       <ApexChart TItem="EvaluationData" Options="@options">
@@ -24,8 +24,6 @@
           XValue="@(e => e.Day)" YValue="@(e => e.Rating)" />
       </ApexChart>
     </MudContainer>
-  </MudPaper>
-  <MudPaper Class="pa-4 rounded-lg mt-4" Outlined="true">
     <MudForm @onsubmit="HandleSubmit">
       <MudGrid>
         <MudItem xs="12" md="4">
@@ -61,6 +59,8 @@
   private int SelectedRating { get; set; }
   private ApexChartOptions<EvaluationData> options;
   private string Comment { get; set; }
+  private int Height = 400;
+  private int Width = 800;
 
   protected override void OnInitialized()
   {
@@ -68,6 +68,8 @@
       {
         Chart = new Chart
         {
+          Height = Height,
+          Width = Width,
           Toolbar = new Toolbar
           {
             Show = false
@@ -82,6 +84,13 @@
             Opacity = 0.2d
           }
         },
+
+        Theme = new Theme
+        {
+          Mode = Mode.Dark,
+          Palette = PaletteType.Palette1
+        },
+
         DataLabels = new ApexCharts.DataLabels
         {
           OffsetY = -6d
