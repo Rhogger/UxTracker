@@ -95,7 +95,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<PasswordRecovery.Response>?> SendResetCodeAsync(PasswordRecovery.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/password-recover", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/recover", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
@@ -169,16 +169,14 @@ public class AccountContextHandler: IAccountContextHandler
                     if (response.Data.StatusCode == 200)
                     {
                         await LocalStorage.SetItemAsync("email", requestModel.Email);
-   
+
                         return response;
                     }
                     else
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
+                    return response;
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)

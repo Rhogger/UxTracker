@@ -216,7 +216,7 @@ public static class AccountContextExtension
         
         #region PasswordRecovery
         app.MapPatch(
-            "api/v1/password-recover",
+            "api/v1/users/researchers/recover",
             async (
                 PasswordRecovery.Request request,
                 IRequestHandler<
