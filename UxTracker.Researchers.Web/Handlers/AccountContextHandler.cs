@@ -187,7 +187,7 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task<RestResponse<ResendResetCode.Response>?> ResendResetCodeAsync(ResendResetCode.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/password-recover/resend-reset-code", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/recover/resend", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
@@ -204,9 +204,7 @@ public class AccountContextHandler: IAccountContextHandler
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
+                    return response;
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)

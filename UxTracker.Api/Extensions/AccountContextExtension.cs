@@ -256,7 +256,7 @@ public static class AccountContextExtension
         
         #region ResendResetCode
         app.MapPatch(
-            "api/v1/password-recover/resend-reset-code",
+            "api/v1/users/researchers/recover/resend",
             async (
                 ResendResetCode.Request request,
                 IRequestHandler<
