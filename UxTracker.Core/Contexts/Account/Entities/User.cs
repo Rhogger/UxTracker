@@ -23,7 +23,6 @@ public class User : Entity
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
-    public string Image { get; private set; } = string.Empty;
 
     public void UpdatePassword(string plainTextPassword)
     {

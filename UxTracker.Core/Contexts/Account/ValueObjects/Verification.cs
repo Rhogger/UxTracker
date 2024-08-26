@@ -15,7 +15,6 @@ public class Verification : ValueObject
         if (!IsValid(code))
             throw new Exception("Código de verificação inválido");
 
-        Code = null;
         ExpireAt = null;
         VerifiedAt = DateTime.UtcNow;
     }

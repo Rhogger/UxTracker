@@ -16,7 +16,7 @@ public class Password : ValueObject
     }
 
     public string Hash { get; } = string.Empty;
-    public Verification? ResetCode { get; private set; } = null;
+    public Verification? ResetCode { get; private set; }
 
     private static string Hashing(
         string password,
