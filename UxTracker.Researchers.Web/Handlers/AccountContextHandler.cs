@@ -246,7 +246,7 @@ public class AccountContextHandler: IAccountContextHandler
     
     public async Task<RestResponse<UpdatePassword.Response>?> UpdatePasswordAsync(UpdatePassword.Request requestModel)
     {
-        var request = new RestRequest("/api/v1/password-recover/update-password", Method.Patch)
+        var request = new RestRequest("/api/v1/users/researchers/recover/update", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
@@ -266,9 +266,7 @@ public class AccountContextHandler: IAccountContextHandler
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
+                    return response;
             throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
         }
         catch (Exception ex)

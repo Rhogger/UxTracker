@@ -324,7 +324,7 @@ public static class AccountContextExtension
         
         #region UpdatePassword
         app.MapPatch(
-            "api/v1/password-recover/update-password",
+            "api/v1/users/researchers/recover/update",
             async (
                 UpdatePassword.Request request,
                 IRequestHandler<

@@ -40,16 +40,30 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
-                return new Response("Perfil não encontrado", 404);
+                return new Response("Usuário não cadastrado", 404);
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
+        }
+
+        #endregion
+        
+        #region 03. Checar se há autorização para recuperar senha
+
+        try
+        {
+            if (!user.Password.ResetCode.IsActive)
+                return new Response("Esta conta não está autorizada a alterar senha", 400);
+        }
+        catch
+        {
+            return new Response("Não foi possível verificar a autorização", 500);
         }
 
         #endregion
 
-        #region 03. Alterar a senha
+        #region 04. Alterar a senha
 
         try
         {
@@ -61,6 +75,10 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
 
+        #region 05. Retornar os dados
+
         return new Response("Senha atualizada com sucesso!", 200);
+
+        #endregion
     }
 }
