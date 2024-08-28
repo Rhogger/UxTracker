@@ -5,10 +5,11 @@
 @using UxTracker.Researchers.Web.Components
 @inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme"/>
-<MudDialogProvider/>
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
+<MudDialogProvider />
+<MudPopoverProvider />
 <MudPopoverProvider/>
-<MudSnackbarProvider/>
+<MudSnackbarProvider />
 
 <AuthorizeView>
     <Authorized>
@@ -71,7 +72,6 @@
             await LocalStorage.SetItemAsync("currentUrl", currentUrl);
         }
     }
-
     private void ChangeMode()
     {
         IsDarkMode = !IsDarkMode;
