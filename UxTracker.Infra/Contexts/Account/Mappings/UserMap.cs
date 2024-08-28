@@ -20,13 +20,6 @@ public class UserMap : IEntityTypeConfiguration<User>
             .IsRequired(true);
 
         builder
-            .Property(x => x.Image)
-            .HasColumnName("Image")
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(255)
-            .IsRequired(true);
-
-        builder
             .OwnsOne(x => x.Email)
             .Property(x => x.Address)
             .HasColumnName("Email")
@@ -57,7 +50,10 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnName("EmailVerificationVerifiedAt")
             .IsRequired(false);
 
-        builder.OwnsOne(x => x.Email).OwnsOne(x => x.Verification).Ignore(x => x.IsActive);
+        builder
+            .OwnsOne(x => x.Email)
+            .OwnsOne(x => x.Verification)
+            .Ignore(x => x.IsActive);
 
         builder
             .OwnsOne(x => x.Password)
@@ -69,7 +65,8 @@ public class UserMap : IEntityTypeConfiguration<User>
 
         builder
             .OwnsOne(x => x.Password)
-            .Property(x => x.ResetCode)
+            .OwnsOne(x => x.ResetCode)
+            .Property(x => x.Code)
             .HasColumnName("PasswordResetCode")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(8)
@@ -77,14 +74,26 @@ public class UserMap : IEntityTypeConfiguration<User>
         
         builder
             .OwnsOne(x => x.Password)
+            .OwnsOne(x => x.ResetCode)
             .Property(x => x.ExpireAt)
             .HasColumnName("PasswordResetExpireAt")
             .IsRequired(false);
         
         builder
             .OwnsOne(x => x.Password)
-            .Property(x => x.ChangedAt)
-            .HasColumnName("PasswordResetChangedAt")
+            .OwnsOne(x => x.ResetCode)
+            .Property(x => x.VerifiedAt)
+            .HasColumnName("PasswordResetVerifiedAt")
             .IsRequired(false);
+        
+        builder.OwnsOne(x => x.Password)
+            .OwnsOne(x => x.ResetCode)
+            .Ignore(x => x.IsActive);
+
+        builder
+            .Property(x => x.IsActive)
+            .HasColumnName("IsActivate")
+            .HasColumnType("BIT")
+            .IsRequired(true);
     }
 }

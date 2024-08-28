@@ -17,12 +17,12 @@ public class Response: Shared.UseCases.Response
     public Response(string message, Payload data)
     {
         Message = message;
-        StatusCode = 201;
+        StatusCode = 200;
         Notifications = null;
         Data = data;
     }
     
-    public Payload? Data { get; }
+    public Payload? Data { get; set; }
 
 }
 

@@ -12,21 +12,30 @@ public class User : Entity
         Name = name;
         Email = email;
         Password = password;
+        IsActive = true;
     }
 
     public User(string email, string password)
     {
         Email = email;
         Password = new Password(password);
+        IsActive = true;
     }
 
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
-    public string Image { get; private set; } = string.Empty;
+    public bool IsActive { get; private set; } = false;
 
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+    
     public void UpdatePassword(string plainTextPassword)
     {
         Password = new Password(plainTextPassword);
     }
+
+    public void UpdateStatusAccount() => IsActive = !IsActive;
 }

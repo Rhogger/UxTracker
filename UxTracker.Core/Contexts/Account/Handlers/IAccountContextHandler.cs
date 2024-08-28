@@ -1,6 +1,7 @@
 using RestSharp;
 using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
+using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
@@ -26,7 +27,7 @@ public interface IAccountContextHandler
     public Task<RestResponse<PasswordRecoveryVerify.Response>?> PasswordRecoveryVerifyAsync(
         PasswordRecoveryVerify.Request requestModel);
     public Task<RestResponse<UpdatePassword.Response>?> UpdatePasswordAsync(UpdatePassword.Request requestModel);
-    public Task<RestResponse<UpdatePassword.Response>?> UpdateAccountPasswordAsync(UpdatePassword.Request requestModel);
     public Task<RestResponse<GetUser.Response>?> GetUserAsync();
     public Task<RestResponse<UpdateAccount.Response>?> UpdateAccountAsync(UpdateAccount.Request requestModel);
+    public Task<RestResponse<Delete.Response>?> DeleteAccountAsync(Delete.Request requestModel);
 }

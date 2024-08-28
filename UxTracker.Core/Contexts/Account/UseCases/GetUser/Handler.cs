@@ -46,7 +46,7 @@ public class Handler: IRequestHandler<Request, Response>
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion
@@ -55,7 +55,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            return new Response(string.Empty, new ResponseData(user.Name, user.Email, user.Email.ToSha256Hash()));
+            return new Response(string.Empty, new ResponseData(user.Id.ToString(), user.Name, user.Email, user.Email.ToSha256Hash()));
         }
         catch
         {

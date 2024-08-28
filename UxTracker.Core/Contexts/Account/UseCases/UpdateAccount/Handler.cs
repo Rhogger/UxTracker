@@ -44,25 +44,31 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByIdAsync(request.Id, cancellationToken);
 
             if (user is null)
-                return new Response("Perfil não encontrado", 404);
+                return new Response("Usuário não cadastrado", 404);
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion
 
-        #region 03. Atualizar o objeto user
+        #region 03. Validar nova requisição
         
         if (user.Password.IsValid(request.Password))
             req.AddNotification("Password", "A nova senha é igual a atual");
         
-        if(string.Equals(request.Name, user.Name))
-            req.AddNotification("Name", "O novo nome é igual ao atual");
-
         if (req.Notifications.Count != 0)
-            return new Response("Erro ao atualizar dados do perfil", 500, req.Notifications);
+            return new Response("Erro ao atualizar dados do perfil", 400, req.Notifications);
+
+        #endregion
+
+        #region 03. Atualizar o objeto user
+
+        if(!string.Equals(user.Name, request.Name))
+            user.UpdateName(request.Name);
+        
+        user.UpdatePassword(request.Password);
 
         #endregion
         

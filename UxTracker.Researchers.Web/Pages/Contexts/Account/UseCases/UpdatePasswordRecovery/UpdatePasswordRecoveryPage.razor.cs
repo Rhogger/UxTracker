@@ -15,10 +15,7 @@ public partial class UpdatePasswordRecovery : ComponentBase
     
     protected UpdatePasswordUseCase.Request Request = new();
     
-    protected override async  Task OnInitializedAsync()
-    {
-        Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
+    protected override async  Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
     protected async Task UpdatePasswordAsync()
     {
@@ -44,7 +41,7 @@ public partial class UpdatePasswordRecovery : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 }

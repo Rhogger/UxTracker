@@ -40,11 +40,11 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
-                return new Response("Perfil não encontrado", 404);
+                return new Response("Usuário não cadastrado", 404);
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion
@@ -68,7 +68,7 @@ public class Handler: IRequestHandler<Request, Response>
         if (!user.Password.IsValidResetCode(request.ResetCode))
             return new Response("Código está incorreto", 400);
         
-        if (user.Password.ExpireAt < DateTime.UtcNow)
+        if (user.Password.ResetCode.ExpireAt < DateTime.UtcNow)
             return new Response("Código está expirado", 400);
 
         #endregion
@@ -85,6 +85,10 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
 
-        return new Response("Autorizado com sucesso!", 200);
+        #region 06. Retornar os dados
+
+        return new Response("Verificação feita com sucesso!", 200);
+
+        #endregion
     }
 }

@@ -15,11 +15,11 @@ public class Repository: IRepository
         => await _context
             .Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Address == email, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
     public async Task ValidateResetCodeAsync(User user, CancellationToken cancellationToken)
     {
-        if (user.Password.ResetCode != null) user.Password.Verify(user.Password.ResetCode);
+        user.Password.ResetCode?.Verify(user.Password.ResetCode.Code);
 
         _context
             .Users

@@ -5,6 +5,8 @@ using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 using AuthenticateInfra = UxTracker.Infra.Contexts.Account.UseCases.Authenticate;
 using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
 using CreateInfra = UxTracker.Infra.Contexts.Account.UseCases.Create;
+using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
+using DeleteInfra = UxTracker.Infra.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using GetUserInfra = UxTracker.Infra.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
@@ -51,6 +53,13 @@ public static class AccountContextExtension
         builder.Services.AddTransient<
             Create.Contracts.IService,
             CreateInfra.Service
+        >();
+        #endregion
+        
+        #region Delete
+        builder.Services.AddTransient<
+            Delete.Contracts.IRepository,
+            DeleteInfra.Repository
         >();
         #endregion
         
@@ -149,7 +158,7 @@ public static class AccountContextExtension
     {
         #region Authenticate
         app.MapPost(
-            "api/v1/authenticate",
+            "api/v1/users/researchers/authenticate",
             async (
                 Authenticate.Request request,
                 IRequestHandler<
@@ -169,7 +178,7 @@ public static class AccountContextExtension
         
         #region Create
         app.MapPost(
-            "api/v1/users",
+            "api/v1/users/researchers/create",
             async (
                 Create.Request request,
                 IRequestHandler<
@@ -187,9 +196,34 @@ public static class AccountContextExtension
         );
         #endregion
         
+        #region Delete
+        app.MapPatch(
+            "api/v1/users/researchers/account/inactivate",
+            [Authorize] async (
+                HttpContext httpContext, 
+                Delete.Request request,
+                [FromServices] IRequestHandler<Delete.Request, Delete.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.Id = userId;
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
         #region GetUser
         app.MapGet(
-            "api/v1/account/",
+            "api/v1/users/researchers/account/",
             [Authorize] async (
                 HttpContext httpContext, 
                 [FromServices] IRequestHandler<GetUser.Request, GetUser.Response> handler
@@ -216,7 +250,7 @@ public static class AccountContextExtension
         
         #region PasswordRecovery
         app.MapPatch(
-            "api/v1/password-recover",
+            "api/v1/users/researchers/recover",
             async (
                 PasswordRecovery.Request request,
                 IRequestHandler<
@@ -236,7 +270,7 @@ public static class AccountContextExtension
         
         #region PasswordRecoveryVerify
         app.MapPatch(
-            "api/v1/password-recover/verify",
+            "api/v1/users/researchers/recover/verify",
             async (
                 PasswordRecoveryVerify.Request request,
                 IRequestHandler<
@@ -256,7 +290,7 @@ public static class AccountContextExtension
         
         #region ResendResetCode
         app.MapPatch(
-            "api/v1/password-recover/resend-reset-code",
+            "api/v1/users/researchers/recover/resend",
             async (
                 ResendResetCode.Request request,
                 IRequestHandler<
@@ -276,7 +310,7 @@ public static class AccountContextExtension
         
         #region ResendVerificationCode
         app.MapPatch(
-            "api/v1/resend-verification-code",
+            "api/v1/users/researchers/verify/resend",
             async (
                 ResendVerificationCode.Request request,
                 IRequestHandler<
@@ -296,7 +330,7 @@ public static class AccountContextExtension
         
         #region UpdateAccount
         app.MapPatch(
-            "api/v1/account/",
+            "api/v1/users/researchers/account",
             [Authorize] async (
                 HttpContext httpContext,
                 UpdateAccount.Request request,
@@ -324,7 +358,7 @@ public static class AccountContextExtension
         
         #region UpdatePassword
         app.MapPatch(
-            "api/v1/password-recover/update-password",
+            "api/v1/users/researchers/recover/update",
             async (
                 UpdatePassword.Request request,
                 IRequestHandler<
@@ -344,7 +378,7 @@ public static class AccountContextExtension
         
         #region Verify
         app.MapPatch(
-            "api/v1/verify",
+            "api/v1/users/researchers/verify",
             async (
                 Verify.Request request,
                 IRequestHandler<

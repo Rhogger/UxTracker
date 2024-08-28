@@ -8,6 +8,6 @@ public static class NameValidation
     public static Contract<Notification> EnsureName(string name) 
         => new Contract<Notification>()
             .Requires()
-            .IsLowerThan(name.Length, 80, "Name", "O nome deve conter no máximo 80 caracteres")
-            .IsGreaterThan(name.Length, 2, "Name", "O nome deve conter pelo menos 3 caracteres");
+            .IsLowerOrEqualsThan(name.Length, 80, "Name", "O nome deve conter no máximo 80 caracteres")
+            .IsGreaterOrEqualsThan(name.Length, 3, "Name", "O nome deve conter pelo menos 3 caracteres");
 }

@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
@@ -12,9 +11,9 @@ public class Register : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-    protected readonly CreateUseCase.Request Request = new();
+    protected CreateUseCase.Request Request = new();
     
-    protected readonly string ConfirmPassword = string.Empty;
+    protected string ConfirmPassword = string.Empty;
 
     protected async Task SignUpAsync()
     {
@@ -41,7 +40,7 @@ public class Register : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add(ex.Message, Severity.Error);
         }
     }
 }
