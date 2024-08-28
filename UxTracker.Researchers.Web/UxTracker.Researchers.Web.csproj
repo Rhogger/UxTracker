@@ -26,6 +26,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
     <_ContentIncludedByDefault Remove="Pages\Auth\Login.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Contexts\Account\UseCases\UpdatePasswordAuthenticated\UpdatePassword.razor" />
   </ItemGroup>
 
   <ItemGroup>
