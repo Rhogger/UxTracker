@@ -5,6 +5,8 @@ using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 using AuthenticateInfra = UxTracker.Infra.Contexts.Account.UseCases.Authenticate;
 using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
 using CreateInfra = UxTracker.Infra.Contexts.Account.UseCases.Create;
+using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
+using DeleteInfra = UxTracker.Infra.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using GetUserInfra = UxTracker.Infra.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
@@ -51,6 +53,13 @@ public static class AccountContextExtension
         builder.Services.AddTransient<
             Create.Contracts.IService,
             CreateInfra.Service
+        >();
+        #endregion
+        
+        #region Delete
+        builder.Services.AddTransient<
+            Delete.Contracts.IRepository,
+            DeleteInfra.Repository
         >();
         #endregion
         
@@ -178,6 +187,31 @@ public static class AccountContextExtension
                 > handler
             ) =>
             {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region Delete
+        app.MapPatch(
+            "api/v1/users/researchers/account/inactivate",
+            [Authorize] async (
+                HttpContext httpContext, 
+                Delete.Request request,
+                [FromServices] IRequestHandler<Delete.Request, Delete.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.Id = userId;
+
                 var result = await handler.Handle(request, new CancellationToken());
 
                 return result.IsSuccess

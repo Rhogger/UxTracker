@@ -50,7 +50,10 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnName("EmailVerificationVerifiedAt")
             .IsRequired(false);
 
-        builder.OwnsOne(x => x.Email).OwnsOne(x => x.Verification).Ignore(x => x.IsActive);
+        builder
+            .OwnsOne(x => x.Email)
+            .OwnsOne(x => x.Verification)
+            .Ignore(x => x.IsActive);
 
         builder
             .OwnsOne(x => x.Password)
@@ -83,7 +86,14 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnName("PasswordResetVerifiedAt")
             .IsRequired(false);
         
-        builder.OwnsOne(x => x.Password).OwnsOne(x => x.ResetCode).Ignore(x => x.IsActive);
+        builder.OwnsOne(x => x.Password)
+            .OwnsOne(x => x.ResetCode)
+            .Ignore(x => x.IsActive);
 
+        builder
+            .Property(x => x.IsActive)
+            .HasColumnName("IsActivate")
+            .HasColumnType("BIT")
+            .IsRequired(true);
     }
 }

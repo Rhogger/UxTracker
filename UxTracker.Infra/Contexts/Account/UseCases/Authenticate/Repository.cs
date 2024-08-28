@@ -14,5 +14,5 @@ public class Repository: IRepository
         => await _context
             .Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Address == email, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken);
 }
