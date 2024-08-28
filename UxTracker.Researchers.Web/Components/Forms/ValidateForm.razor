@@ -28,7 +28,8 @@
                 Color="Color.Error"
                 Class="py-2"
                 FullWidth="true"
-                OnClick="SecondFunction">
+                OnClick="SecondFunction"
+            >
                 @SecondTextButton
             </MudButton>
                     
@@ -37,7 +38,9 @@
                 Color="Color.Success"
                 Class="py-2"
                 FullWidth="true"
-                OnClick="SubmitFunction">
+                OnClick="SubmitFunction"
+                Disabled="@(!IsValid)"
+            >
                 @TextButton
             </MudButton>
         </div>

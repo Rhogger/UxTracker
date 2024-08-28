@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UxTracker.Researchers.Web.Components.Dialogs;
 using UxTracker.Core.Contexts.Account.Handlers;
 using GetUserUseCase = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using UpdateAccountUseCase = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
-
 
 namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.GetUser;
 
@@ -12,9 +12,11 @@ public class Profile : ComponentBase
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     protected GetUserUseCase.Response Response { get; set; } = null!;
     protected UpdateAccountUseCase.Request Request { get; set; } = new();
+    protected string DeleteRequest { get; set; } = string.Empty;
 
     protected string ConfirmPassword { get; set; } = string.Empty;
     
@@ -95,6 +97,13 @@ public class Profile : ComponentBase
             IsBusy = false;
             StateHasChanged();
         }
+    }
+
+    protected async Task DeleteAccountAsync(string password)
+    {
+        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.Password, password} };
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete Account", parameters);
+        await dialog.Result;
     }
 
     protected void ChangeState()

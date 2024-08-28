@@ -3,6 +3,7 @@ using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
 using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
+using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
@@ -60,6 +61,41 @@ public class AccountContextHandler: IAccountContextHandler
             throw new Exception($"{ex.Message}");
         }
     }
+
+    public async Task<RestResponse<GetUser.Response>?> GetUserAsync()
+    {
+        try
+        {
+            var request = new RestRequest("/api/v1/users/researchers/account/");
+
+            var token = await CookieHandler.GetAuthToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                throw new Exception("Token JWT não encontrado.");
+            }
+        
+            var response = await RestClient.ExecuteAsync<GetUser.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
     
     public async Task<RestResponse<Create.Response>?> SignUpAsync(Create.Request requestModel)
     {
@@ -92,37 +128,6 @@ public class AccountContextHandler: IAccountContextHandler
     }
 
     public async Task SignOutAsync() => await CookieHandler.RemoveAuthTokenAsync();
-
-    public async Task<RestResponse<PasswordRecovery.Response>?> SendResetCodeAsync(PasswordRecovery.Request requestModel)
-    {
-        var request = new RestRequest("/api/v1/users/researchers/recover", Method.Patch)
-            .AddJsonBody(requestModel);
-
-        try
-        {
-            var response = await RestClient.ExecuteAsync<PasswordRecovery.Response>(request);
-
-            if (response.Data is not null)
-                if (response.IsSuccessful)
-                    if (response.Data.StatusCode == 200)
-                    {
-                        if (await LocalStorage.ContainKeyAsync("email") == false)
-                            await LocalStorage.SetItemAsync("email", requestModel.Email);
-
-                        return response;
-                    }
-                    else
-                        throw new Exception(
-                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-                else
-                    return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"{ex.Message}");
-        }
-    }
 
     public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
     {
@@ -185,6 +190,37 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
+    public async Task<RestResponse<PasswordRecovery.Response>?> SendResetCodeAsync(PasswordRecovery.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/researchers/recover", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<PasswordRecovery.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                    {
+                        if (await LocalStorage.ContainKeyAsync("email") == false)
+                            await LocalStorage.SetItemAsync("email", requestModel.Email);
+
+                        return response;
+                    }
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
     public async Task<RestResponse<ResendResetCode.Response>?> ResendResetCodeAsync(ResendResetCode.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/recover/resend", Method.Patch)
@@ -275,71 +311,6 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
     
-    public async Task<RestResponse<UpdatePassword.Response>?> UpdateAccountPasswordAsync(UpdatePassword.Request requestModel)
-    {
-        var request = new RestRequest("/api/v1/account/update-password", Method.Patch)
-            .AddJsonBody(requestModel);
-
-        try
-        {
-            var response = await RestClient.ExecuteAsync<UpdatePassword.Response>(request);
-
-            if (response.Data is not null)
-                if (response.IsSuccessful)
-                    if (response.Data.StatusCode == 200)
-                        return response;
-                    else
-                        throw new Exception(
-                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-                else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"{ex.Message}");
-        }
-    }
-    
-    public async Task<RestResponse<GetUser.Response>?> GetUserAsync()
-    {
-        try
-        {
-            var request = new RestRequest("/api/v1/users/researchers/account/");
-
-            var token = await CookieHandler.GetAuthToken();
-            if (!string.IsNullOrEmpty(token?.Value))
-            {
-                request.AddHeader("Authorization", $"Bearer {token.Value}");
-            }
-            else
-            {
-                throw new Exception("Token JWT não encontrado.");
-            }
-        
-            var response = await RestClient.ExecuteAsync<GetUser.Response>(request);
-
-            if (response.Data is not null)
-                if (response.IsSuccessful)
-                    if (response.Data.StatusCode == 200)
-                        return response;
-                    else
-                        throw new Exception(
-                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-                else
-                    throw new Exception(
-                        $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
-
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"{ex.Message}");
-        }
-    }
-    
     public async Task<RestResponse<UpdateAccount.Response>?> UpdateAccountAsync(UpdateAccount.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/account", Method.Patch)
@@ -358,6 +329,42 @@ public class AccountContextHandler: IAccountContextHandler
         try
         {
             var response = await RestClient.ExecuteAsync<UpdateAccount.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<Delete.Response>?> DeleteAccountAsync(Delete.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/researchers/account/inactivate", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        var token = await CookieHandler.GetAuthToken();
+        if (!string.IsNullOrEmpty(token?.Value))
+        {
+            request.AddHeader("Authorization", $"Bearer {token.Value}");
+        }
+        else
+        {
+            throw new Exception("Token JWT não encontrado.");
+        }
+        
+        try
+        {
+            var response = await RestClient.ExecuteAsync<Delete.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
