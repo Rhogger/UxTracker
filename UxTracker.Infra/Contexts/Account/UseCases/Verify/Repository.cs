@@ -17,6 +17,9 @@ public class Repository: IRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
+    public async Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken) =>
+        await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+
     public async Task ValidateVerificationCodeAsync(User user, CancellationToken cancellationToken)
     {
         user.Email.Verification.Verify(user.Email.Verification.Code);

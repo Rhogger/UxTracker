@@ -1,9 +1,9 @@
 using UxTracker.Core.Contexts.Account.Entities;
-using UxTracker.Core.Contexts.Account.UseCases.Verify.Contracts;
+using UxTracker.Core.Contexts.Account.UseCases.RefreshToken.Contracts;
 using UxTracker.Core.Contexts.Account.ValueObjects;
 using UxTracker.Infra.Services;
 
-namespace UxTracker.Infra.Contexts.Account.UseCases.Verify;
+namespace UxTracker.Infra.Contexts.Account.UseCases.RefreshToken;
 
 public class Service : IService
 {
@@ -13,15 +13,14 @@ public class Service : IService
     {
         var payload = new Payload
         {
-            Id = user.Id.ToString(), 
+            Id = user.Id.ToString(),
             Roles = user.Roles.Select(x => x.Name).ToArray()
-
         };
 
         return _jwtService.Generate(payload);
     }
 
-    public string GenerateRefreshToken(User user, CancellationToken cancellationToken)
+    public string GenerateRefreshToken(User user, CancellationToken cancellationToken)   
     {
         var payload = new Payload
         {

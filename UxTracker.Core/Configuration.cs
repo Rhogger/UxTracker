@@ -47,5 +47,6 @@ public static class Configuration
     public class CookieConfiguration
     {
         public string AccessTokenCookieName { get; set; } = "AccessToken";
+        public string RefreshTokenCookieName { get; set; } = "RefreshToken";
     }
 }

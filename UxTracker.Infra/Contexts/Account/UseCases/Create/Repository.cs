@@ -17,6 +17,16 @@ public class Repository : IRepository
             .AsNoTracking()
             .AnyAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
+    public async Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken) =>
+        await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+    
+    public async Task AddUserRoleAsync(Guid roleId, Guid userId, CancellationToken cancellationToken)
+    {
+        FormattableString sql = $"INSERT INTO UserRole (RoleId, UserId) VALUES ({roleId},{userId})";
+        await _context.Database.ExecuteSqlInterpolatedAsync(sql, cancellationToken);
+    }
+
+    
     public async Task SaveAsync(User user, CancellationToken cancellationToken)
     {
         await _context.Users.AddAsync(user, cancellationToken);

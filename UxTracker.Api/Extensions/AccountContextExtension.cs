@@ -13,6 +13,8 @@ using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecove
 using PasswordRecoveryInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
 using PasswordRecoveryVerifyInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
+using RefreshTokenInfra = UxTracker.Infra.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
 using ResendResetCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendResetCode;
 using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
@@ -91,6 +93,20 @@ public static class AccountContextExtension
         builder.Services.AddTransient<
             PasswordRecoveryVerify.Contracts.IRepository,
             PasswordRecoveryVerifyInfra.Repository
+        >();
+
+        #endregion
+        
+        #region RefreshToken
+
+        builder.Services.AddTransient<
+            RefreshToken.Contracts.IRepository,
+            RefreshTokenInfra.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            RefreshToken.Contracts.IService,
+            RefreshTokenInfra.Service
         >();
 
         #endregion
@@ -199,7 +215,7 @@ public static class AccountContextExtension
         #region Delete
         app.MapPatch(
             "api/v1/users/researchers/account/inactivate",
-            [Authorize] async (
+            [Authorize (Policy = "ResearcherPolicy")] async (
                 HttpContext httpContext, 
                 Delete.Request request,
                 [FromServices] IRequestHandler<Delete.Request, Delete.Response> handler
@@ -224,13 +240,13 @@ public static class AccountContextExtension
         #region GetUser
         app.MapGet(
             "api/v1/users/researchers/account/",
-            [Authorize] async (
+            [Authorize (Policy = "ResearcherPolicy")] async (
                 HttpContext httpContext, 
                 [FromServices] IRequestHandler<GetUser.Request, GetUser.Response> handler
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
-
+                    
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized();
 
@@ -288,6 +304,33 @@ public static class AccountContextExtension
         );
         #endregion
         
+        #region RefreshToken
+        app.MapPost(
+            "api/v1/refresh", 
+            [Authorize] async (
+                HttpContext httpContext, 
+                IRequestHandler<RefreshToken.Request, RefreshToken.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                var request = new RefreshToken.Request
+                {
+                    Id = userId
+                };
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
         #region ResendResetCode
         app.MapPatch(
             "api/v1/users/researchers/recover/resend",
@@ -330,30 +373,31 @@ public static class AccountContextExtension
         
         #region UpdateAccount
         app.MapPatch(
-            "api/v1/users/researchers/account",
-            [Authorize] async (
-                HttpContext httpContext,
-                UpdateAccount.Request request,
-                IRequestHandler<
-                    UpdateAccount.Request,
-                    UpdateAccount.Response
-                > handler
-            ) =>
-            {
-                var userId = httpContext.User.FindFirst("Id")?.Value;
+                "api/v1/users/researchers/account",
+                [Authorize (Policy = "ResearcherPolicy")] async (
+                    HttpContext httpContext,
+                    UpdateAccount.Request request,
+                    IRequestHandler<
+                        UpdateAccount.Request,
+                        UpdateAccount.Response
+                    > handler
+                ) =>
+                {
+                    var userId = httpContext.User.FindFirst("Id")?.Value;
 
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
+                    if (string.IsNullOrEmpty(userId))
+                        return Results.Unauthorized();
 
-                request.Id = userId;
+                    request.Id = userId;
                 
-                var result = await handler.Handle(request, new CancellationToken());
+                    var result = await handler.Handle(request, new CancellationToken());
 
-                return result.IsSuccess
-                    ? Results.Ok(result)
-                    : Results.Json(result, statusCode: result.StatusCode);
-            }
-        );
+                    return result.IsSuccess
+                        ? Results.Ok(result)
+                        : Results.Json(result, statusCode: result.StatusCode);
+                }
+            )
+            .RequireAuthorization("Researcher");
         #endregion
         
         #region UpdatePassword

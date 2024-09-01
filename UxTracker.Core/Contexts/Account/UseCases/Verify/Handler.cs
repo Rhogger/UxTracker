@@ -88,13 +88,35 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
 
-        #region 06. Gerar o token JWT
+        #region 06. Buscar a role
 
-        string token;
+        Role role;
         
         try
         {
-            token = await _service.GenerateJwtToken(user, cancellationToken);
+            role = await _repository.GetRoleByNameAsync("Researcher", cancellationToken);
+
+            if (role is null)
+                return new Response("Role não encontrada", 404);
+
+            user.Roles = new List<Role> { role };
+        }
+        catch
+        {
+            return new Response("Não foi possivel buscar a role", 500);
+        }
+
+        #endregion
+
+        #region 06. Gerar os tokens JWT
+
+        string accessToken;
+        string refreshToken;
+        
+        try
+        {
+            accessToken = _service.GenerateAccessToken(user, cancellationToken);
+            refreshToken = _service.GenerateRefreshToken(user, cancellationToken);
         }
         catch
         {
@@ -108,7 +130,8 @@ public class Handler: IRequestHandler<Request, Response>
         return new Response("Conta verificada com sucesso!", new Payload
         {
             Id = user.Id.ToString(),
-            Token = token,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
         });
 
         #endregion

@@ -73,13 +73,15 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 05. Gerar o token JWT
+        #region 05. Gerar os tokens JWT
 
-        string token;
+        string accessToken;
+        string refreshToken;
         
         try
         {
-            token = _service.GenerateJwtToken(user, cancellationToken);
+            accessToken = _service.GenerateAccessToken(user, cancellationToken);
+            refreshToken = _service.GenerateRefreshToken(user, cancellationToken);
         }
         catch
         {
@@ -90,13 +92,14 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 06. Retornar os dados
 
-            var data = new Payload
-            {
-                Id = user.Id.ToString(),
-                Token = token
-            };
+        var data = new Payload
+        {
+            Id = user.Id.ToString(),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
 
-            return new Response(string.Empty, data);
+        return new Response(string.Empty, data);
 
         #endregion
     }

@@ -1,6 +1,6 @@
 using UxTracker.Core.Contexts.Account.Entities;
 
-namespace UxTracker.Core.Contexts.Account.UseCases.Authenticate.Contracts;
+namespace UxTracker.Core.Contexts.Account.UseCases.RefreshToken.Contracts;
 
 public interface IService
 {

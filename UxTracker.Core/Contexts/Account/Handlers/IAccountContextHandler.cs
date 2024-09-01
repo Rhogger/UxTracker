@@ -5,6 +5,7 @@ using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
 using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
 using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
@@ -20,6 +21,7 @@ public interface IAccountContextHandler
     public Task SignOutAsync();
     public Task<RestResponse<PasswordRecovery.Response>?> SendResetCodeAsync(PasswordRecovery.Request requestModel);
     public Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel);
+    public Task<RestResponse<RefreshToken.Response>?> RefreshTokenAsync();
     public Task<RestResponse<ResendVerificationCode.Response>?> ResendVerificationCodeAsync(
         ResendVerificationCode.Request requestModel);
     public Task<RestResponse<ResendResetCode.Response>?> ResendResetCodeAsync(

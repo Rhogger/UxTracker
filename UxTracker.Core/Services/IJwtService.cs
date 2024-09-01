@@ -5,4 +5,5 @@ namespace UxTracker.Core.Services;
 public interface IJwtService
 {
     public string Generate(Payload data);
+    public string GenerateRefresh(Payload data);
 }

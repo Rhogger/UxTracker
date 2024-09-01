@@ -29,6 +29,26 @@ public class JwtService: IJwtService
 
         return handler.WriteToken(token);
     }
+    
+    public string GenerateRefresh(Payload data)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey);
+        var credentials = new SigningCredentials(
+            new SymmetricSecurityKey(key),
+            SecurityAlgorithms.HmacSha256Signature);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = GenerateClaims(data),
+            Expires = DateTime.UtcNow.AddDays(6),
+            SigningCredentials = credentials
+        };
+
+        var token = handler.CreateToken(tokenDescriptor);
+
+        return handler.WriteToken(token);
+    }
 
     private static ClaimsIdentity GenerateClaims(Payload user)
     {
