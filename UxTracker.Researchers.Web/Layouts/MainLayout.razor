@@ -58,12 +58,11 @@
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
     
-    protected override async  Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-
-            
+        
         if (user.Identity is { IsAuthenticated: false })
             Navigation.NavigateTo("/login");
         else

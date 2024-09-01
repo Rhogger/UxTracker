@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Authorization
 @using UxTracker.Core.Contexts.Account.Validators
 @using UxTracker.Researchers.Web.Components.TextFields
 @using UxTracker.Researchers.Web.Components.Forms
@@ -8,7 +9,9 @@
 @layout MainLayout
 @inherits Profile
 
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column justify-center align-content-center mud-height-full" >
+@attribute [Authorize(Policy="AdminPolicy, ResearcherPolicy, ReviewerPolicy")]
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column justify-center align-content-center mud-height-full">
     <MudPaper Class="d-flex flex-column pa-6 rounded-lg gap-12" Outlined="true">
         @if (!IsEditState)
         {
@@ -30,10 +33,10 @@
                                     Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
                                     Style="width: 200px;"
                                 >
-                                    <MudIconButton 
-                                        Icon="@Icons.Material.Filled.HelpOutline" 
-                                        Size="Size.Small" 
-                                        Href="https://br.gravatar.com/profile" 
+                                    <MudIconButton
+                                        Icon="@Icons.Material.Filled.HelpOutline"
+                                        Size="Size.Small"
+                                        Href="https://br.gravatar.com/profile"
                                         Target="_blank"
                                     />
                                 </MudTooltip>
@@ -47,7 +50,6 @@
                             @Response.Data!.Name
                         </MudText>
                     </div>
-                    
 
                     <MudTextField
                         ShrinkLabel="true"
@@ -68,7 +70,7 @@
                         OnClick="@(e => DeleteAccountAsync(DeleteRequest))">
                         Excluir
                     </MudButton>
-                
+
                     <MudButton
                         EndIcon="@Icons.Material.Filled.Edit"
                         Variant="Variant.Filled"
@@ -88,7 +90,7 @@
         {
             @if (!IsBusy)
             {
-                <ValidateForm 
+                <ValidateForm
                     Class="d-flex flex-column align-center gap-10"
                     SubmitFunction="UpdateAccountAsync"
                     TwoOptions="true"
@@ -144,11 +146,11 @@
                         FullWidth="true"
                     />
 
-                    <PasswordTextField 
-                        @bind-Password="Request.Password" 
+                    <PasswordTextField
+                        @bind-Password="Request.Password"
                         ValidatorType="ValidatorTypes.Validator"
                     />
-                    
+
                     <PasswordTextField
                         Label="Confirmar senha"
                         @bind-Password="ConfirmPassword"
