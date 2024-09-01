@@ -7,26 +7,38 @@ public class User : Entity
 {
     protected User() { }
 
-    public User(string name, Email email, Password password = null!)
+    public User(string name, Email email, Password password)
     {
         Name = name;
         Email = email;
         Password = password;
+        IsActive = true;
     }
-
-    public User(string email, string password)
+    
+    public User(string name, Email email, Password password, List<Role> roles)
     {
+        Name = name;
         Email = email;
-        Password = new Password(password);
+        Password = password;
+        Roles = roles;
+        IsActive = true;
     }
 
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
-    public string Image { get; private set; } = string.Empty;
+    public List<Role> Roles { get; set; } = [];
+    public bool IsActive { get; private set; } = false;
 
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+    
     public void UpdatePassword(string plainTextPassword)
     {
         Password = new Password(plainTextPassword);
     }
+
+    public void UpdateStatusAccount() => IsActive = !IsActive;
 }

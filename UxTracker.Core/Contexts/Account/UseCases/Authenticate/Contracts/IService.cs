@@ -4,5 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.Authenticate.Contracts;
 
 public interface IService
 {
-    string GenerateJwtToken(User user, CancellationToken cancellationToken);
+    string GenerateAccessToken(User user, CancellationToken cancellationToken);
+    string GenerateRefreshToken(User user, CancellationToken cancellationToken);
 }

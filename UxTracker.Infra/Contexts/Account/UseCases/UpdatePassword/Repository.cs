@@ -15,7 +15,7 @@ public class Repository: IRepository
         => await _context
             .Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Address == email, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
     public async Task UpdatePasswordAsync(User user, string plainTextPassword, CancellationToken cancellationToken)
     {

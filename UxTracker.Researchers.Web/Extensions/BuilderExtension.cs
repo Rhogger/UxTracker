@@ -42,7 +42,21 @@ public static class BuilderExtension
     
     public static void AddSecurity(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddAuthorizationCore();
+        builder.Services.AddAuthorizationCore(config =>
+        {
+            config.AddPolicy("ResearcherPolicy", policy =>
+            {
+                policy.RequireClaim("role","Researcher");
+            });
+            config.AddPolicy("ReviewerPolicy", policy =>
+            {
+                policy.RequireClaim("role","Reviewer");
+            });
+            config.AddPolicy("AdminPolicy", policy =>
+            {
+                policy.RequireClaim("role","Admin");
+            });
+        });
         builder.Services.AddCascadingAuthenticationState();
 
         builder.Services.AddScoped<IIdentityClaimsService, IdentityClaimsService>();

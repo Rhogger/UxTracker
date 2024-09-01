@@ -22,17 +22,64 @@ namespace UxTracker.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("UserRole", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RoleId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRole");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("73bc5e43-a806-46c9-becf-f778e7031069"),
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("825533a5-e09d-431c-bd5a-750261e6b94e"),
+                            Name = "Researcher"
+                        },
+                        new
+                        {
+                            Id = new Guid("62d51832-25cf-457d-b192-1c281de0c64d"),
+                            Name = "Reviewer"
+                        });
+                });
+
             modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("Image");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("BIT")
+                        .HasColumnName("IsActivate");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -43,6 +90,21 @@ namespace UxTracker.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("UserRole", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.User", b =>
@@ -101,24 +163,11 @@ namespace UxTracker.Api.Migrations
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<DateTime?>("ChangedAt")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("PasswordResetChangedAt");
-
-                            b1.Property<DateTime?>("ExpireAt")
-                                .HasColumnType("datetime2")
-                                .HasColumnName("PasswordResetExpireAt");
-
                             b1.Property<string>("Hash")
                                 .IsRequired()
                                 .HasMaxLength(75)
                                 .HasColumnType("NVARCHAR")
                                 .HasColumnName("PasswordHash");
-
-                            b1.Property<string>("ResetCode")
-                                .HasMaxLength(8)
-                                .HasColumnType("NVARCHAR")
-                                .HasColumnName("PasswordResetCode");
 
                             b1.HasKey("UserId");
 
@@ -126,6 +175,34 @@ namespace UxTracker.Api.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
+
+                            b1.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Verification", "ResetCode", b2 =>
+                                {
+                                    b2.Property<Guid>("PasswordUserId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Code")
+                                        .HasMaxLength(8)
+                                        .HasColumnType("NVARCHAR")
+                                        .HasColumnName("PasswordResetCode");
+
+                                    b2.Property<DateTime?>("ExpireAt")
+                                        .HasColumnType("datetime2")
+                                        .HasColumnName("PasswordResetExpireAt");
+
+                                    b2.Property<DateTime?>("VerifiedAt")
+                                        .HasColumnType("datetime2")
+                                        .HasColumnName("PasswordResetVerifiedAt");
+
+                                    b2.HasKey("PasswordUserId");
+
+                                    b2.ToTable("Users");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("PasswordUserId");
+                                });
+
+                            b1.Navigation("ResetCode");
                         });
 
                     b.Navigation("Email")

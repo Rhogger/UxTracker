@@ -1,0 +1,26 @@
+<MudText Typo="Typo.h4">Acesso Negado</MudText>
+<MudText Typo="Typo.body1">Você não tem permissão para acessar esta página.</MudText>
+
+<AuthorizeView>
+    <Authorized>
+        <MudButton Color="Color.Primary">
+            Voltar à Página Inicial
+        </MudButton>
+    </Authorized>
+</AuthorizeView>
+        
+<AuthorizeView Policy="AdminPolicy">
+    <Authorized>
+        <MudButton Color="Color.Primary">
+            Voltar à Página Inicial (Admin)
+        </MudButton>
+    </Authorized>
+</AuthorizeView>
+
+<AuthorizeView Policy="ResearcherPolicy">
+    <Authorized>
+        <MudButton Color="Color.Primary">
+            Voltar à Conta (Researcher)
+        </MudButton>
+    </Authorized>
+</AuthorizeView>

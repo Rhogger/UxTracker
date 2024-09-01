@@ -43,11 +43,11 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
-                return new Response("Perfil não encontrado", 404);
+                return new Response("Usuário não cadastrado", 404);
         }
         catch
         {
-            return new Response("Não foi possível recuperar seu perfil", 500);
+            return new Response("Não foi possível encontrar o usuário", 500);
         }
 
         #endregion
@@ -73,13 +73,15 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 05. Gerar o token JWT
+        #region 05. Gerar os tokens JWT
 
-        string token;
+        string accessToken;
+        string refreshToken;
         
         try
         {
-            token = _service.GenerateJwtToken(user, cancellationToken);
+            accessToken = _service.GenerateAccessToken(user, cancellationToken);
+            refreshToken = _service.GenerateRefreshToken(user, cancellationToken);
         }
         catch
         {
@@ -90,20 +92,14 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 06. Retornar os dados
 
-        try
+        var data = new Payload
         {
-            var data = new Payload
-            {
-                Id = user.Id.ToString(),
-                Token = token
-            };
+            Id = user.Id.ToString(),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
 
-            return new Response(string.Empty, data);
-        }
-        catch
-        {
-            return new Response("Não foi possível obter os dados do perfil", 500);
-        }
+        return new Response(string.Empty, data);
 
         #endregion
     }

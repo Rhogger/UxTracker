@@ -1,3 +1,4 @@
+@using Blazored.LocalStorage
 @using UxTracker.Core.Contexts.Account.Handlers
 @using UxTracker.Core.Security
 @using UxTracker.Researchers.Web.Utils.Theme
@@ -12,8 +13,7 @@
 
 <AuthorizeView>
     <Authorized>
-        
-        <MudLayout Class="mud-height-full">
+        <MudLayout Style="height: 100vh">
             <MudAppBar>
                 <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
 
@@ -37,7 +37,8 @@
                     OnClick="SignOutAsync"
                 />
             </MudAppBar>
-            <MudMainContent Class="mud-height-full pa-0">
+            <MudMainContent Class="py-16">
+                <div style="width: 100%; height: 64px;" />
                 @Body
             </MudMainContent>
         </MudLayout>
@@ -49,34 +50,31 @@
 
 @code
 {
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
     [Inject] protected NavigationManager Navigation { get; set; } 
-    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
-
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
     
-    protected override async  Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         
         if (user.Identity is { IsAuthenticated: false })
             Navigation.NavigateTo("/login");
+        else
+        {
+            var currentUrl = Navigation.Uri;
+            await LocalStorage.SetItemAsync("currentUrl", currentUrl);
+        }
     }
     private void ChangeMode()
     {
-        if (IsDarkMode)
-        {
-            Icon = Icons.Material.Filled.DarkMode;
-            IsDarkMode = false;
-        }
-        else
-        {
-            Icon = Icons.Material.Filled.WbSunny;
-            IsDarkMode = true;
-        }
+        IsDarkMode = !IsDarkMode;
+        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny ;
     }
 
     private async void SignOutAsync()

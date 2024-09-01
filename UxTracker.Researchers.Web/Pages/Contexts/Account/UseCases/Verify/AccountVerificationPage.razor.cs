@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
+using UxTracker.Core.Security;
 using VerifyUseCase = UxTracker.Core.Contexts.Account.UseCases.Verify;
 using ResendVerificationCodeUseCase = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
 
@@ -9,17 +10,16 @@ namespace UxTracker.Researchers.Web.Pages.Contexts.Account.UseCases.Verify;
 
 public class AccountVerification: ComponentBase
 {
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyUseCase.Request Request = new();
-    
-    protected override async  Task OnInitializedAsync()
-    {
+
+    protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
 
     protected async Task VerifyAsync()
     {
@@ -31,8 +31,10 @@ public class AccountVerification: ComponentBase
                 if (response.IsSuccessful)
                     if (response.Data!.StatusCode == 200)
                     {
+                        BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
+
                         Snackbar.Add(response.Data.Message, Severity.Success);
-                        Navigation.NavigateTo("/");
+                        Navigation.NavigateTo("/account");
                     }
                     else
                     {
@@ -47,7 +49,7 @@ public class AccountVerification: ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 
@@ -76,7 +78,7 @@ public class AccountVerification: ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 }

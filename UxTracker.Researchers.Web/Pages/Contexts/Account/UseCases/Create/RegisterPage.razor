@@ -35,13 +35,16 @@
                     Validation="@NameValidator.Validate"
                 />
 
-                <EmailTextField Email="@Request.Email"/>
+                <EmailTextField @bind-Email="Request.Email"/>
 
-                <PasswordTextField Password="@Request.Password" ValidatorType="ValidatorTypes.Validator"/>
-                
                 <PasswordTextField 
+                    @bind-Password="Request.Password" 
+                    ValidatorType="ValidatorTypes.Validator"
+                />
+                
+                <PasswordTextField
                     Label="Confirmar senha" 
-                    Password="@ConfirmPassword" 
+                    @bind-Password="ConfirmPassword" 
                     ConfirmPassword="@Request.Password" 
                     ValidatorType="ValidatorTypes.Comparator"
                 />

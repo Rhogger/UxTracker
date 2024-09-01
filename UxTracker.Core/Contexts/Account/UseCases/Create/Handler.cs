@@ -39,12 +39,18 @@ public class Handler : IRequestHandler<Request, Response>
         Email email;
         Password password;
         User user;
+        Role role;
 
         try
         {
             email = new Email(request.Email);
             password = new Password(request.Password);
             user = new User(request.Name, email, password);
+
+            role = await _repository.GetRoleByNameAsync("Researcher", cancellationToken);
+
+            if (role is null)
+                return new Response("Role não encontrada", 404);
         }
         catch (Exception ex)
         {
@@ -74,6 +80,7 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             await _repository.SaveAsync(user, cancellationToken);
+            await _repository.AddUserRoleAsync(role.Id, user.Id, cancellationToken);
         }
         catch
         {
@@ -96,15 +103,8 @@ public class Handler : IRequestHandler<Request, Response>
         #endregion
 
         #region 06. Retornar os dados
-
-        try
-        {
-            return new Response("Conta criada com sucesso!", 200);
-        }
-        catch
-        {
-            return new Response("Não foi possível obter os dados do perfil", 500);
-        }
+        
+        return new Response("Conta criada com sucesso!", 201);
 
         #endregion
     }

@@ -102,6 +102,6 @@ code {
     color: #c02d76;
 }
 
-.no-transform{
-    transform: none; !important;
+.w-full{
+    width: 100%;
 }

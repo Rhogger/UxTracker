@@ -18,10 +18,7 @@ public class Login : ComponentBase
     
     protected readonly AuthenticateUseCase.Request Request = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    }
+    protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
     protected async Task SignInAsync()
     {
@@ -41,7 +38,22 @@ public class Login : ComponentBase
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
-                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                    {
+                        if(string.Equals(response.Data.Message, "Conta inativa"))
+                            Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.", Severity.Error,
+                                config =>
+                                {
+                                    config.Action = "Verificar";
+                                    config.ActionColor = Color.Warning;
+                                    config.Onclick = snackbar =>
+                                    {
+                                        Navigation.NavigateTo("/verify");
+                                        return Task.CompletedTask;
+                                    };
+                                });
+                        else
+                            Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                    }
                 }
             else
                 Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
@@ -83,7 +95,7 @@ public class Login : ComponentBase
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
     }
 }

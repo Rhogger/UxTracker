@@ -23,5 +23,5 @@ public class Response : Shared.UseCases.Response
         Data = data;
     }
 
-    public Payload? Data { get; }
+    public Payload? Data { get; set; }
 }
