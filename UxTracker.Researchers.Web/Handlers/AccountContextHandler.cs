@@ -7,6 +7,7 @@ using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
 using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
+using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
 using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
 using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
@@ -46,7 +47,9 @@ public class AccountContextHandler: IAccountContextHandler
                         if (await LocalStorage.ContainKeyAsync("email") == false)
                             await LocalStorage.SetItemAsync("email", requestModel.Email);
 
-                        await CookieHandler.SaveAuthToken(response.Data.Data!.Token);
+                        await CookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
+                        await CookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
+
                         return response;
                     }
                     else
@@ -68,7 +71,7 @@ public class AccountContextHandler: IAccountContextHandler
         {
             var request = new RestRequest("/api/v1/users/researchers/account/");
 
-            var token = await CookieHandler.GetAuthToken();
+            var token = await CookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -127,7 +130,7 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
-    public async Task SignOutAsync() => await CookieHandler.RemoveAuthTokenAsync();
+    public async Task SignOutAsync() => await CookieHandler.RemoveAccessTokenAsync();
 
     public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
     {
@@ -142,7 +145,8 @@ public class AccountContextHandler: IAccountContextHandler
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await CookieHandler.SaveAuthToken(response.Data.Data!.Token);
+                        await CookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
+                        await CookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
    
                         return response;
                     }
@@ -316,7 +320,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/researchers/account", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAuthToken();
+        var token = await CookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -352,7 +356,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/researchers/account/inactivate", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAuthToken();
+        var token = await CookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -370,6 +374,45 @@ public class AccountContextHandler: IAccountContextHandler
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                         return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<RefreshToken.Response>?> RefreshTokenAsync()
+    {
+        var request = new RestRequest("/api/v1/refresh", Method.Post);
+        
+        var token = await CookieHandler.GetRefreshToken();
+        if (!string.IsNullOrEmpty(token?.Value))
+        {
+            request.AddHeader("Authorization", $"Bearer {token.Value}");
+        }
+        else
+        {
+            throw new Exception("Token JWT não encontrado.");
+        }
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<RefreshToken.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                    {
+                        CookieHandler.SaveAccessToken(response.Data.Data.AccessToken);
+                        CookieHandler.SaveRefreshToken(response.Data.Data.RefreshToken);
+                        return response;
+                    }
                     else
                         throw new Exception(
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
