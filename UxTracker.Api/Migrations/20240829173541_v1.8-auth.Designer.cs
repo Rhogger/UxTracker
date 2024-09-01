@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UxTracker.Infra.Data;
 
@@ -11,9 +12,11 @@ using UxTracker.Infra.Data;
 namespace UxTracker.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240829173541_v1.8-auth")]
+    partial class v18auth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,23 +55,6 @@ namespace UxTracker.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("73bc5e43-a806-46c9-becf-f778e7031069"),
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("825533a5-e09d-431c-bd5a-750261e6b94e"),
-                            Name = "Researcher"
-                        },
-                        new
-                        {
-                            Id = new Guid("62d51832-25cf-457d-b192-1c281de0c64d"),
-                            Name = "Reviewer"
-                        });
                 });
 
             modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.User", b =>

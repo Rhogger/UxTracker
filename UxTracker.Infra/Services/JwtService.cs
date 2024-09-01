@@ -32,9 +32,11 @@ public class JwtService: IJwtService
 
     private static ClaimsIdentity GenerateClaims(Payload user)
     {
-        var ci = new ClaimsIdentity();
-        ci.AddClaim(new Claim("Id", user.Id));
+        var claims = new ClaimsIdentity();
+        claims.AddClaim(new Claim("id", user.Id));
+        foreach (var role in user.Roles)
+            claims.AddClaim(new Claim(ClaimTypes.Role, role));
 
-        return ci;
+        return claims;
     }
 }
