@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UxTracker.Infra.Data;
 
@@ -11,9 +12,11 @@ using UxTracker.Infra.Data;
 namespace UxTracker.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240903020015_v1.0-projects")]
+    partial class v10projects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,17 +74,17 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cc60c390-f650-4ffe-a47b-6e67f064c203"),
+                            Id = new Guid("d143d4ae-c739-406d-8207-e1f32734cdc0"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("d7e62935-1a11-4e8a-90c3-937b8b16bf80"),
+                            Id = new Guid("b4d9fdde-5e66-468c-91c4-0231a6ec15d3"),
                             Name = "Researcher"
                         },
                         new
                         {
-                            Id = new Guid("f9f0cbed-bbfa-4e38-8018-82432d55526d"),
+                            Id = new Guid("81c63388-1920-4645-8d87-05050008d7a3"),
                             Name = "Reviewer"
                         });
                 });
@@ -112,6 +115,10 @@ namespace UxTracker.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConsentTerm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -172,32 +179,32 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ddd70248-ce2a-44f6-9f49-db457935bbb0"),
+                            Id = new Guid("0352e0a1-cac6-47b4-a725-4d407a255045"),
                             Title = "Visão geral da evolução das avaliações"
                         },
                         new
                         {
-                            Id = new Guid("9c05c58b-6740-464b-b9fa-8b81ed0e4e92"),
+                            Id = new Guid("ab9e7e3e-ddbc-4f3a-8b61-4c52397bb833"),
                             Title = "Avaliações de cada usuário por período"
                         },
                         new
                         {
-                            Id = new Guid("5cd3099e-40d6-4822-a7c3-8a4e028587f9"),
+                            Id = new Guid("ac33ef10-c5c7-4138-aa23-e71696d8951d"),
                             Title = "Distribuição das avaliações por período"
                         },
                         new
                         {
-                            Id = new Guid("85ecd690-ce57-45bc-b814-ec7ae6c94060"),
+                            Id = new Guid("d3b582d1-50ad-433f-8824-9822297889cd"),
                             Title = "Frequência das avaliações por período de tempo"
                         },
                         new
                         {
-                            Id = new Guid("1e744ea5-beb9-41e9-81f0-65886eadb615"),
+                            Id = new Guid("9dee52da-661d-42b7-9cde-bcd74cf48dc7"),
                             Title = "Número adequado de clusters de usuário"
                         },
                         new
                         {
-                            Id = new Guid("53aafaa8-96bf-4048-9bf9-ab07a07c75d9"),
+                            Id = new Guid("50b908b8-f909-4684-bcfd-cbba4a3adf81"),
                             Title = "Média da experiência do usuário ao longo do tempo"
                         });
                 });
