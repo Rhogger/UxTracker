@@ -5,6 +5,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.Verify.Contracts;
 public interface IRepository
 {
     Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
-    public Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken);
+    public void AttachRoles(List<Role> roles);
     Task ValidateVerificationCodeAsync(User user, CancellationToken cancellationToken);
 }

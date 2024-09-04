@@ -51,6 +51,10 @@ public class Handler : IRequestHandler<Request, Response>
 
             if (role is null)
                 return new Response("Role não encontrada", 404);
+            
+            _repository.AttachRole(role);
+            
+            user.Roles.Add(role);
         }
         catch (Exception ex)
         {
@@ -80,7 +84,6 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             await _repository.SaveAsync(user, cancellationToken);
-            await _repository.AddUserRoleAsync(role.Id, user.Id, cancellationToken);
         }
         catch
         {

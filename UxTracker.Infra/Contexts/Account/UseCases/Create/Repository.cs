@@ -20,12 +20,10 @@ public class Repository : IRepository
     public async Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken) =>
         await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken);
     
-    public async Task AddUserRoleAsync(Guid roleId, Guid userId, CancellationToken cancellationToken)
+    public void AttachRole(Role role)
     {
-        FormattableString sql = $"INSERT INTO UserRole (RoleId, UserId) VALUES ({roleId},{userId})";
-        await _context.Database.ExecuteSqlInterpolatedAsync(sql, cancellationToken);
+        _context.Roles.Attach(role);
     }
-
     
     public async Task SaveAsync(User user, CancellationToken cancellationToken)
     {
