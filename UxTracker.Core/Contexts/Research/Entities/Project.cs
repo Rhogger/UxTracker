@@ -1,4 +1,4 @@
-using UxTracker.Core.Contexts.ResearchContext.Enums;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Shared.Entities;
 
 namespace UxTracker.Core.Contexts.Research.Entities;
@@ -6,26 +6,17 @@ namespace UxTracker.Core.Contexts.Research.Entities;
 public class Project: Entity
 {
     protected Project() { }
-    
-    public Project(string title, string description, DateTime startDate, DateTime endDate, int period)
-    {
-        Title = title;
-        Description = description;
-        Status = SetStatus();
-        StartDate = startDate;
-        EndDate = endDate;
-        Period = period;
-    }
 
-    public Project(string title, string description, DateTime startDate, DateTime endDate, PeriodType periodType, int period)
+    public Project(string title, string description, DateTime startDate, DateTime endDate, int periodType, int period, List<Relatory> relatories)
     {
         Title = title;
         Description = description;
-        Status = SetStatus();
         StartDate = startDate;
         EndDate = endDate;
-        PeriodType = periodType;
+        Status = SetStatus();
+        PeriodType = SetPeriodType(periodType);
         Period = period;
+        Relatories = relatories;
     }
     
     public string Title { get; private set; } = string.Empty;
@@ -51,12 +42,23 @@ public class Project: Entity
 
     private Status SetStatus()
     {
-        if(StartDate >= EndDate)
+        if(DateTime.UtcNow > EndDate)
             return Status.Finished;
-        if(StartDate <= DateTime.UtcNow && DateTime.UtcNow < EndDate)
+        if(StartDate <= DateTime.UtcNow && DateTime.UtcNow <= EndDate)
             return Status.InProgress;
 
         return Status.NotStarted;
+    }
+    
+    private PeriodType SetPeriodType(int periodType)
+    {
+        return periodType switch
+        {
+            0 => PeriodType.Daily,
+            1 => PeriodType.Weekly,
+            2 => PeriodType.Monthly,
+            _ => PeriodType.Yearly
+        };
     }
     
     public void UpdateStartDate(DateTime date)

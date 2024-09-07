@@ -34,10 +34,17 @@ public class Handler : IRequestHandler<Request, Response>
         #region 02. Gerar os Objetos
 
         Project project;
-        
+
         try
         {
-            project = new Project(request.Title, request.Description, request.StartDate, request.EndDate, request.PeriodType, request.Period);
+            var relatories = await _repository.GetRelatoriesById(request.Relatories, cancellationToken);
+
+            if (relatories is null || relatories.Count == 0)
+            {
+                return new Response("Nenhum relatório foi encontrado", 404);
+            }
+            
+            project = new Project(request.Title, request.Description, request.StartDate, request.EndDate, request.PeriodType, request.Period, relatories);
         }
         catch (Exception ex)
         {
@@ -50,11 +57,12 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
+            _repository.AttachRelatories(project.Relatories);
             await _repository.SaveAsync(project, cancellationToken);
         }
         catch
         {
-            return new Response("", 500);
+            return new Response("Falha ao persistir os dados", 500);
         }
 
         #endregion

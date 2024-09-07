@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace UxTracker.Core.Contexts.ResearchContext.Enums;
+namespace UxTracker.Core.Contexts.Research.Enums;
 
 public enum Status
 {

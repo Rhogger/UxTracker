@@ -46,7 +46,7 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
         
         builder.Property(x => x.PeriodType)
             .HasColumnName("PeriodType")
-            .HasColumnType("TINYINT")
+            .HasColumnType("NVARCHAR(10)")
             .IsRequired(true);
         
         builder.Property(x => x.Period)
