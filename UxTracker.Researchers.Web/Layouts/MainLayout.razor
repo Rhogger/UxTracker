@@ -5,36 +5,26 @@
 @using UxTracker.Researchers.Web.Components
 @inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme"/>
-<MudDialogProvider/>
-<MudPopoverProvider/>
-<MudSnackbarProvider/>
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
+<MudDialogProvider />
+<MudPopoverProvider />
+<MudSnackbarProvider />
 
 <AuthorizeView>
     <Authorized>
         <MudLayout Style="height: 100vh">
             <MudAppBar>
-                <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
+                <MudLink Href="/researchers/home">
+                    <MudText Typo="Typo.h5" Style="font-weight: bold; cursor: pointer; color: white;">UxTracker
+                    </MudText>
+                </MudLink>
+                <MudSpacer />
 
-                <MudSpacer/>
+                <MudIconButton Icon="@Icon" Color="Color.Inherit" OnClick="ChangeMode" />
 
-                <MudIconButton 
-                    Icon="@Icon" 
-                    Color="Color.Inherit"
-                    OnClick="ChangeMode" 
-                />
-                
-                <MudIconButton 
-                    Icon="@Icons.Material.Filled.Person" 
-                    Color="Color.Inherit"
-                    Href="/account"
-                />
-                
-                <MudIconButton 
-                    Icon="@Icons.Material.Filled.Logout" 
-                    Color="Color.Inherit"
-                    OnClick="SignOutAsync"
-                />
+                <MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Href="/account" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="SignOutAsync" />
             </MudAppBar>
             <MudMainContent Class="py-16">
                 <div style="width: 100%; height: 64px;" />
@@ -43,7 +33,7 @@
         </MudLayout>
     </Authorized>
     <NotAuthorized>
-        <RedirectToLogin/>
+        <RedirectToLogin />
     </NotAuthorized>
 </AuthorizeView>
 
@@ -51,18 +41,18 @@
 {
     [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
-    [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected NavigationManager Navigation { get; set; }
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
-    
+
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
-    
-    protected override async  Task OnInitializedAsync()
+
+    protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-            
+
         if (user.Identity is { IsAuthenticated: false })
             Navigation.NavigateTo("/login");
         else
@@ -75,7 +65,7 @@
     private void ChangeMode()
     {
         IsDarkMode = !IsDarkMode;
-        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny ;
+        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny;
     }
 
     private async void SignOutAsync()

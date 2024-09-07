@@ -2,11 +2,12 @@
 @page "/researchers/research-projects/completed-projects"
 @layout MainLayout
 @using ApexCharts
+@using Microsoft.JSInterop
 
 
 <MudContainer Fixed="true" Class="pa-20">
   <div class="d-flex justify-start mb-2">
-    <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
+    <MudButton Href="/researchers/home" Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
       Voltar
     </MudButton>
   </div>
@@ -24,30 +25,34 @@
     <MudForm Class="pa-5">
       <MudGrid Spacing="3">
         <MudItem xs="12" sm="3">
-          <MudTextField ShrinkLabel="true" T="string" Label="Data inicial" Variant="Variant.Filled" FullWidth="true" />
+          <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
         </MudItem>
         <MudItem xs="12" sm="3">
           <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled"
-            FullWidth="true" />
+            FullWidth="true" ReadOnly="true" />
         </MudItem>
 
         <MudItem xs="12" sm="6">
-          <MudTextField ShrinkLabel="true" T="string" Label="Link da Avaliação" Variant="Variant.Filled"
-            FullWidth="true" />
+          <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
+            Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" Adornment="Adornment.End"
+            AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="CopyTextToClipboard" />
         </MudItem>
 
         <MudItem xs="12" sm="3">
-          <MudTextField ShrinkLabel="true" T="string" Label="Data Final" Variant="Variant.Filled" FullWidth="true" />
+          <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
         </MudItem>
 
         <MudItem xs="12" sm="3">
-          <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" />
+          <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true"
+            ReadOnly="true" />
         </MudItem>
 
         <MudItem xs="12" sm="6">
-          <MudTextField ShrinkLabel="true" T="string" Label="Termo de aceite" Variant="Variant.Filled"
-            FullWidth="true" />
+          <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
+            FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
+            OnAdornmentClick="DownloadFile" />
         </MudItem>
+
       </MudGrid>
     </MudForm>
   </MudPaper>
@@ -220,4 +225,44 @@ new Cluster { DiscountPercentage = 70, GrossValue = 3000 },
     public decimal DiscountPercentage { get; set; }
     public decimal GrossValue { get; set; }
   }
+
+  // Campos de data
+  private DateTime? _startDate { get; set; } = DateTime.Today;
+  private DateTime? _endDate { get; set; } = DateTime.Today;
+
+  // Copiar link para a área de transferência
+  private string evaluationLink = "https://exemplo.com.br";
+  private MudTextField<string> textFieldRef;
+
+  [Inject] IJSRuntime JSRuntime { get; set; } = null!;
+  [Inject] ISnackbar Snackbar { get; set; } = null!;
+
+  private async Task CopyTextToClipboard()
+  {
+    if (textFieldRef != null && !string.IsNullOrEmpty(textFieldRef.Value))
+    {
+      var textToCopy = textFieldRef.Value;
+      await CopyToClipboardAsync(textToCopy);
+      Snackbar.Add("Link copiado para sua área de transferência!", Severity.Success);
+      Console.WriteLine($"Texto copiado: {textToCopy}");
+    }
+  }
+
+  private async Task CopyToClipboardAsync(string text)
+  {
+    await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+  }
+
+  //botao download termo
+
+  private string pdfFilePath = "path/to/your/file.pdf";
+
+  private async Task DownloadFile()
+  {
+    var fileUrl = $"{NavigationManager.BaseUri}{pdfFilePath}";
+    await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+  }
+
+  [Inject] NavigationManager NavigationManager { get; set; } = null!;
+
 }
