@@ -1,16 +1,15 @@
-﻿@using UxTracker.Researchers.Web.Components
-@using UxTracker.Researchers.Web.Pages.Contexts.Navagation.UseCases.NotFound
+@using UxTracker.Web.Components
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(HeadlessLayout)">
                 <Authorizing>
-                    <Authorizing />
+                    <Authorizing/>
                 </Authorizing>
-
+                
                 <NotAuthorized>
-                    <RedirectToUnauthorizedPage />
+                    <RedirectToUnauthorizedPage/>
                 </NotAuthorized>
             </AuthorizeRouteView>
         </Found>
