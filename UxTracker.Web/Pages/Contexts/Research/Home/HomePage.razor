@@ -1,8 +1,6 @@
 @page "/researchers/home"
 @layout MainLayout
 
-@attribute [Authorize(Policy="AdminPolicy, ResearcherPolicy, ReviewerPolicy")]
-
 <AuthorizeView Policy="ResearcherPolicy">
     <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-20">
         <MudText Typo="Typo.h4" Align="Align.Center">Projetos de pesquisa</MudText>
