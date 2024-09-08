@@ -1,0 +1,15 @@
+@page "/Unauthorized"
+@layout HeadlessLayout
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-8 text-center"
+  Style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+  <div>
+    <MudText Typo="Typo.h2" GutterBottom="true" Color="Color.Primary">Erro 403 - Acesso Negado</MudText>
+    <MudText Typo="Typo.body1" GutterBottom="true">
+      Desculpe, você não tem permissão para acessar esta página.
+    </MudText>
+    <MudButton Href="/teste" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">
+      Voltar para a Página Inicial
+    </MudButton>
+  </div>
+</MudContainer>
