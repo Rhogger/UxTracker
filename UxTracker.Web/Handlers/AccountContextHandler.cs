@@ -130,7 +130,11 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
-    public async Task SignOutAsync() => await CookieHandler.RemoveAccessTokenAsync();
+    public async Task SignOutAsync()
+    {
+    await CookieHandler.RemoveAccessTokenAsync();
+    await CookieHandler.RemoveRefreshTokenAsync();
+    } 
 
     public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
     {
