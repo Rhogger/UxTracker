@@ -14,7 +14,10 @@
     <Authorized>
         <MudLayout Style="height: 100vh">
             <MudAppBar>
-                <MudText Typo="Typo.h5" Style="font-weight: bold">UxTracker</MudText>
+                <MudLink Href="/researchers/home">
+                    <MudText Typo="Typo.h5" Style="font-weight: bold; cursor: pointer; color: white;">UxTracker
+                    </MudText>
+                </MudLink>
 
                 <MudSpacer/>
 
@@ -42,6 +45,7 @@
             </MudMainContent>
         </MudLayout>
     </Authorized>
+    
     <NotAuthorized>
         <RedirectToLogin/>
     </NotAuthorized>
@@ -51,7 +55,7 @@
 {
     [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
-    [Inject] protected NavigationManager Navigation { get; set; } 
+    [Inject] protected NavigationManager Navigation { get; set; }
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     
     private bool IsDarkMode = true;
@@ -70,10 +74,11 @@
             await LocalStorage.SetItemAsync("currentUrl", currentUrl);
         }
     }
+    
     private void ChangeMode()
     {
         IsDarkMode = !IsDarkMode;
-        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny ;
+        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny;
     }
 
     private async void SignOutAsync()
