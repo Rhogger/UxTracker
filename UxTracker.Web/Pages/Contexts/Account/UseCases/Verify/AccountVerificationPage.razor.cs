@@ -34,7 +34,7 @@ public class AccountVerification: ComponentBase
                         BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
 
                         Snackbar.Add(response.Data.Message, Severity.Success);
-                        Navigation.NavigateTo("/account");
+                        Navigation.NavigateTo("/projects");
                     }
                     else
                     {

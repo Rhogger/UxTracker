@@ -1,11 +1,10 @@
-@page "/researchers/home"
-@layout MainLayout
+@page "/projects"
 
 <AuthorizeView Policy="ResearcherPolicy">
     <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-20">
         <MudText Typo="Typo.h4" Align="Align.Center">Projetos de pesquisa</MudText>
         <div class="d-flex justify-end mb-2">
-            <MudButton Href="/researchers/new-project" Variant="Variant.Filled" Color="Color.Primary"
+            <MudButton Href="/projects/new-project" Variant="Variant.Filled" Color="Color.Primary"
                        OnClick="@(context => AddNewProject())">Novo Projeto
             </MudButton>
         </div>
