@@ -1,0 +1,80 @@
+﻿@page "/"
+@layout HeadlessLayout
+
+<PageTitle>ReviewPage</PageTitle>
+
+<MudContainer
+    MaxWidth="MaxWidth.Small"
+    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full"
+>
+    <MudText
+        Typo="Typo.h4"
+        Align="Align.Center">
+        Rotas
+    </MudText>
+
+    <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column gap-4">
+        <MudButton
+            Href="/register"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            Create
+        </MudButton>
+
+        <MudButton
+            Href="/login"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            Authenticate
+        </MudButton>
+
+        <MudButton
+            Href="/verify"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            Verify
+        </MudButton>
+
+        <MudButton
+            Href="/recover"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            PasswordRecovery
+        </MudButton>
+
+        <MudButton
+            Href="/account/update-password"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            UpdatePasswordAuthenticated
+        </MudButton>
+
+        <MudButton
+            Href="/recover/reset-password"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            UpdatePasswordRecovery
+        </MudButton>        
+        
+        <MudButton
+            Href="/account"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="py-2 px-15"
+        >
+            GetUser
+        </MudButton>
+    </MudContainer>
+</MudContainer>
