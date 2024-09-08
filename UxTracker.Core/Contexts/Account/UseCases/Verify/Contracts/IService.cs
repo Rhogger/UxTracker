@@ -4,5 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.Verify.Contracts;
 
 public interface IService
 {
-    Task<string> GenerateJwtToken(User user, CancellationToken cancellationToken);
+    string GenerateAccessToken(User user, CancellationToken cancellationToken);
+    string GenerateRefreshToken(User user, CancellationToken cancellationToken);
 }

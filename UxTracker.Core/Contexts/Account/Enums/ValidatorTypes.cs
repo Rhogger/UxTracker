@@ -1,9 +1,12 @@
 using System.ComponentModel;
 
-namespace UxTracker.Researchers.Web.Enums;
+namespace UxTracker.Core.Contexts.Account.Enums;
 
 public enum ValidatorTypes
 {
+    [Description("none")]
+    None,
+    
     [Description("validator")]
     Validator,
     

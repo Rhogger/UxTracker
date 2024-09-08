@@ -11,6 +11,7 @@ builder.AddDocumentation();
 builder.AddJwtAuthentication();
 
 builder.AddAccountContext();
+builder.AddResearchContext();
 
 builder.AddMediator();
 
@@ -26,5 +27,6 @@ if (app.Environment.IsDevelopment())
     app.UseConfigurationsDevEnvironment();
 
 app.MapAccountEndpoints();
+app.MapResearchEndpoints();
 
 app.Run();

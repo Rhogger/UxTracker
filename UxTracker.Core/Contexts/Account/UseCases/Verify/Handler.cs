@@ -44,6 +44,11 @@ public class Handler: IRequestHandler<Request, Response>
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
+            
+            _repository.AttachRoles(user.Roles);
+            
+            if (user.Roles is null)
+                return new Response("Roles não encontrada", 404);
         }
         catch
         {
@@ -87,14 +92,16 @@ public class Handler: IRequestHandler<Request, Response>
             return new Response("Não foi possível validar a conta deste usuário", 500);
         }
         #endregion
+        
+        #region 05. Gerar os tokens JWT
 
-        #region 06. Gerar o token JWT
-
-        string token;
+        string accessToken;
+        string refreshToken;
         
         try
         {
-            token = await _service.GenerateJwtToken(user, cancellationToken);
+            accessToken = _service.GenerateAccessToken(user, cancellationToken);
+            refreshToken = _service.GenerateRefreshToken(user, cancellationToken);
         }
         catch
         {
@@ -103,12 +110,13 @@ public class Handler: IRequestHandler<Request, Response>
         
         #endregion
         
-        #region 07. Retornar os dados
+        #region 06. Retornar os dados
 
         return new Response("Conta verificada com sucesso!", new Payload
         {
             Id = user.Id.ToString(),
-            Token = token,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
         });
 
         #endregion

@@ -39,12 +39,22 @@ public class Handler : IRequestHandler<Request, Response>
         Email email;
         Password password;
         User user;
+        Role role;
 
         try
         {
             email = new Email(request.Email);
             password = new Password(request.Password);
             user = new User(request.Name, email, password);
+
+            role = await _repository.GetRoleByNameAsync("Researcher", cancellationToken);
+
+            if (role is null)
+                return new Response("Role não encontrada", 404);
+            
+            _repository.AttachRole(role);
+            
+            user.Roles.Add(role);
         }
         catch (Exception ex)
         {
@@ -97,7 +107,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 06. Retornar os dados
         
-            return new Response("Conta criada com sucesso!", 201);
+        return new Response("Conta criada com sucesso!", 201);
 
         #endregion
     }

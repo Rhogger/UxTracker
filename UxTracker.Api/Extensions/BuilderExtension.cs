@@ -84,7 +84,20 @@ public static class BuilderExtensions
                 };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("ResearcherPolicy", policy =>
+            {
+                policy.RequireRole("Researcher");
+            })
+            .AddPolicy("ReviewerPolicy", policy =>
+            {
+                policy.RequireRole("Reviewer");
+            })
+            .AddPolicy("AdminPolicy", policy =>
+            {
+                policy.RequireRole("Admin");
+            });
+        
     }
 
     public static void AddMediator(this WebApplicationBuilder builder)

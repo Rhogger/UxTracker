@@ -1,0 +1,86 @@
+@page "/researchers/research"
+@layout MainLayout
+
+@attribute [Authorize(Policy="AdminPolicy, ResearcherPolicy, ReviewerPolicy")]
+
+<AuthorizeView Policy="ResearcherPolicy">
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-20">
+        <MudText Typo="Typo.h4" Align="Align.Center">Projetos de pesquisa</MudText>
+        <div class="d-flex justify-end mb-2">
+            <MudButton Href="/researchers/new-project" Variant="Variant.Filled" Color="Color.Primary"
+                       OnClick="@(context => AddNewProject())">Novo Projeto
+            </MudButton>
+        </div>
+        <MudContainer Class="overflow-auto" Style="height: 70vh;">
+            <MudGrid>
+                @foreach (var project in Projects)
+                {
+                    <MudItem xs="12" sm="6" md="6" lg="6">
+                        <MudCard Class="mb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">@project.Title</MudText>
+                                    <MudText Typo="Typo.subtitle2">Status</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudText>@project.Description</MudText>
+                                <MudText Typo="Typo.body2">@project.Details</MudText>
+                            </MudCardContent>
+                            <MudCardContent>
+                                <MudGrid Justify="Justify.SpaceBetween">
+                                    <MudItem>
+                                        <MudText>Data início</MudText>
+                                    </MudItem>
+                                    <MudItem>
+                                        <MudText>Data fim</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    </MudContainer>
+</AuthorizeView>
+
+@code {
+    private List<Project> Projects = new List<Project>
+    {
+        new Project
+        {
+            Title = "Projeto 1",
+            Description = "Descrição do projeto 1",
+            Details = "Detalhes adicionais do projeto 1"
+        },
+        new Project
+        {
+            Title = "Projeto 2",
+            Description = "Descrição do projeto 2",
+            Details = "Detalhes adicionais do projeto 2"
+        }
+    };
+
+    private void AddNewProject()
+    {
+        Projects.Add(new Project
+        {
+            Title = "Novo Projeto",
+            Description = "Descrição do novo projeto",
+            Details = "Detalhes adicionais do novo projeto"
+        });
+    }
+
+
+    private class Project
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Details { get; set; }
+
+    }
+}

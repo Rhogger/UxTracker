@@ -15,8 +15,16 @@ public class Repository : IRepository
         await _context
             .Users
             .AsNoTracking()
-            .AnyAsync(x => x.Email.Address == email, cancellationToken: cancellationToken);
+            .AnyAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
+    public async Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken) =>
+        await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+    
+    public void AttachRole(Role role)
+    {
+        _context.Roles.Attach(role);
+    }
+    
     public async Task SaveAsync(User user, CancellationToken cancellationToken)
     {
         await _context.Users.AddAsync(user, cancellationToken);
