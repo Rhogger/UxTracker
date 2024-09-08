@@ -20,5 +20,16 @@ public static class ApplicationExtension
     {
         app.UseAuthentication();
         app.UseAuthorization();
+        
+        // app.Use(next => context =>
+        // {
+        //     if (context.Request.Path.StartsWithSegments("/api"))
+        //     {
+        //         context.Response.Headers.Append("XSRF-TOKEN", context.Request.Headers["X-XSRF-TOKEN"]);
+        //     }
+        //     return next(context);
+        // });
+        //
+        // app.UseAntiforgery();
     }
 }

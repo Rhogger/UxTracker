@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -98,6 +99,16 @@ public static class BuilderExtensions
                 policy.RequireRole("Admin");
             });
         
+    }
+
+    public static void AddSecurity(this WebApplicationBuilder builder)
+    {        
+        builder.Services.AddAntiforgery();
+
+        builder.Services.AddControllers(options =>
+        {
+            options.Filters.Add(new IgnoreAntiforgeryTokenAttribute());
+        });
     }
 
     public static void AddMediator(this WebApplicationBuilder builder)
