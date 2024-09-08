@@ -25,8 +25,10 @@ public static class ResearchContextExtension
 
         app.MapPost(
             "api/v1/projects/create",
-            // [Authorize (Policy = "ResearcherPolicy")] 
+            [Authorize (Policy = "ResearcherPolicy")] 
+            // [Consumes("multipart/form-data")]
             async (
+                HttpContext httpContext,
                 Create.Request request,
                 IRequestHandler<
                     Create.Request,
@@ -34,6 +36,13 @@ public static class ResearchContextExtension
                 > handler
             ) =>
             {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.UserId = userId;
+                
                 var result = await handler.Handle(request, new CancellationToken());
 
                 return result.IsSuccess

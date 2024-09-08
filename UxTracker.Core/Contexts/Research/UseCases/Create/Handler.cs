@@ -44,7 +44,7 @@ public class Handler : IRequestHandler<Request, Response>
                 return new Response("Nenhum relatório foi encontrado", 404);
             }
             
-            project = new Project(request.Title, request.Description, request.StartDate, request.EndDate, request.PeriodType, request.Period, relatories);
+            project = new Project(Guid.Parse(request.UserId), request.Title, request.Description, request.StartDate, request.EndDate, request.PeriodType, relatories);
         }
         catch (Exception ex)
         {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UxTracker.Infra.Data;
 
@@ -11,9 +12,11 @@ using UxTracker.Infra.Data;
 namespace UxTracker.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240907194932_v1.1.2-projects")]
+    partial class v112projects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,7 @@ namespace UxTracker.Api.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("UxTracker.Core.Contexts.Reviewer.Entities.Role", b =>
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,22 +74,22 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c2f294b2-46af-4d4c-8779-a8dc2ec64545"),
+                            Id = new Guid("a427bc0e-d3d9-4549-92ea-37df3cf43a93"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("621097ea-24ec-4c50-a546-4b5869a89fd2"),
+                            Id = new Guid("1dcfd77d-9e5e-4e31-960b-7562e56930ca"),
                             Name = "Researcher"
                         },
                         new
                         {
-                            Id = new Guid("28e0c3e6-af82-48c6-af3c-d72fe34e0ecc"),
+                            Id = new Guid("01267e3c-0b5a-46e8-88c2-18cb7b392b94"),
                             Name = "Reviewer"
                         });
                 });
 
-            modelBuilder.Entity("UxTracker.Core.Contexts.Reviewer.Entities.User", b =>
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,11 +115,6 @@ namespace UxTracker.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("ConsentTerm")
-                        .IsRequired()
-                        .HasColumnType("VARBINARY(MAX)")
-                        .HasColumnName("ConsentTerm");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -158,12 +156,7 @@ namespace UxTracker.Api.Migrations
                         .HasColumnType("NVARCHAR")
                         .HasColumnName("Title");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Projects", (string)null);
                 });
@@ -187,32 +180,32 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5dbaba1b-acb9-4247-818b-de45d5bf1853"),
+                            Id = new Guid("257977ca-965e-40b8-a9be-e15237f67dce"),
                             Title = "Visão geral da evolução das avaliações"
                         },
                         new
                         {
-                            Id = new Guid("39d5a494-b982-43d0-b8ac-3ca0b20deced"),
+                            Id = new Guid("54bf1b93-86dc-4086-beae-52c963323c76"),
                             Title = "Avaliações de cada usuário por período"
                         },
                         new
                         {
-                            Id = new Guid("f69971cb-c352-4711-824b-5bc3da58f791"),
+                            Id = new Guid("589007a3-735b-4dd2-abb3-1afc45cc6de7"),
                             Title = "Distribuição das avaliações por período"
                         },
                         new
                         {
-                            Id = new Guid("094b05cc-81d2-41a6-934e-61c5a5bec5b8"),
+                            Id = new Guid("d7acb783-1b31-4536-9b79-f32d8ac0b2a0"),
                             Title = "Frequência das avaliações por período de tempo"
                         },
                         new
                         {
-                            Id = new Guid("2d9dc01d-9e86-402a-b016-36c869476102"),
+                            Id = new Guid("6150d46c-13a9-41dc-9634-a54e5a809d66"),
                             Title = "Número adequado de clusters de usuário"
                         },
                         new
                         {
-                            Id = new Guid("b08a5fbf-10b3-4ca0-a9b7-5c9a5f258f54"),
+                            Id = new Guid("252696d3-5124-4988-ab5e-df8056e715e4"),
                             Title = "Média da experiência do usuário ao longo do tempo"
                         });
                 });
@@ -234,22 +227,22 @@ namespace UxTracker.Api.Migrations
 
             modelBuilder.Entity("UserRole", b =>
                 {
-                    b.HasOne("UxTracker.Core.Contexts.Reviewer.Entities.Role", null)
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UxTracker.Core.Contexts.Reviewer.Entities.User", null)
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UxTracker.Core.Contexts.Reviewer.Entities.User", b =>
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.User", b =>
                 {
-                    b.OwnsOne("UxTracker.Core.Contexts.Reviewer.ValueObjects.Email", "Email", b1 =>
+                    b.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -267,7 +260,7 @@ namespace UxTracker.Api.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
 
-                            b1.OwnsOne("UxTracker.Core.Contexts.Reviewer.ValueObjects.Verification", "Verification", b2 =>
+                            b1.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Verification", "Verification", b2 =>
                                 {
                                     b2.Property<Guid>("EmailUserId")
                                         .HasColumnType("uniqueidentifier");
@@ -298,7 +291,7 @@ namespace UxTracker.Api.Migrations
                                 .IsRequired();
                         });
 
-                    b.OwnsOne("UxTracker.Core.Contexts.Reviewer.ValueObjects.Password", "Password", b1 =>
+                    b.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Password", "Password", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -316,7 +309,7 @@ namespace UxTracker.Api.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
 
-                            b1.OwnsOne("UxTracker.Core.Contexts.Reviewer.ValueObjects.Verification", "ResetCode", b2 =>
+                            b1.OwnsOne("UxTracker.Core.Contexts.Account.ValueObjects.Verification", "ResetCode", b2 =>
                                 {
                                     b2.Property<Guid>("PasswordUserId")
                                         .HasColumnType("uniqueidentifier");
@@ -350,22 +343,6 @@ namespace UxTracker.Api.Migrations
 
                     b.Navigation("Password")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Project", b =>
-                {
-                    b.HasOne("UxTracker.Core.Contexts.Reviewer.Entities.User", "User")
-                        .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("UxTracker.Core.Contexts.Reviewer.Entities.User", b =>
-                {
-                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

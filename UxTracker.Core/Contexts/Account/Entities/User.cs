@@ -1,4 +1,6 @@
-﻿using UxTracker.Core.Contexts.Account.ValueObjects;
+﻿using System.Text.Json.Serialization;
+using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Shared.Entities;
 
 namespace UxTracker.Core.Contexts.Account.Entities;
@@ -27,8 +29,11 @@ public class User : Entity
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
-    public List<Role> Roles { get; set; } = [];
     public bool IsActive { get; private set; } = false;
+    [JsonIgnore]
+    public List<Role> Roles { get; init; } = new();
+    [JsonIgnore]
+    public List<Project> Projects { get; init; } = new();
 
     public void UpdateName(string name)
     {

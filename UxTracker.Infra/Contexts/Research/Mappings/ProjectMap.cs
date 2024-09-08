@@ -53,6 +53,20 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnName("Period")
             .HasColumnType("TINYINT")
             .IsRequired(true);
+        
+        builder.Property(x => x.ConsentTerm)
+            .HasColumnName("ConsentTerm")
+            .HasColumnType("VARBINARY(MAX)");
+        
+        builder.Property(x => x.ReviewersCount)
+            .HasColumnName("ReviewersCount")
+            .HasColumnType("INTEGER")
+            .IsRequired(true);
+
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.Projects)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(x => x.Relatories)
             .WithMany(x => x.Projects)
