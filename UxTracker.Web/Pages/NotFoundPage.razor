@@ -1,0 +1,15 @@
+@page "/not-found"
+@layout HeadlessLayout
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-8 text-center"
+              Style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div>
+        <MudText Typo="Typo.h2" GutterBottom="true" Color="Color.Primary">Erro 404 - Página Não Encontrada</MudText>
+        <MudText Typo="Typo.body1" GutterBottom="true">
+            Desculpe, a página que você está procurando não foi encontrada.
+        </MudText>
+        <MudButton Href="/teste" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">
+            Voltar para a Página Inicial
+        </MudButton>
+    </div>
+</MudContainer>
