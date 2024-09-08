@@ -29,6 +29,7 @@
     <_ContentIncludedByDefault Remove="Pages\Auth\Login.razor" />
     <_ContentIncludedByDefault Remove="Pages\Contexts\Account\UseCases\UpdatePasswordAuthenticated\UpdatePassword.razor" />
     <_ContentIncludedByDefault Remove="Pages\Contexts\Projects\GetAllProjects\ProjectsPage.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Contexts\Research\Home\HomePage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,13 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Contexts\Research\" />
+    <Folder Include="Pages\Contexts\Research\UseCases\" />
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Pages\Contexts\Research\Create\NewProjectPage.razor" />
-    <AdditionalFiles Include="Pages\Contexts\Research\Home\HomePage.razor" />
-    <AdditionalFiles Include="Pages\Contexts\Research\Project\CompletedProject.razor" />
     <AdditionalFiles Include="Pages\Contexts\Reviewer\UseCases\Authenticate\LoginPage.razor" />
     <AdditionalFiles Include="Pages\Contexts\Reviewer\UseCases\Create\RegisterPage.razor" />
   </ItemGroup>

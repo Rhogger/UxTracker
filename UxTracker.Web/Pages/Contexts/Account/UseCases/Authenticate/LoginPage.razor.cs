@@ -30,7 +30,7 @@ public class Login : ComponentBase
                 if (response.IsSuccessful)
                 {
                     BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
-                    Navigation.NavigateTo("/account");
+                    Navigation.NavigateTo("/projects");
                 }
                 else
                 {
