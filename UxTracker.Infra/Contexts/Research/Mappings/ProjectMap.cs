@@ -22,12 +22,6 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnType("VARCHAR(MAX)")
             .IsRequired(true);
         
-        builder.Property(x => x.Title)
-            .HasColumnName("Title")
-            .HasColumnType("NVARCHAR")
-            .HasMaxLength(80)
-            .IsRequired(true);
-        
         builder.Property(x => x.Status)
             .HasColumnName("Status")
             .HasColumnType("NVARCHAR")
@@ -36,27 +30,25 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
         
         builder.Property(x => x.StartDate)
             .HasColumnName("StartDate")
-            .HasMaxLength(80)
             .IsRequired(true);
         
         builder.Property(x => x.EndDate)
             .HasColumnName("EndDate")
-            .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired(false);
         
         builder.Property(x => x.PeriodType)
             .HasColumnName("PeriodType")
             .HasColumnType("NVARCHAR(10)")
             .IsRequired(true);
         
-        builder.Property(x => x.Period)
-            .HasColumnName("Period")
-            .HasColumnType("TINYINT")
+        builder.Property(x => x.SurveyCollections)
+            .HasColumnName("SurveyCollections")
+            .HasColumnType("INTEGER")
             .IsRequired(true);
-        
-        builder.Property(x => x.ConsentTerm)
-            .HasColumnName("ConsentTerm")
-            .HasColumnType("VARBINARY(MAX)");
+
+        builder.Property(x => x.ConsentTermId)
+            .HasColumnName("IdConsentTerm")
+            .IsRequired(true);
         
         builder.Property(x => x.ReviewersCount)
             .HasColumnName("ReviewersCount")
