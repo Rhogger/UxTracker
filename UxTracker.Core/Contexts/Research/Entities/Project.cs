@@ -9,17 +9,16 @@ public class Project: Entity
 {
     protected Project() { }
 
-    public Project(Guid userId, string title, string description, DateTime startDate, DateTime endDate, PeriodType periodType, List<Relatory> relatories)
+    public Project(Guid userId, string title, string description, DateTime startDate, PeriodType periodType,int surveyCollections, List<Relatory> relatories)
     {
         UserId = userId;
         Title = title;
         Description = description;
         StartDate = startDate;
-        EndDate = endDate;
         Status = SetStatus();
         PeriodType = periodType;
-        Period = SetPeriod();
-        ConsentTerm = new byte[000111];
+        SurveyCollections = surveyCollections;
+        ConsentTermId = Guid.NewGuid();
         ReviewersCount = 0;
         Relatories = relatories;
     }
@@ -29,10 +28,10 @@ public class Project: Entity
     public string Description {get; private set; }  = string.Empty;
     public Status Status { get; private set; }
     public DateTime StartDate {get; private set; }
-    public DateTime EndDate {get; private set; }
+    public DateTime? EndDate {get; private set; }
     public PeriodType PeriodType { get; private set; } = PeriodType.Daily;
-    public int Period { get; private set; }
-    public byte[] ConsentTerm { get; private set; }
+    public int SurveyCollections { get; private set; }
+    public Guid ConsentTermId { get; private set; }
     public int ReviewersCount { get; }
     [JsonIgnore]
     public User User { get; private set; }
@@ -40,54 +39,57 @@ public class Project: Entity
 
     private Status SetStatus()
     {
-        if(DateTime.UtcNow > EndDate)
+        if(DateTime.UtcNow >= EndDate)
             return Status.Finished;
-        if(StartDate <= DateTime.UtcNow && DateTime.UtcNow <= EndDate)
+        if(StartDate <= DateTime.UtcNow && DateTime.UtcNow < EndDate)
             return Status.InProgress;
 
         return Status.NotStarted;
     }
     
-    private int SetPeriod()
-    {
-        var dateDifference = EndDate - StartDate;
-        var totalDays = (int)dateDifference.TotalDays;
-        return PeriodType switch
-        {
-            PeriodType.Daily => totalDays,
-            PeriodType.Weekly => totalDays / 7,
-            PeriodType.Monthly => totalDays / 30,
-            _ => totalDays / 365
-        };
-    }
-    
     public void UpdateTitle(string title)
     {
+        if(!IsValidToUpdateWhenFinishedStatus())
+            throw new Exception("Não pode alterar o título após o fim da pesquisa");
+        
         Title = title;
     }
     
     public void UpdateDescription(string description)
     {
+        if(!IsValidToUpdateWhenFinishedStatus())
+            throw new Exception("Não pode alterar a descrição após o fim da pesquisa");
+        
         Description = description;
     }
     
     public void UpdateStartDate(DateTime date)
     {
+        if(!IsValidToUpdateWhenFinishedStatus())
+            throw new Exception("Não pode alterar a data inicial após o fim da pesquisa");
+
         StartDate = date;
-    }
-    
-    public void UpdateEndDate(DateTime date)
-    {
-        EndDate = date;
     }
     
     public void UpdatePeriodType(PeriodType periodType)
     {
+        if(!IsValidToUpdateWhenNotStartedStatus())
+            throw new Exception("Não pode alterar o tipo de período após o inicio da pesquisa");
+        
         PeriodType = periodType;
     }
     
-    public void UpdatePeriod(int period)
+    public void UpdateSurveyCollections(int surveyCollections)
     {
-        Period = period;
+        if(!IsValidToUpdateWhenNotStartedStatus())
+            throw new Exception("Não pode alterar a quantidade de coleta após o inicio da pesquisa");
+
+        SurveyCollections = surveyCollections;
     }
+
+    public void GenerateNewConsentTermId() => ConsentTermId = Guid.NewGuid();
+
+    private bool IsValidToUpdateWhenNotStartedStatus() => Status == Status.NotStarted;
+    private bool IsValidToUpdateWhenInProgressStatus() => Status == Status.InProgress;
+    private bool IsValidToUpdateWhenFinishedStatus() => Status == Status.Finished;
 }

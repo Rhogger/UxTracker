@@ -1,12 +1,12 @@
-using System.Security.Claims;
 using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
-using UxTracker.Core.Contexts.Account.UseCases.GetUser.Contracts;
-using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Contexts.Research.DTOs;
+using UxTracker.Core.Contexts.Research.Entities;
+using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
 
-namespace UxTracker.Core.Contexts.Account.UseCases.GetUser;
+namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler : IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
 
@@ -14,11 +14,11 @@ public class Handler: IRequestHandler<Request, Response>
     {
         _repository = repository;
     }
-    
+
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
-        #region 01. Validar requisição
-
+        #region 01. Validar Requisição
+        
         try
         {
             var req = Specification.Ensure(request);
@@ -30,19 +30,19 @@ public class Handler: IRequestHandler<Request, Response>
         {
             return new Response("Não foi possível validar sua requisição", 500);
         }
-
+        
         #endregion
 
         #region 02. Recuperar usuário do banco
         
-        User? user;
+        List<GetAllProjectDTO>? projects;
 
         try
         {
-            user = await _repository.GetUserByIdAsync(request.Id, cancellationToken);
+            projects = await _repository.GetProjectsByUser(request.UserId, cancellationToken);
 
-            if (user is null)
-                return new Response("Perfil não encontrado", 404);
+            if (projects is null)
+                return new Response("Usuário não encontrado", 404);
         }
         catch
         {
@@ -50,16 +50,16 @@ public class Handler: IRequestHandler<Request, Response>
         }
 
         #endregion
-        
-        #region 03. Retornar os dados
 
+        #region 03. Retornar os dados
+        
         try
         {
-            return new Response(string.Empty, new ResponseData(user.Id.ToString(), user.Name, user.Email, user.Email.ToSha256Hash()));
+            return new Response(string.Empty, new ResponseData(projects));
         }
         catch
         {
-            return new Response("Não foi possível retornar os dados do perfil", 500);
+            return new Response("Não foi possível retornar os projetos do perfil", 500);
         }
 
         #endregion

@@ -10,10 +10,8 @@ public class Request : IRequest<Response>
     public string UserId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public int Period { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.UtcNow;
+    public int SurveyCollections { get; set; }
     public PeriodType PeriodType { get; set; }
-    // public byte[]? ConsentTerm { get; set; } = null!;
     public List<string> Relatories { get; set; } = new();
 }
