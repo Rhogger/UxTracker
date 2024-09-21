@@ -1,6 +1,7 @@
 using Flunt.Notifications;
+using UxTracker.Core.Contexts.Research.Entities;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.Create;
+namespace UxTracker.Core.Contexts.Research.UseCases.GetProject;
 
 public class Response : Shared.UseCases.Response
 {
@@ -12,7 +13,7 @@ public class Response : Shared.UseCases.Response
         StatusCode = statusCode;
         Notifications = notifications;
     }
-    
+
     public Response(string message, ResponseData data)
     {
         Message = message;
@@ -24,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(string? Id);
+public record ResponseData(Project project);

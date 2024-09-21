@@ -1,3 +1,5 @@
+using Flunt.Notifications;
+using Flunt.Validations;
 using MediatR;
 using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.UseCases.Create.Contracts;
@@ -17,10 +19,17 @@ public class Handler : IRequestHandler<Request, Response>
     {
         #region 01. Validar Requisição
         
+        Contract<Notification> req;
+        
         try
         {
-            var req = Specification.Ensure(request);
+            req = Specification.Ensure(request);
 
+            if (request.Relatories.Any(string.IsNullOrEmpty))
+            {
+                req.AddNotification("Relatories", "Relatório inválido");
+            }
+            
             if (!req.IsValid)
                 return new Response("Requisição inválida", 400, req.Notifications);
         }
@@ -37,14 +46,14 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            var relatories = await _repository.GetRelatoriesById(request.Relatories, cancellationToken);
+            var relatories = await _repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
 
             if (relatories is null || relatories.Count == 0)
             {
                 return new Response("Nenhum relatório foi encontrado", 404);
             }
             
-            project = new Project(Guid.Parse(request.UserId), request.Title, request.Description, request.StartDate, request.PeriodType, request.SurveyCollections, relatories);
+            project = new Project(Guid.Parse(request.UserId), request.Title, request.Description, request.StartDate, request.PeriodType, request.SurveyCollections, request.ConsentTermHash, relatories);
         }
         catch (Exception ex)
         {
@@ -69,7 +78,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 04. Retornar os dados
         
-        return new Response("Projeto criado com sucesso!", 201);
+        return new Response("Projeto criado com sucesso!", new ResponseData(project.Id.ToString()));
 
         #endregion
     }

@@ -9,6 +9,7 @@ public static class Configuration
     public static ApplicationUrlConfiguration ApplicationUrl { get; set; } = new();
     public static CorsConfiguration Cors { get; set; } = new();
     public static CookieConfiguration Cookie { get; set; } = new();
+    public static ConsentTermConfiguration ConsentTerm { get; set; } = new();
 
     public class SecretsConfiguration
     {
@@ -48,5 +49,11 @@ public static class Configuration
     {
         public string AccessTokenCookieName { get; set; } = "AccessToken";
         public string RefreshTokenCookieName { get; set; } = "RefreshToken";
+    }
+
+    public class ConsentTermConfiguration
+    {
+        public string Url { get; set; } = "Public/ConsentTerms/";
+        public long MaxSize { get; set; } = 2 * 1024 * 1024;
     }
 }

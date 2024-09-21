@@ -11,7 +11,7 @@ public class Repository : IRepository
 
     public Repository(AppDbContext context) => _context = context;
 
-    public async Task<List<Relatory>?> GetRelatoriesById(List<string> relatories, CancellationToken cancellationToken) => 
+    public async Task<List<Relatory>?> GetRelatoriesByIdAsync(List<string> relatories, CancellationToken cancellationToken) => 
         await _context
             .Relatories
             .AsNoTracking()

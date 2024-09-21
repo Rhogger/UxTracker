@@ -1,6 +1,7 @@
 using Flunt.Notifications;
+using UxTracker.Core.Contexts.Research.Entities;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.Create;
+namespace UxTracker.Core.Contexts.Research.UseCases.Update;
 
 public class Response : Shared.UseCases.Response
 {
@@ -16,7 +17,7 @@ public class Response : Shared.UseCases.Response
     public Response(string message, ResponseData data)
     {
         Message = message;
-        StatusCode = 200;
+        StatusCode = 201;
         Notifications = null;
         Data = data;
     }
@@ -24,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(string? Id);
+public record ResponseData(Project Project, bool newFile = false);

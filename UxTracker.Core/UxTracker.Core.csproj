@@ -13,4 +13,8 @@
     <PackageReference Include="RestSharp" Version="111.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contexts\Reviewer\Entities\" />
+  </ItemGroup>
+
 </Project>
