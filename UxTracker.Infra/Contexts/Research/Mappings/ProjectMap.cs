@@ -45,9 +45,15 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnName("SurveyCollections")
             .HasColumnType("INTEGER")
             .IsRequired(true);
+        
+        builder.Property(x => x.LastSurveyCollection)
+            .HasColumnName("LastSurveyCollection")
+            .HasColumnType("INTEGER")
+            .IsRequired(true);
 
-        builder.Property(x => x.ConsentTermId)
-            .HasColumnName("IdConsentTerm")
+        builder.Property(x => x.ConsentTermHash)
+            .HasColumnName("ConsentTermHash")
+            .HasColumnType("NVARCHAR(64)")
             .IsRequired(true);
         
         builder.Property(x => x.ReviewersCount)
