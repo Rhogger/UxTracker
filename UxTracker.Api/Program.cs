@@ -9,8 +9,9 @@ builder.AddDatabase();
 builder.AddCrossOrigin();
 builder.AddDocumentation();
 builder.AddJwtAuthentication();
-// builder.AddSecurity();
+builder.AddSecurity();
 
+builder.AddFormOptions();
 builder.AddAccountContext();
 builder.AddResearchContext();
 

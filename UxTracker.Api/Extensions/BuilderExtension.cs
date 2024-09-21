@@ -1,6 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -60,7 +60,15 @@ public static class BuilderExtensions
             )
         );
     }
-
+    
+    public static void AddFormOptions(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<FormOptions>(options =>
+        {
+            options.MultipartBodyLengthLimit = 20 * 1024 * 1024;
+        });
+    }
+    
     public static void AddJwtAuthentication(this WebApplicationBuilder builder)
     {
         builder
@@ -104,11 +112,6 @@ public static class BuilderExtensions
     public static void AddSecurity(this WebApplicationBuilder builder)
     {        
         builder.Services.AddAntiforgery();
-
-        builder.Services.AddControllers(options =>
-        {
-            options.Filters.Add(new IgnoreAntiforgeryTokenAttribute());
-        });
     }
 
     public static void AddMediator(this WebApplicationBuilder builder)
