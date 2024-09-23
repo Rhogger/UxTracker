@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Consent Terms Files
+UxTracker.Api/Public/ConsentTerms
