@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contexts\Reviewer\Entities\" />
+    <Folder Include="Contexts\Review\UseCases\Rate\" />
   </ItemGroup>
 
 </Project>

@@ -36,7 +36,7 @@ public class Project: Entity
     public string ConsentTermHash { get; private set; }
     public int ReviewersCount { get; }
     [JsonIgnore]
-    public User User { get; private set; }
+    public Researcher User { get; private set; }
     public List<Relatory> Relatories { get; private set; } = new();
 
     private Status SetStatus()
