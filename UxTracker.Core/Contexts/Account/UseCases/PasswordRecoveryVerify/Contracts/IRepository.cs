@@ -4,7 +4,7 @@ namespace UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Contra
 
 public interface IRepository
 {
-    Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
     
-    Task ValidateResetCodeAsync(User user, CancellationToken cancellationToken);
+    Task ValidateResetCodeAsync(Researcher user, CancellationToken cancellationToken);
 }

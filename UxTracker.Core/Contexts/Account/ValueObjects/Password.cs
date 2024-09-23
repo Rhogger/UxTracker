@@ -7,15 +7,15 @@ public class Password : ValueObject
 {
     protected Password() { }
     
-    public Password(string password)
+    public Password(string? password = null)
     {
         if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
-            throw new Exception("A senha não pode ser nula");
-
-        Hash = Hashing(password);
+            Hash = null;
+        else
+            Hash = Hashing(password);
     }
 
-    public string Hash { get; } = string.Empty;
+    public string? Hash { get; } = string.Empty;
     public Verification? ResetCode { get; private set; }
 
     private static string Hashing(

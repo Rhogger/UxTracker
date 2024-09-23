@@ -4,5 +4,5 @@ namespace UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery.Contracts;
 
 public interface IService
 {
-    Task SendResetCodeAsync(User user, CancellationToken cancellationToken);
+    Task SendResetCodeAsync(Researcher user, CancellationToken cancellationToken);
 }

@@ -11,9 +11,9 @@ public class Repository: IRepository
 
     public Repository(AppDbContext context) => _context = context;
     
-    public async Task<User?> GetUserByIdAsync(string id, CancellationToken cancellationToken) 
+    public async Task<Researcher?> GetUserByIdAsync(string id, CancellationToken cancellationToken) 
         => await _context
-            .Users
+            .Researchers
             .AsNoTracking()
             .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.Id.ToString() == id && x.IsActive == true, cancellationToken);

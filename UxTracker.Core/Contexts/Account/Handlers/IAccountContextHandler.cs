@@ -1,16 +1,16 @@
 using RestSharp;
-using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
-using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
-using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
-using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
+using Authenticate = UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher;
+using Create = UxTracker.Core.Contexts.Account.UseCases.CreateResearcher;
+using Delete = UxTracker.Core.Contexts.Account.UseCases.DeleteResearcher;
+using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetResearcher;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
 using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
-using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
-using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
+using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeResearcher;
+using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateResearcher;
 using UpdatePassword = UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
-using Verify = UxTracker.Core.Contexts.Account.UseCases.Verify;
+using Verify = UxTracker.Core.Contexts.Account.UseCases.VerifyResearcher;
 
 namespace UxTracker.Core.Contexts.Account.Handlers;
 

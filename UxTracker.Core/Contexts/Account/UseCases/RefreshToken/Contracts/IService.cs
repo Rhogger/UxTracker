@@ -4,6 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.RefreshToken.Contracts;
 
 public interface IService
 {
-    string GenerateAccessToken(User user, CancellationToken cancellationToken);
-    string GenerateRefreshToken(User user, CancellationToken cancellationToken);
+    string GenerateAccessToken(Researcher user, CancellationToken cancellationToken);
+    string GenerateRefreshToken(Researcher user, CancellationToken cancellationToken);
 }

@@ -156,7 +156,7 @@ public static class ResearchContextExtension
                     await consentTerm.CopyToAsync(stream);
                 }
 
-                return Results.Created();
+                return Results.Created("api/v1/projects/create", result);
             }
         ).DisableAntiforgery();
         

@@ -10,16 +10,16 @@ public class Repository: IRepository
     private readonly AppDbContext _context;
 
     public Repository(AppDbContext context) => _context = context;
-    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         => await _context
-            .Users
+            .Researchers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
-    public async Task UpdateResetCodeAsync(User user, CancellationToken cancellationToken)
+    public async Task UpdateResetCodeAsync(Researcher user, CancellationToken cancellationToken)
     {
         _context
-            .Users
+            .Researchers
             .Update(user);
 
         await _context.SaveChangesAsync(cancellationToken);

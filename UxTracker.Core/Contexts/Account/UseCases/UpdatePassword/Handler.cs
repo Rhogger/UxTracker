@@ -31,9 +31,9 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
         
-        User? user;
-
         #region 02. Recuperar usuário do banco
+
+        Researcher? user;
 
         try
         {

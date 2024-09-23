@@ -11,18 +11,18 @@ public class Repository: IRepository
     
     public Repository(AppDbContext context) => _context = context;
     
-    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         => await _context
-            .Users
+            .Researchers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
-    public async Task UpdatePasswordAsync(User user, string plainTextPassword, CancellationToken cancellationToken)
+    public async Task UpdatePasswordAsync(Researcher user, string plainTextPassword, CancellationToken cancellationToken)
     {
         user.UpdatePassword(plainTextPassword);
 
         _context
-            .Users
+            .Researchers
             .Update(user);
 
         await _context.SaveChangesAsync(cancellationToken);

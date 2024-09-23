@@ -7,8 +7,8 @@ namespace UxTracker.Infra.Contexts.Account.UseCases.PasswordRecovery;
 public class Service: IService
 {
     private readonly SendGridService _sendGridService = new();
-    public async Task SendResetCodeAsync(User user, CancellationToken cancellationToken)
+    public async Task SendResetCodeAsync(Researcher user, CancellationToken cancellationToken)
     {
-        await _sendGridService.SendEmail(user, user.Password.ResetCode.Code, "d-047dd00bf3e74bc99fefff1fd3f4ce4a", cancellationToken);
+        await _sendGridService.SendEmail(user.Email.Address, user.Password.ResetCode.Code, "d-047dd00bf3e74bc99fefff1fd3f4ce4a", cancellationToken);
     }
 }

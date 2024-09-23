@@ -1,14 +1,22 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
-using AuthenticateInfra = UxTracker.Infra.Contexts.Account.UseCases.Authenticate;
-using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
-using CreateInfra = UxTracker.Infra.Contexts.Account.UseCases.Create;
-using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
-using DeleteInfra = UxTracker.Infra.Contexts.Account.UseCases.Delete;
-using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
-using GetUserInfra = UxTracker.Infra.Contexts.Account.UseCases.GetUser;
+using AuthenticateResearcher = UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher;
+using AuthenticateResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.AuthenticateResearcher;
+using AuthenticateReviewer = UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer;
+using AuthenticateReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.AuthenticateReviewer;
+using CreateResearcher = UxTracker.Core.Contexts.Account.UseCases.CreateResearcher;
+using CreateResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.CreateResearcher;
+using CreateReviewer = UxTracker.Core.Contexts.Account.UseCases.CreateReviewer;
+using CreateReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.CreateReviewer;
+using DeleteResearcher = UxTracker.Core.Contexts.Account.UseCases.DeleteResearcher;
+using DeleteResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.DeleteResearcher;
+using DeleteReviewer = UxTracker.Core.Contexts.Account.UseCases.DeleteReviewer;
+using DeleteReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.DeleteReviewer;
+using GetResearcher = UxTracker.Core.Contexts.Account.UseCases.GetResearcher;
+using GetResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.GetResearcher;
+using GetReviewer = UxTracker.Core.Contexts.Account.UseCases.GetReviewer;
+using GetReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.GetReviewer;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryInfra = UxTracker.Infra.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
@@ -17,14 +25,20 @@ using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
 using RefreshTokenInfra = UxTracker.Infra.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
 using ResendResetCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendResetCode;
-using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
-using ResendVerificationCodeInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCode;
-using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
-using UpdateAccountInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdateAccount;
+using ResendVerificationCodeResearcher = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeResearcher;
+using ResendVerificationCodeResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCodeResearcher;
+using ResendVerificationCodeReviewer = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
+using ResendVerificationCodeReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
 using UpdatePassword = UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
 using UpdatePasswordInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdatePassword;
-using Verify = UxTracker.Core.Contexts.Account.UseCases.Verify;
-using VerifyInfra = UxTracker.Infra.Contexts.Account.UseCases.Verify;
+using UpdateResearcher = UxTracker.Core.Contexts.Account.UseCases.UpdateResearcher;
+using UpdateResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdateResearcher;
+using UpdateReviewer = UxTracker.Core.Contexts.Account.UseCases.UpdateReviewer;
+using UpdateReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.UpdateReviewer;
+using VerifyResearcher = UxTracker.Core.Contexts.Account.UseCases.VerifyResearcher;
+using VerifyResearcherInfra = UxTracker.Infra.Contexts.Account.UseCases.VerifyResearcher;
+using VerifyReviewer = UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
+using VerifyReviewerInfra = UxTracker.Infra.Contexts.Account.UseCases.VerifyReviewer;
 
 namespace UxTracker.Api.Extensions;
 
@@ -32,44 +46,86 @@ public static class AccountContextExtension
 {
     public static void AddAccountContext(this WebApplicationBuilder builder)
     {
-        #region Authenticate
+        #region AuthenticateResearcher
 
         builder.Services.AddTransient<
-            Authenticate.Contracts.IRepository,
-            AuthenticateInfra.Repository
+            AuthenticateResearcher.Contracts.IRepository,
+            AuthenticateResearcherInfra.Repository
         >();       
         
         builder.Services.AddTransient<
-            Authenticate.Contracts.IService,
-            AuthenticateInfra.Service
+            AuthenticateResearcher.Contracts.IService,
+            AuthenticateResearcherInfra.Service
         >();
 
         #endregion
         
-        #region Create
+        #region AuthenticateReviewer
+
         builder.Services.AddTransient<
-            Create.Contracts.IRepository,
-            CreateInfra.Repository
+            AuthenticateReviewer.Contracts.IRepository,
+            AuthenticateReviewerInfra.Repository
+        >();       
+        
+        builder.Services.AddTransient<
+            AuthenticateReviewer.Contracts.IService,
+            AuthenticateReviewerInfra.Service
+        >();
+
+        #endregion
+        
+        #region CreateResearcher
+        builder.Services.AddTransient<
+            CreateResearcher.Contracts.IRepository,
+            CreateResearcherInfra.Repository
         >();
 
         builder.Services.AddTransient<
-            Create.Contracts.IService,
-            CreateInfra.Service
+            CreateResearcher.Contracts.IService,
+            CreateResearcherInfra.Service
         >();
         #endregion
-        
-        #region Delete
+       
+        #region CreateReviewer
         builder.Services.AddTransient<
-            Delete.Contracts.IRepository,
-            DeleteInfra.Repository
+            CreateReviewer.Contracts.IRepository,
+            CreateReviewerInfra.Repository
         >();
-        #endregion
-        
-        #region GetUser
 
         builder.Services.AddTransient<
-            GetUser.Contracts.IRepository,
-            GetUserInfra.Repository
+            CreateReviewer.Contracts.IService,
+            CreateReviewerInfra.Service
+        >();
+        #endregion
+        
+        #region DeleteResearcher
+        builder.Services.AddTransient<
+            DeleteResearcher.Contracts.IRepository,
+            DeleteResearcherInfra.Repository
+        >();
+        #endregion
+        
+        #region DeleteReviewer
+        builder.Services.AddTransient<
+            DeleteReviewer.Contracts.IRepository,
+            DeleteReviewerInfra.Repository
+        >();
+        #endregion
+        
+        #region GetResearcher
+
+        builder.Services.AddTransient<
+            GetResearcher.Contracts.IRepository,
+            GetResearcherInfra.Repository
+        >();
+        
+        #endregion
+        
+        #region GetReviewer
+
+        builder.Services.AddTransient<
+            GetReviewer.Contracts.IRepository,
+            GetReviewerInfra.Repository
         >();
         
         #endregion
@@ -125,26 +181,32 @@ public static class AccountContextExtension
 
         #endregion
         
-        #region ResendVerificationCode
+        #region ResendVerificationCodeResearcher
 
         builder.Services.AddTransient<
-            ResendVerificationCode.Contracts.IRepository,
-            ResendVerificationCodeInfra.Repository
+            ResendVerificationCodeResearcher.Contracts.IRepository,
+            ResendVerificationCodeResearcherInfra.Repository
         >();
         
         builder.Services.AddTransient<
-            ResendVerificationCode.Contracts.IService,
-            ResendVerificationCodeInfra.Service
+            ResendVerificationCodeResearcher.Contracts.IService,
+            ResendVerificationCodeResearcherInfra.Service
         >();
 
         #endregion
         
-        #region UpdateAccount
+        #region ResendVerificationCodeReviewer
 
         builder.Services.AddTransient<
-            UpdateAccount.Contracts.IRepository,
-            UpdateAccountInfra.Repository
+            ResendVerificationCodeReviewer.Contracts.IRepository,
+            ResendVerificationCodeReviewerInfra.Repository
         >();
+        
+        builder.Services.AddTransient<
+            ResendVerificationCodeReviewer.Contracts.IService,
+            ResendVerificationCodeReviewerInfra.Service
+        >();
+
         #endregion
         
         #region UpdatePassword
@@ -155,16 +217,46 @@ public static class AccountContextExtension
         >();
         #endregion
         
-        #region Verify
+        #region UpdateResearcher
 
         builder.Services.AddTransient<
-            Verify.Contracts.IRepository,
-            VerifyInfra.Repository
+            UpdateResearcher.Contracts.IRepository,
+            UpdateResearcherInfra.Repository
+        >();
+        #endregion
+        
+        #region UpdateReviewer
+
+        builder.Services.AddTransient<
+            UpdateReviewer.Contracts.IRepository,
+            UpdateReviewerInfra.Repository
+        >();
+        #endregion
+        
+        #region VerifyResearcher
+
+        builder.Services.AddTransient<
+            VerifyResearcher.Contracts.IRepository,
+            VerifyResearcherInfra.Repository
         >();
         
         builder.Services.AddTransient<
-            Verify.Contracts.IService,
-            VerifyInfra.Service
+            VerifyResearcher.Contracts.IService,
+            VerifyResearcherInfra.Service
+        >();
+
+        #endregion
+        
+        #region VerifyReviewer
+
+        builder.Services.AddTransient<
+            VerifyReviewer.Contracts.IRepository,
+            VerifyReviewerInfra.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            VerifyReviewer.Contracts.IService,
+            VerifyReviewerInfra.Service
         >();
 
         #endregion
@@ -172,14 +264,14 @@ public static class AccountContextExtension
 
     public static void MapAccountEndpoints(this WebApplication app)
     {
-        #region Authenticate
+        #region AuthenticateResearcher
         app.MapPost(
             "api/v1/users/researchers/authenticate",
             async (
-                Authenticate.Request request,
+                AuthenticateResearcher.Request request,
                 IRequestHandler<
-                    Authenticate.Request,
-                    Authenticate.Response
+                    AuthenticateResearcher.Request,
+                    AuthenticateResearcher.Response
                 > handler
             ) =>
             {
@@ -192,14 +284,34 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region Create
+        #region AuthenticateReviewer
+        app.MapPost(
+            "api/v1/users/reviewers/authenticate",
+            async (
+                AuthenticateReviewer.Request request,
+                IRequestHandler<
+                    AuthenticateReviewer.Request,
+                    AuthenticateReviewer.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region CreateResearcher
         app.MapPost(
             "api/v1/users/researchers/create",
             async (
-                Create.Request request,
+                CreateResearcher.Request request,
                 IRequestHandler<
-                    Create.Request,
-                    Create.Response
+                    CreateResearcher.Request,
+                    CreateResearcher.Response
                 > handler
             ) =>
             {
@@ -212,13 +324,33 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region Delete
+        #region CreateReviewer
+        app.MapPost(
+            "api/v1/users/reviewers/create",
+            async (
+                CreateReviewer.Request request,
+                IRequestHandler<
+                    CreateReviewer.Request,
+                    CreateReviewer.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region DeleteResearcher
         app.MapPatch(
             "api/v1/users/researchers/account/inactivate",
             [Authorize (Policy = "ResearcherPolicy")] async (
                 HttpContext httpContext, 
-                Delete.Request request,
-                [FromServices] IRequestHandler<Delete.Request, Delete.Response> handler
+                DeleteResearcher.Request request,
+                [FromServices] IRequestHandler<DeleteResearcher.Request, DeleteResearcher.Response> handler
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
@@ -237,12 +369,37 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region GetUser
+        #region DeleteReviewer
+        app.MapPatch(
+            "api/v1/users/reviewers/account/inactivate",
+            [Authorize (Policy = "ReviewerPolicy")] async (
+                HttpContext httpContext, 
+                DeleteReviewer.Request request,
+                [FromServices] IRequestHandler<DeleteReviewer.Request, DeleteReviewer.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.Id = userId;
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region GetResearcher
         app.MapGet(
             "api/v1/users/researchers/account/",
             [Authorize (Policy = "ResearcherPolicy")] async (
                 HttpContext httpContext, 
-                [FromServices] IRequestHandler<GetUser.Request, GetUser.Response> handler
+                [FromServices] IRequestHandler<GetResearcher.Request, GetResearcher.Response> handler
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
@@ -250,7 +407,34 @@ public static class AccountContextExtension
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized();
 
-                var request = new GetUser.Request
+                var request = new GetResearcher.Request
+                {
+                    Id = userId
+                };
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region GetReviewer
+        app.MapGet(
+            "api/v1/users/reviewers/account/",
+            [Authorize (Policy = "ReviewerPolicy")] async (
+                HttpContext httpContext, 
+                [FromServices] IRequestHandler<GetReviewer.Request, GetReviewer.Response> handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+                    
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                var request = new GetReviewer.Request
                 {
                     Id = userId
                 };
@@ -351,14 +535,14 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region ResendVerificationCode
+        #region ResendVerificationCodeResearcher
         app.MapPatch(
             "api/v1/users/researchers/verify/resend",
             async (
-                ResendVerificationCode.Request request,
+                ResendVerificationCodeResearcher.Request request,
                 IRequestHandler<
-                    ResendVerificationCode.Request,
-                    ResendVerificationCode.Response
+                    ResendVerificationCodeResearcher.Request,
+                    ResendVerificationCodeResearcher.Response
                 > handler
             ) =>
             {
@@ -371,33 +555,24 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region UpdateAccount
+        #region ResendVerificationCodeReviewer
         app.MapPatch(
-                "api/v1/users/researchers/account",
-                [Authorize (Policy = "ResearcherPolicy")] async (
-                    HttpContext httpContext,
-                    UpdateAccount.Request request,
-                    IRequestHandler<
-                        UpdateAccount.Request,
-                        UpdateAccount.Response
-                    > handler
-                ) =>
-                {
-                    var userId = httpContext.User.FindFirst("Id")?.Value;
+            "api/v1/users/reviewers/verify/resend",
+            async (
+                ResendVerificationCodeReviewer.Request request,
+                IRequestHandler<
+                    ResendVerificationCodeReviewer.Request,
+                    ResendVerificationCodeReviewer.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
 
-                    if (string.IsNullOrEmpty(userId))
-                        return Results.Unauthorized();
-
-                    request.Id = userId;
-                
-                    var result = await handler.Handle(request, new CancellationToken());
-
-                    return result.IsSuccess
-                        ? Results.Ok(result)
-                        : Results.Json(result, statusCode: result.StatusCode);
-                }
-            )
-            .RequireAuthorization("Researcher");
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
         #endregion
         
         #region UpdatePassword
@@ -420,14 +595,94 @@ public static class AccountContextExtension
         );
         #endregion
         
-        #region Verify
+        #region UpdateResearcher
+        
+        app.MapPatch(
+                "api/v1/users/researchers/account",
+                [Authorize (Policy = "ResearcherPolicy")] async (
+                    HttpContext httpContext,
+                    UpdateResearcher.Request request,
+                    IRequestHandler<
+                        UpdateResearcher.Request,
+                        UpdateResearcher.Response
+                    > handler
+                ) =>
+                {
+                    var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                    if (string.IsNullOrEmpty(userId))
+                        return Results.Unauthorized();
+
+                    request.Id = userId;
+                
+                    var result = await handler.Handle(request, new CancellationToken());
+
+                    return result.IsSuccess
+                        ? Results.Ok(result)
+                        : Results.Json(result, statusCode: result.StatusCode);
+                }
+            );
+        
+        #endregion
+        
+        #region UpdateReviewer
+        
+        app.MapPatch(
+                "api/v1/users/reviewers/account",
+                [Authorize (Policy = "ReviewerPolicy")] async (
+                    HttpContext httpContext,
+                    UpdateReviewer.Request request,
+                    IRequestHandler<
+                        UpdateReviewer.Request,
+                        UpdateReviewer.Response
+                    > handler
+                ) =>
+                {
+                    var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                    if (string.IsNullOrEmpty(userId))
+                        return Results.Unauthorized();
+
+                    request.Id = userId;
+                
+                    var result = await handler.Handle(request, new CancellationToken());
+
+                    return result.IsSuccess
+                        ? Results.Ok(result)
+                        : Results.Json(result, statusCode: result.StatusCode);
+                }
+            );
+        
+        #endregion
+        
+        #region VerifyResearcher
         app.MapPatch(
             "api/v1/users/researchers/verify",
             async (
-                Verify.Request request,
+                VerifyResearcher.Request request,
                 IRequestHandler<
-                    Verify.Request,
-                    Verify.Response
+                    VerifyResearcher.Request,
+                    VerifyResearcher.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+        #endregion
+        
+        #region VerifyReviewer
+        app.MapPatch(
+            "api/v1/users/reviewers/verify",
+            async (
+                VerifyReviewer.Request request,
+                IRequestHandler<
+                    VerifyReviewer.Request,
+                    VerifyReviewer.Response
                 > handler
             ) =>
             {
