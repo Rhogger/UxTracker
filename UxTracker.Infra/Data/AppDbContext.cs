@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
         : base(options) { }
 
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Researcher> Researchers { get; set; } = null!;
+    public DbSet<Reviewer> Reviewers { get; set; } = null!;
     public DbSet<Role> Roles { get; set; } = null!;
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<Relatory> Relatories { get; set; } = null!;
@@ -19,6 +21,8 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserMap());
+        modelBuilder.ApplyConfiguration(new ResearcherMap());
+        modelBuilder.ApplyConfiguration(new ReviewerMap());
         modelBuilder.ApplyConfiguration(new RoleMap());
         modelBuilder.ApplyConfiguration(new ProjectMap());
         modelBuilder.ApplyConfiguration(new RelatoryMap());

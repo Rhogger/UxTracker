@@ -19,9 +19,9 @@ public class RoleMap: IEntityTypeConfiguration<Role>
         /*===================Seeding===================*/
 
         builder.HasData(
-            new Role { Name = "Admin"},
-            new Role { Name = "Researcher"},
-            new Role { Name = "Reviewer"}
-            );
+            new Role("Admin"),
+            new Role("Researcher"),
+            new Role("Reviewer")
+        );
     }
 }
