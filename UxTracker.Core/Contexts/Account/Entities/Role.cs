@@ -5,7 +5,13 @@ namespace UxTracker.Core.Contexts.Account.Entities;
 
 public class Role: Entity
 {
-    public string Name { get; set; } = string.Empty;
+    protected Role() { }
+
+    public Role(string name)
+    {
+        Name = name;
+    }
+    public string Name { get; private set; } = string.Empty;
     [JsonIgnore]
-    public List<User> Users { get; set; } = new();
+    public List<User> Users { get; init; } = new();
 }
