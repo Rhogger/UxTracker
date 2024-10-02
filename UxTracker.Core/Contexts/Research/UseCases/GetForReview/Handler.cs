@@ -1,10 +1,8 @@
 using MediatR;
-using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Research.DTOs;
-using UxTracker.Core.Contexts.Research.Entities;
-using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
+using UxTracker.Core.Contexts.Research.UseCases.GetForReview.Contracts;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
+namespace UxTracker.Core.Contexts.Research.UseCases.GetForReview;
 
 public class Handler : IRequestHandler<Request, Response>
 {
@@ -35,13 +33,13 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 02. Recuperar usuário do banco
         
-        List<GetAllDTO>? projects;
+        GetForReviewDTO? project;
 
         try
         {
-            projects = await _repository.GetProjectsByUser(request.UserId, cancellationToken);
+            project = await _repository.GetProjectsByIdAsync(request.ProjectId, cancellationToken);
 
-            if (projects is null)
+            if (project is null)
                 return new Response("Usuário não encontrado", 404);
         }
         catch
@@ -51,11 +49,26 @@ public class Handler : IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 03. Retornar os dados
+        #region 03. Verificar se usuário participa da pesquisa
+
+        bool accepted;
         
         try
         {
-            return new Response(string.Empty, new ResponseData(projects));
+            accepted = await _repository.IsTermAcceptedAsync(request.UserId, request.ProjectId, cancellationToken);
+        }
+        catch
+        {
+            return new Response("Não foi possível verificar se o TCLE foi aceito", 500);
+        }
+        
+        #endregion
+
+        #region 04. Retornar os dados
+        
+        try
+        {
+            return new Response(string.Empty, new ResponseData(project, accepted));
         }
         catch
         {

@@ -1,7 +1,7 @@
 using Flunt.Notifications;
-using UxTracker.Core.Contexts.Research.DTOs;
+using UxTracker.Core.Contexts.Research.Entities;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
+namespace UxTracker.Core.Contexts.Research.UseCases.Get;
 
 public class Response : Shared.UseCases.Response
 {
@@ -25,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(List<GetAllDTO> Projects);
+public record ResponseData(Project project);

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UxTracker.Infra.Data;
 
@@ -11,9 +12,11 @@ using UxTracker.Infra.Data;
 namespace UxTracker.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240924154128_v1.9.5-auth")]
+    partial class v195auth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,17 +74,17 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3e5bbb54-f4f9-4baf-8108-c341436921f9"),
+                            Id = new Guid("2fddbcdc-55df-47fd-9a18-365561930424"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("ac43f877-bd0d-496d-bb21-2aed8f293ddc"),
+                            Id = new Guid("17b62251-8654-46a0-91d0-5e19f64cd975"),
                             Name = "Researcher"
                         },
                         new
                         {
-                            Id = new Guid("f40d2d9d-7185-4142-8b29-97fd4b76375c"),
+                            Id = new Guid("e3dfd953-5c11-43b2-a8b8-28fa9387d19d"),
                             Name = "Reviewer"
                         });
                 });
@@ -132,6 +135,10 @@ namespace UxTracker.Api.Migrations
                         .HasColumnType("NVARCHAR(10)")
                         .HasColumnName("PeriodType");
 
+                    b.Property<int>("ReviewersCount")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ReviewersCount");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("StartDate");
@@ -181,68 +188,34 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("28a7a185-f704-4d5d-88e5-da6a643cbbbd"),
+                            Id = new Guid("0b5badda-0858-4c43-aeb1-aebcaef0ba20"),
                             Title = "Visão geral da evolução das avaliações"
                         },
                         new
                         {
-                            Id = new Guid("230d81b7-e80a-4e07-aa24-0a0810e1b8b5"),
+                            Id = new Guid("21c4d3c8-4c76-4d23-b2e4-eb8c287a17cf"),
                             Title = "Avaliações de cada usuário por período"
                         },
                         new
                         {
-                            Id = new Guid("4e5a8bdf-516d-4094-960d-9a7116725b97"),
+                            Id = new Guid("b4d0f526-16f2-441e-9759-a20f43e758af"),
                             Title = "Distribuição das avaliações por período"
                         },
                         new
                         {
-                            Id = new Guid("dbd22ca3-a9b4-495c-ab87-b69824d8fcc9"),
+                            Id = new Guid("6d7f4bed-f8e3-4c95-94c6-f1d2e9633ac7"),
                             Title = "Frequência das avaliações por período de tempo"
                         },
                         new
                         {
-                            Id = new Guid("62c408cb-dc25-4209-b405-6befd5dcaa5d"),
+                            Id = new Guid("9d6ec478-de7c-4a2d-9f4f-5b5741c7c5b4"),
                             Title = "Número adequado de clusters de usuário"
                         },
                         new
                         {
-                            Id = new Guid("d9a791fa-0d20-47bd-9683-88bf52b3bfc2"),
+                            Id = new Guid("79110951-c75f-4430-93cf-389460a37ade"),
                             Title = "Média da experiência do usuário ao longo do tempo"
                         });
-                });
-
-            modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.Rate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(255)")
-                        .HasColumnName("Comment");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("RatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("RatedAt");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("Rating");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.UserAcceptedTcle", b =>
@@ -462,25 +435,6 @@ namespace UxTracker.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.Rate", b =>
-                {
-                    b.HasOne("UxTracker.Core.Contexts.Research.Entities.Project", "Project")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.Reviewer", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Researcher", b =>
                 {
                     b.HasOne("UxTracker.Core.Contexts.Account.Entities.User", null)
@@ -499,19 +453,9 @@ namespace UxTracker.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Project", b =>
-                {
-                    b.Navigation("Reviews");
-                });
-
             modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Researcher", b =>
                 {
                     b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Reviewer", b =>
-                {
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

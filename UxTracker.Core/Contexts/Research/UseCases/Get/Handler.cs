@@ -1,8 +1,8 @@
 using MediatR;
 using UxTracker.Core.Contexts.Research.Entities;
-using UxTracker.Core.Contexts.Research.UseCases.GetProject.Contracts;
+using UxTracker.Core.Contexts.Research.UseCases.Get.Contracts;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.GetProject;
+namespace UxTracker.Core.Contexts.Research.UseCases.Get;
 
 public class Handler: IRequestHandler<Request, Response>
 {

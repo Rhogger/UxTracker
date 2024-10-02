@@ -3,7 +3,7 @@ using UxTracker.Core.Contexts.Shared.Entities;
 
 namespace UxTracker.Core.Contexts.Research.DTOs;
 
-public class GetAllProjectDTO
+public class GetAllDTO
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;

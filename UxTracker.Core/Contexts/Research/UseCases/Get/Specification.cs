@@ -1,7 +1,7 @@
 using Flunt.Notifications;
 using Flunt.Validations;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.GetProject;
+namespace UxTracker.Core.Contexts.Research.UseCases.Get;
 
 public static class Specification
 {

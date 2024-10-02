@@ -55,11 +55,6 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnName("ConsentTermHash")
             .HasColumnType("NVARCHAR(64)")
             .IsRequired(true);
-        
-        builder.Property(x => x.ReviewersCount)
-            .HasColumnName("ReviewersCount")
-            .HasColumnType("INTEGER")
-            .IsRequired(true);
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.Projects)
@@ -74,11 +69,18 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
                     .HasOne<Relatory>()
                     .WithMany()
                     .HasForeignKey("RelatoryId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                    .OnDelete(DeleteBehavior.Cascade)
+                ,
                 project => project
                     .HasOne<Project>()
                     .WithMany()
                     .HasForeignKey("ProjectId")
-                    .OnDelete(DeleteBehavior.Cascade));
+                    .OnDelete(DeleteBehavior.Cascade)
+            );
+        
+        builder.HasMany(x => x.Reviews)
+            .WithOne(x => x.Project)
+            .HasForeignKey(x => x.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

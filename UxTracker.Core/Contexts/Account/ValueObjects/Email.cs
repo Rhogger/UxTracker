@@ -7,8 +7,6 @@ namespace UxTracker.Core.Contexts.Account.ValueObjects;
 
 public partial class Email : ValueObject
 {
-    protected Email() { }
-
     public Email(string address)
     {
         if (string.IsNullOrEmpty(address))
@@ -37,7 +35,7 @@ public partial class Email : ValueObject
     public override string ToString() => Address;
 
     [GeneratedRegex(Pattern)]
-    private static partial Regex EmailRegex();
+    internal static partial Regex EmailRegex();
     
     public string ToSha256Hash()
     {

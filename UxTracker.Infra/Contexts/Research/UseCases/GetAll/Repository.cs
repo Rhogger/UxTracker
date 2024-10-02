@@ -11,19 +11,18 @@ public class Repository : IRepository
 
     public Repository(AppDbContext context) => _context = context;
 
-    public async Task<List<GetAllProjectDTO>?> GetProjectsByUser(string userId, CancellationToken cancellationToken) => 
+    public async Task<List<GetAllDTO>?> GetProjectsByUser(string userId, CancellationToken cancellationToken) => 
         await _context
             .Projects
             .AsNoTracking()
             .Where(x => x.UserId.ToString() == userId)
-            .Select(x => new GetAllProjectDTO
+            .Select(x => new GetAllDTO
             {
                 Id = x.Id,
                 Title = x.Title,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
                 Status = x.Status,
-                ReviewersCount = x.ReviewersCount,
                 SurveyCollections = x.SurveyCollections
             })
             .ToListAsync(cancellationToken);

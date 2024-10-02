@@ -9,10 +9,12 @@ using Create = UxTracker.Core.Contexts.Research.UseCases.Create;
 using CreateInfra = UxTracker.Infra.Contexts.Research.UseCases.Create;
 using Delete = UxTracker.Core.Contexts.Research.UseCases.Delete;
 using DeleteInfra = UxTracker.Infra.Contexts.Research.UseCases.Delete;
+using Get = UxTracker.Core.Contexts.Research.UseCases.Get;
+using GetInfra = UxTracker.Infra.Contexts.Research.UseCases.Get;
 using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
-using GetProjectInfra = UxTracker.Infra.Contexts.Research.UseCases.GetProject;
-using GetProject = UxTracker.Core.Contexts.Research.UseCases.GetProject;
 using GetAllInfra = UxTracker.Infra.Contexts.Research.UseCases.GetAll;
+using GetForReview = UxTracker.Core.Contexts.Research.UseCases.GetForReview;
+using GetForReviewInfra = UxTracker.Infra.Contexts.Research.UseCases.GetForReview;
 using Update = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateInfra = UxTracker.Infra.Contexts.Research.UseCases.Update;
 
@@ -45,6 +47,15 @@ public static class ResearchContextExtension
         
         #endregion
         
+        #region Get
+
+        builder.Services.AddTransient<
+            Get.Contracts.IRepository,
+            GetInfra.Repository
+        >();
+        
+        #endregion
+        
         #region GetAll
 
         builder.Services.AddTransient<
@@ -54,11 +65,11 @@ public static class ResearchContextExtension
         
         #endregion
         
-        #region GetProject
+        #region GetForReview
 
         builder.Services.AddTransient<
-            GetProject.Contracts.IRepository,
-            GetProjectInfra.Repository
+            GetForReview.Contracts.IRepository,
+            GetForReviewInfra.Repository
         >();
         
         #endregion
@@ -84,8 +95,7 @@ public static class ResearchContextExtension
 
         app.MapPost(
             "api/v1/projects/create",
-            [Authorize (Policy = "ResearcherPolicy")]
-            [Consumes("multipart/form-data")]
+            [Authorize(Policy = "ResearcherPolicy")] [Consumes("multipart/form-data")]
             async (
                 HttpContext httpContext,
                 IFormFile? consentTerm,
@@ -102,7 +112,7 @@ public static class ResearchContextExtension
                     return Results.Unauthorized();
 
                 request.UserId = userId;
-                
+
                 if (consentTerm is not { Length: > 0 })
                 {
                     return Results.BadRequest("Nenhum arquivo foi enviado.");
@@ -112,7 +122,7 @@ public static class ResearchContextExtension
                 {
                     return Results.BadRequest("Apenas arquivos PDF são aceitos.");
                 }
-                
+
                 if (consentTerm.Length > Configuration.ConsentTerm.MaxSize)
                 {
                     return Results.BadRequest("O arquivo deve ter no máximo 2MB.");
@@ -123,13 +133,14 @@ public static class ResearchContextExtension
                 using (var sha256 = SHA256.Create())
                 {
                     await using var stream = consentTerm.OpenReadStream();
-                    fileHash = BitConverter.ToString(await sha256.ComputeHashAsync(stream)).Replace("-", "").ToLowerInvariant();
+                    fileHash = BitConverter.ToString(await sha256.ComputeHashAsync(stream)).Replace("-", "")
+                        .ToLowerInvariant();
                 }
 
                 request.ConsentTermHash = fileHash;
 
                 var result = await handler.Handle(request, new CancellationToken());
-        
+
                 if (!result.IsSuccess)
                 {
                     return Results.Json(result, statusCode: result.StatusCode);
@@ -159,21 +170,22 @@ public static class ResearchContextExtension
                 return Results.Created("api/v1/projects/create", result);
             }
         ).DisableAntiforgery();
-        
+
         #endregion
-        
+
         #region Delete
-        
+
         app.MapDelete(
             $"api/v1/projects/{{projectId}}",
-            [Authorize (Policy = "ResearcherPolicy")] async (
-                HttpContext httpContext, 
+            [Authorize(Policy = "ResearcherPolicy")]
+            async (
+                HttpContext httpContext,
                 [FromRoute] string projectId,
                 [FromServices] ITransactionalHandler<Delete.Request, Delete.Response> handler
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
-                    
+
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized();
 
@@ -192,11 +204,11 @@ public static class ResearchContextExtension
                 }
 
                 var directory = $"{Configuration.ConsentTerm.Url}{projectId}";
-                
+
                 try
                 {
                     if (!Directory.Exists(directory)) throw new Exception("Diretório não encontrado");
-                    
+
                     Directory.Delete(directory, recursive: true);
                 }
                 catch (Exception ex)
@@ -209,13 +221,49 @@ public static class ResearchContextExtension
                 return Results.Ok();
             }
         );
+
         #endregion
-        
+
+        #region Get
+
+        app.MapGet(
+            $"api/v1/projects/{{projectId}}",
+            [Authorize(Policy = "ResearcherPolicy")]
+            async (
+                HttpContext httpContext,
+                [FromRoute] string projectId,
+                IRequestHandler<
+                    Get.Request,
+                    Get.Response
+                > handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                var request = new Get.Request
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                };
+
+                var result = await handler.Handle(request, new CancellationToken());
+
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+
+        #endregion
+
         #region GetAll
 
         app.MapGet(
             "api/v1/projects/",
-            [Authorize (Policy = "ResearcherPolicy")] 
+            [Authorize(Policy = "ResearcherPolicy")]
             async (
                 HttpContext httpContext,
                 IRequestHandler<
@@ -225,7 +273,7 @@ public static class ResearchContextExtension
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
-                    
+
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized();
 
@@ -243,27 +291,26 @@ public static class ResearchContextExtension
         );
 
         #endregion
-        
-        #region GetProject
+
+        #region GetForReview
 
         app.MapGet(
-            $"api/v1/projects/{{projectId}}",
-            [Authorize (Policy = "ResearcherPolicy")] 
-            async (
+            $"api/v1/review/{{projectId}}",
+            [Authorize(Policy = "ReviewerPolicy")] async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,
                 IRequestHandler<
-                    GetProject.Request,
-                    GetProject.Response
+                    GetForReview.Request,
+                    GetForReview.Response
                 > handler
             ) =>
             {
                 var userId = httpContext.User.FindFirst("Id")?.Value;
-                    
+
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized();
 
-                var request = new GetProject.Request
+                var request = new GetForReview.Request
                 {
                     UserId = userId,
                     ProjectId = projectId,
@@ -271,6 +318,15 @@ public static class ResearchContextExtension
 
                 var result = await handler.Handle(request, new CancellationToken());
 
+                if (result.Data.Accepted)
+                    return result.IsSuccess
+                        ? Results.Ok(result)
+                        : Results.Json(result, statusCode: result.StatusCode);
+                
+                var filePath = $"{Configuration.ConsentTerm.Url}{projectId}";
+
+                result.Data = result.Data with { TermUrl = filePath };
+                
                 return result.IsSuccess
                     ? Results.Ok(result)
                     : Results.Json(result, statusCode: result.StatusCode);

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using UxTracker.Core.Contexts.Account.Enums;
 using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Contexts.Review.Entities;
 
 namespace UxTracker.Core.Contexts.Account.Entities;
 
@@ -22,6 +23,7 @@ public class Reviewer: User
     public string Country { get; private set; }
     public string State { get; private set; }
     public string City { get; private set; }
+    public List<Rate> Reviews { get; private set; }
 
     public void UpdateCountry(string country) => Country = country;
     public void UpdateState(string state) => State = state;

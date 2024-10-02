@@ -14,6 +14,7 @@ builder.AddSecurity();
 builder.AddFormOptions();
 builder.AddAccountContext();
 builder.AddResearchContext();
+builder.AddReviewContext();
 
 builder.AddMediator();
 
@@ -30,5 +31,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapAccountEndpoints();
 app.MapResearchEndpoints();
+app.MapReviewEndpoints();
 
 app.Run();

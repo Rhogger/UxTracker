@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Research.Enums;
+using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Core.Contexts.Shared.Entities;
 
 namespace UxTracker.Core.Contexts.Research.Entities;
@@ -15,39 +16,46 @@ public class Project: Entity
         Title = title;
         Description = description;
         StartDate = startDate;
-        Status = SetStatus();
         PeriodType = periodType;
         SurveyCollections = surveyCollections;
-        LastSurveyCollection = 0;
         ConsentTermHash = consentTermHash;
-        ReviewersCount = 0;
         Relatories = relatories;
     }
     
     public Guid UserId { get; private set; }
     public string Title { get; private set; } = string.Empty;
     public string Description {get; private set; }  = string.Empty;
-    public Status Status { get; private set; }
+    public Status Status
+    {
+        get
+        {
+            if (StartDate >= DateTime.UtcNow)
+            {
+                return Status.NotStarted;
+            }
+                
+            return EndDate <= DateTime.UtcNow ? Status.Finished : Status.InProgress;
+        }
+    }
     public DateTime StartDate {get; private set; }
     public DateTime? EndDate {get; private set; }
     public PeriodType PeriodType { get; private set; } = PeriodType.Daily;
     public int SurveyCollections { get; private set; }
-    public int LastSurveyCollection { get;}
+    public int LastSurveyCollection
+    {
+        get
+        {
+            return  Reviews
+                .GroupBy(x => x.UserId)
+                .Select(x => x.Count())
+                .Max();
+        }
+    }
     public string ConsentTermHash { get; private set; }
-    public int ReviewersCount { get; }
     [JsonIgnore]
     public Researcher User { get; private set; }
     public List<Relatory> Relatories { get; private set; } = new();
-
-    private Status SetStatus()
-    {
-        if(DateTime.UtcNow >= EndDate)
-            return Status.Finished;
-        if(StartDate <= DateTime.UtcNow && DateTime.UtcNow < EndDate)
-            return Status.InProgress;
-
-        return Status.NotStarted;
-    }
+    public List<Rate> Reviews { get; private set; } = new();
     
     public void UpdateTitle(string title)
     {

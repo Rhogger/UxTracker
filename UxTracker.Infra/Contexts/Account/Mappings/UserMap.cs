@@ -92,11 +92,13 @@ public class UserMap : IEntityTypeConfiguration<User>
                     .HasOne<Role>()
                     .WithMany()
                     .HasForeignKey("RoleId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                    .OnDelete(DeleteBehavior.Cascade)
+                ,
                 user => user
                     .HasOne<User>()
                     .WithMany()
                     .HasForeignKey("UserId")
-                    .OnDelete(DeleteBehavior.Cascade));
+                    .OnDelete(DeleteBehavior.Cascade)
+            );
     }
 }

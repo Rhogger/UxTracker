@@ -1,10 +1,8 @@
 using MediatR;
-using UxTracker.Core.Contexts.Account.Entities;
-using UxTracker.Core.Contexts.Research.DTOs;
-using UxTracker.Core.Contexts.Research.Entities;
-using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
+using UxTracker.Core.Contexts.Review.Entities;
+using UxTracker.Core.Contexts.Review.UseCases.AcceptTerm.Contracts;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
+namespace UxTracker.Core.Contexts.Review.UseCases.AcceptTerm;
 
 public class Handler : IRequestHandler<Request, Response>
 {
@@ -33,34 +31,37 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        #region 02. Recuperar usuário do banco
-        
-        List<GetAllDTO>? projects;
+        #region 02. Gerar os Objetos
+
+        UserAcceptedTcle tcle;
 
         try
         {
-            projects = await _repository.GetProjectsByUser(request.UserId, cancellationToken);
+            tcle = new UserAcceptedTcle(Guid.Parse(request.UserId), Guid.Parse(request.ProjectId), DateTime.UtcNow);
+        }
+        catch (Exception ex)
+        {
+            return new Response(ex.Message, 400);
+        }
+        
+        #endregion
 
-            if (projects is null)
-                return new Response("Usuário não encontrado", 404);
+        #region 03. Aceitar o termo
+
+        try
+        {
+            await _repository.AcceptTermAsync(tcle, cancellationToken);
         }
         catch
         {
-            return new Response("Não foi possível encontrar o usuário", 500);
+            return new Response("Falha ao aceitar o termo", 500);
         }
 
         #endregion
 
-        #region 03. Retornar os dados
+        #region 04. Retornar os dados
         
-        try
-        {
-            return new Response(string.Empty, new ResponseData(projects));
-        }
-        catch
-        {
-            return new Response("Não foi possível retornar os projetos do perfil", 500);
-        }
+        return new Response("Termo aceito", 200);
 
         #endregion
     }
