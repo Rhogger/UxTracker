@@ -12,23 +12,28 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-      
+
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
       - name: Restore dependencies
-        run: dotnet restore
-      
+        run: dotnet restore --verbosity quiet
+
+      - name: Clean solution
+        run: dotnet clean --verbosity quiet
+
       - name: Build
-        run: dotnet build --configuration Release --no-restore
-      
+        run: dotnet build ./UxTracker.UnitTests/UxTracker.UnitTests.csproj --configuration Release --no-restore --verbosity detailed
+
       - name: Run tests
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test ./UxTracker.UnitTests/UxTracker.UnitTests.csproj --no-restore --verbosity normal --filter "FullyQualifiedName~Test" --logger "console;verbosity=normal"
