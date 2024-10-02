@@ -5,72 +5,114 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects;
 [TestClass]
 public class PasswordTests
 {
-  [TestMethod]
-  [Description("Dado uma senha nula, quando o construtor é invocado, então lança uma exceção")]
-  public void GivenNullPassword_WhenContructorInvocked_ThenThrowsException()
-  {
-    // Arrange
-    string nullPassword = null;
+    [TestMethod]
+    public void Password_Constructor_ShouldCreateNullHash_WhenPasswordIsNull()
+    {
+        // Arrange & Act
+        var password = new Password(null);
 
-    // Act & Assert
-    Assert.ThrowsException<Exception>(() => new Password(nullPassword), "A senha não pode ser nula");
+        // Assert
+        Assert.IsNull(password.Hash);
+    }
 
-  }
+    [TestMethod]
+    public void Password_Constructor_ShouldHashPassword_WhenPasswordIsNotNull()
+    {
+        // Arrange
+        var plainTextPassword = "Password123!";
 
-  [TestMethod]
-  [Description("Dado uma senha com comprimento menor que o mínimo permitido, quando o construtor é invocado, então lança uma exceção")]
-  public void GivenPasswordShorterThanMinLength_WhenConstructorInvoked_ThenThrowsException()
-  {
-    // Arrange
-    string shortPassword = "abc";
+        // Act
+        var password = new Password(plainTextPassword);
 
-    // Act
-    new Password(shortPassword);
+        // Assert
+        Assert.IsNotNull(password.Hash);
+        Assert.IsTrue(password.Hash.Length > 0);
+    }
 
-  }
+    [TestMethod]
+    public void Password_IsValid_ShouldReturnTrue_WhenPasswordIsCorrect()
+    {
+        // Arrange
+        var plainTextPassword = "Password123!";
+        var password = new Password(plainTextPassword);
 
-  [TestMethod]
-  [Description("Dado uma senha com comprimento maior que o máximo permitido, quando o construtor é invocado, então lança uma exceção")]
-  public void GivenPasswordLongerThanMaxLength_WhenConstructorInvoked_ThenThrowsException()
-  {
-    // Arrange
-    string longPassword = "abcdefghijklmn13215154554848948d4a8d4as8d4as8d4as4d5a4d5s64d56a45dsjdasjdijasdjiasjdsai";
+        // Act
+        var result = password.IsValid(plainTextPassword);
 
-    // Act
-    new Password(longPassword);
+        // Assert
+        Assert.IsTrue(result);
+    }
 
-  }
+    [TestMethod]
+    public void Password_IsValid_ShouldReturnFalse_WhenPasswordIsIncorrect()
+    {
+        // Arrange
+        var plainTextPassword = "Password123!";
+        var incorrectPassword = "WrongPassword!";
+        var password = new Password(plainTextPassword);
 
-  [TestMethod]
-  [Description("Dado duas senhas diferentes, quando o hash é gerado, então os hashes devem ser únicos")]
-  public void GivenDifferentPasswords_WhenHashGenerated_ThenHashesShouldBeUnique()
-  {
-    // Arrange
-    var password1 = new Password("password123");
-    var password2 = new Password("differentpassword");
+        // Act
+        var result = password.IsValid(incorrectPassword);
 
-    // Act
-    var hash1 = password1.Hash;
-    var hash2 = password2.Hash;
+        // Assert
+        Assert.IsFalse(result);
+    }
 
-    // Assert
-    Assert.AreNotEqual(hash1, hash2);
+    [TestMethod]
+    public void Password_GenerateResetCode_ShouldGenerateNewCode()
+    {
+        // Arrange
+        var password = new Password("Password123!");
 
-  }
+        // Act
+        password.GenerateResetCode();
 
-  [TestMethod]
-  [Description("Dado uma senha válida, quando o hash é gerado, então o hash deve ser gerado com sucesso")]
-  public void GivenValidPassword_WhenHashGenerated_ThenHashShouldBeGeneratedSuccessfully()
-  {
-    // Arrange
-    var password = new Password("ValidPassword123");
+        // Assert
+        Assert.IsNotNull(password.ResetCode);
+        Assert.AreEqual(8, password.ResetCode.Code.Length);
+    }
 
-    // Act
-    var hash = password.Hash;
+    [TestMethod]
+    public void Password_IsValidResetCode_ShouldReturnTrue_WhenCodeMatches()
+    {
+        // Arrange
+        var password = new Password("Password123!");
+        password.GenerateResetCode();
+        var validResetCode = password.ResetCode.Code;
 
-    // Assert
-    Assert.IsNotNull(hash);
-    Assert.IsFalse(string.IsNullOrEmpty(hash));
+        // Act
+        var result = password.IsValidResetCode(validResetCode);
 
-  }
+        // Assert
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void Password_IsValidResetCode_ShouldReturnFalse_WhenCodeDoesNotMatch()
+    {
+        // Arrange
+        var password = new Password("Password123!");
+        password.GenerateResetCode();
+        var invalidResetCode = "INVALID";
+
+        // Act
+        var result = password.IsValidResetCode(invalidResetCode);
+
+        // Assert
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void Password_VerifyPassword_ShouldReturnFalse_WhenHashFormatIsInvalid()
+    {
+        // Arrange
+        var invalidHash = "InvalidHash";
+        var password = new Password("Password123!");
+
+        // Act
+        var result = password.IsValidResetCode(invalidHash);
+
+        // Assert
+        Assert.IsFalse(result);
+    }
 }

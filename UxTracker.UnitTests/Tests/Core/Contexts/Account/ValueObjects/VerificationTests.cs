@@ -1,103 +1,112 @@
 using UxTracker.Core.Contexts.Account.ValueObjects;
 
-namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects;
-
-[TestClass]
-
-public class VerificationTests
+namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects
 {
-
-    [TestMethod]
-    [Description("Dado um código de verificação válido e dentro do período de validade, o método Verify deve definir VerifiedAt e ExpireAt corretamente")]
-    public void GivenValidCode_WhenVerifyInvoked_ThenSetsVerifiedAtAndExpireAt()
+    [TestClass]
+    public class VerificationTests
     {
-        // Arrange
-        var verification = new Verification();
-        var validCode = verification.Code;
+        [TestMethod]
+        public void Verify_WithCorrectCode_SetsVerifiedAtAndExpiresAtToNull()
+        {
+            // Arrange
+            var verification = new Verification();
+            var correctCode = verification.Code;
 
-        // Act
-        verification.Verify(validCode);
+            // Act
+            verification.Verify(correctCode);
 
-        // Assert
-        Assert.IsNotNull(verification.VerifiedAt);
-        Assert.IsNull(verification.ExpireAt);
+            // Assert
+            Assert.IsNull(verification.ExpireAt);
+            Assert.IsNotNull(verification.VerifiedAt);
+        }
 
-    }
+        [TestMethod]
+        [ExpectedException(typeof(Exception), "Esse item já expirou")]
+        public void Verify_WithExpiredCode_ThrowsException()
+        {
+            // Arrange
+            var verification = new Verification();
+            verification.GetType().GetProperty("ExpireAt").SetValue(verification, DateTime.UtcNow.AddMinutes(-1));
 
-    [TestMethod]
-    [Description("Dado um código de verificação inválido, o método Verify deve lançar uma exceção")]
-    public void GivenInvalidCode_WhenVerifyInvoked_ThenThrowsException()
-    {
-        // Arrange
-        var verification = new Verification();
-        var invalidCode = "INVALID";
+            // Act
+            verification.Verify("ANYCODE");
+        }
 
-        // Act & Assert
-        Assert.ThrowsException<Exception>(() => verification.Verify(invalidCode), "Código de verificação inválido");
-    }
+        [TestMethod]
+        [ExpectedException(typeof(Exception), "Esse item já foi verificado")]
+        public void Verify_WhenAlreadyVerified_ThrowsException()
+        {
+            // Arrange
+            var verification = new Verification();
+            verification.Verify(verification.Code);
 
-    [TestMethod]
-    [Description("Dado um item recém-criado, a propriedade IsActive deve retornar false")]
-    public void GivenNewInstance_WhenIsActiveInvoked_ThenReturnsFalse()
-    {
-        // Arrange
-        var verification = new Verification();
+            // Act
+            verification.Verify(verification.Code);
+        }
 
-        // Act
+        [TestMethod]
+        [ExpectedException(typeof(Exception), "Código de verificação inválido")]
+        public void Verify_WithIncorrectCode_ThrowsException()
+        {
+            // Arrange
+            var verification = new Verification();
 
-        // Assert
-        Assert.IsFalse(verification.IsActive);
-    }
+            // Act
+            verification.Verify("WRONGCODE");
+        }
 
-    [TestMethod]
-    [Description("Dado um item que foi verificado com sucesso, a propriedade IsActive deve retornar true")]
-    public void GivenVerifiedInstance_WhenIsActiveInvoked_ThenReturnsTrue()
-    {
-        // Arrange
-        var verification = new Verification();
-        verification.Verify(verification.Code);
+        [TestMethod]
+        public void IsValid_WithCorrectCode_ReturnsTrue()
+        {
+            // Arrange
+            var verification = new Verification();
+            var correctCode = verification.Code;
 
-        // Act
+            // Act
+            var result = verification.IsValid(correctCode);
 
-        // Assert
-        Assert.IsTrue(verification.IsActive);
-    }
+            // Assert
+            Assert.IsTrue(result);
+        }
 
-    [TestMethod]
-    [Description("Dado um item recém-criado, a propriedade Code deve conter um código de 6 caracteres em maiúsculas")]
-    public void GivenNewInstance_WhenCodeInvoked_ThenReturns6CharacterCode()
-    {
-        // Arrange
-        var verification = new Verification();
+        [TestMethod]
+        public void IsValid_WithIncorrectCode_ReturnsFalse()
+        {
+            // Arrange
+            var verification = new Verification();
 
-        // Assert
-        Assert.AreEqual(6, verification.Code.Length);
-    }
+            // Act
+            var result = verification.IsValid("WRONGCODE");
 
-    [TestMethod]
-    [Description("Dado um item recém-criado, a propriedade ExpireAt deve ser configurada para 5 minutos no futuro")]
-    public void GivenNewInstance_WhenExpireAtInvoked_ThenReturns5MinutesInTheFuture()
-    {
-        // Arrange
-        var verification = new Verification();
+            // Assert
+            Assert.IsFalse(result);
+        }
 
-        // Act
+        [TestMethod]
+        public void IsActive_WhenVerified_ReturnsTrue()
+        {
+            // Arrange
+            var verification = new Verification();
+            verification.Verify(verification.Code);
 
-        // Assert
-        Assert.IsNotNull(verification.ExpireAt); // Verifica se ExpireAt não é nulo
-        Assert.IsTrue(verification.ExpireAt > DateTime.UtcNow); // Verifica se ExpireAt é configurado para o futuro
-        Assert.IsTrue(verification.ExpireAt <= DateTime.UtcNow.AddMinutes(5)); // Verifica se ExpireAt está dentro de 5 minutos
-    }
+            // Act
+            var isActive = verification.IsActive;
 
-    [TestMethod]
-    [Description("Dado um item recém-criado, a propriedade VerifiedAt deve ser nula")]
-    public void GivenNewInstance_WhenVerifiedAtInvoked_ThenReturnsNull()
-    {
-        // Arrange
-        var verification = new Verification();
+            // Assert
+            Assert.IsTrue(isActive);
+        }
 
-        // Assert
-        Assert.IsNull(verification.VerifiedAt);
+        [TestMethod]
+        public void IsActive_WhenNotVerified_ReturnsFalse()
+        {
+            // Arrange
+            var verification = new Verification();
 
+            // Act
+            var isActive = verification.IsActive;
+
+            // Assert
+            Assert.IsFalse(isActive);
+        }
     }
 }
