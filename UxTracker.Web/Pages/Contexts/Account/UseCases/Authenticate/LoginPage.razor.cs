@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Microsoft.AspNetCore.Components.Web;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Security;
 using AuthenticateUseCase = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
@@ -15,11 +16,11 @@ public class Login : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-    
+
     protected readonly AuthenticateUseCase.Request Request = new();
 
     protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    
+
     protected async Task SignInAsync()
     {
         try
@@ -29,7 +30,7 @@ public class Login : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
+                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
                     Navigation.NavigateTo("/projects");
                 }
                 else
@@ -39,7 +40,7 @@ public class Login : ComponentBase
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
                     {
-                        if(string.Equals(response.Data.Message, "Conta inativa"))
+                        if (string.Equals(response.Data.Message, "Conta inativa"))
                             Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.", Severity.Error,
                                 config =>
                                 {

@@ -1,0 +1,14 @@
+@inject IDialogService DialogService
+@page "/teste"
+
+<MudButton @onclick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+    Abrir Termo de Aceite
+</MudButton>
+
+@code {
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+        return DialogService.ShowAsync<Dialog>("Termo de Aceite", options);
+    }
+}

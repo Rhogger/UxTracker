@@ -5,15 +5,16 @@
 @layout HeadlessLayout
 @inherits Login
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+<MudContainer MaxWidth="MaxWidth.Small"
+    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
     <MudText Typo="Typo.h4" Align="Align.Center">Faça login no UxTracker</MudText>
-            
+
     <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column gap-4">
         <MudPaper Class="pa-6 rounded-lg" Outlined="true">
             <ValidateForm SubmitFunction="SignInAsync" TextButton="Acessar">
-                <EmailTextField @bind-Email="@Request.Email"/>
+                <EmailTextField @bind-Email="@Request.Email" />
 
-                <PasswordTextField @bind-Password="@Request.Password"/>
+                <PasswordTextField @bind-Password="@Request.Password" />
             </ValidateForm>
         </MudPaper>
 

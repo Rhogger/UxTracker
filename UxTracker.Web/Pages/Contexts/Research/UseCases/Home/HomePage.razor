@@ -5,7 +5,7 @@
         <MudText Typo="Typo.h4" Align="Align.Center">Projetos de pesquisa</MudText>
         <div class="d-flex justify-end mb-2">
             <MudButton Href="/projects/new-project" Variant="Variant.Filled" Color="Color.Primary"
-                       OnClick="@(context => AddNewProject())">Novo Projeto
+                OnClick="@(context => AddNewProject())">Novo Projeto
             </MudButton>
         </div>
         <MudContainer Class="overflow-auto" Style="height: 70vh;">
@@ -28,14 +28,9 @@
                                 <MudText Typo="Typo.body2">@project.Details</MudText>
                             </MudCardContent>
                             <MudCardContent>
-                                <MudGrid Justify="Justify.SpaceBetween">
-                                    <MudItem>
-                                        <MudText>Data início</MudText>
-                                    </MudItem>
-                                    <MudItem>
-                                        <MudText>Data fim</MudText>
-                                    </MudItem>
-                                </MudGrid>
+                                <MudItem>
+                                    <MudText>Data início</MudText>
+                                </MudItem>
                             </MudCardContent>
                         </MudCard>
                     </MudItem>
@@ -56,41 +51,41 @@
             _ => Color.Default
         };
     }
-    
+
     private List<Project> Projects = new List<Project>
-    {
-        new Project
-        {
-            Title = "Projeto 1",
-            Description = "Descrição do projeto 1",
-            Details = "Detalhes adicionais do projeto 1",
-            Status = "Não iniciado"
-        },
-        new Project
-        {
-            Title = "Projeto 2",
-            Description = "Descrição do projeto 2",
-            Details = "Detalhes adicionais do projeto 2",
-            Status = "Em andamento"
-        },
-        new Project
-        {
-            Title = "Projeto 3",
-            Description = "Descrição do projeto 3",
-            Details = "Detalhes adicionais do projeto 3",
-            Status = "Concluído"
-        }
-    };
+{
+new Project
+{
+Title = "Projeto 1",
+Description = "Descrição do projeto 1",
+Details = "Detalhes adicionais do projeto 1",
+Status = "Não iniciado"
+},
+new Project
+{
+Title = "Projeto 2",
+Description = "Descrição do projeto 2",
+Details = "Detalhes adicionais do projeto 2",
+Status = "Em andamento"
+},
+new Project
+{
+Title = "Projeto 3",
+Description = "Descrição do projeto 3",
+Details = "Detalhes adicionais do projeto 3",
+Status = "Concluído"
+}
+};
 
     private void AddNewProject()
     {
         Projects.Add(new Project
-        {
-            Title = "Novo Projeto",
-            Description = "Descrição do novo projeto",
-            Details = "Detalhes adicionais do novo projeto",
-            Status = "Concluído"
-        });
+            {
+                Title = "Novo Projeto",
+                Description = "Descrição do novo projeto",
+                Details = "Detalhes adicionais do novo projeto",
+                Status = "Concluído"
+            });
     }
 
 

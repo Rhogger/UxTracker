@@ -2,17 +2,22 @@
 @layout HeadlessLayout
 @using ApexCharts
 
-<AuthorizeView Policy="ReviewerPolicy">
+<AuthorizeView>
     <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-4">
         <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center">Título da pesquisa</MudText>
         <MudPaper Class="pa-4 rounded-lg" Outlined="true">
             <MudText Typo="Typo.body1">
-                Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum
                 has
-                been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+                been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of
+                type and
+                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
+                into
+                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
+                release of
+                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
+                Aldus
                 PageMaker including versions of Lorem Ipsum.
             </MudText>
         </MudPaper>
@@ -20,8 +25,8 @@
             <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
             <MudContainer Class="d-flex justify-center">
                 <ApexChart TItem="EvaluationData" Options="@options">
-                    <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas" SeriesType="SeriesType.Line"
-                                     XValue="@(e => e.Day)" YValue="@(e => e.Rating)" />
+                    <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas"
+                        SeriesType="SeriesType.Line" XValue="@(e => e.Day)" YValue="@(e => e.Rating)" />
                 </ApexChart>
             </MudContainer>
             <MudForm @onsubmit="HandleSubmit">
@@ -41,12 +46,13 @@
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" md="8">
-                        <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true" @bind-Value="Comment" />
+                        <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true"
+                            @bind-Value="Comment" />
                     </MudItem>
                 </MudGrid>
                 <div class="d-flex justify-center mt-4">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"
-                               Class="py-2 px-15">
+                        Class="py-2 px-15">
                         Enviar
                     </MudButton>
                 </div>
@@ -66,59 +72,59 @@
     protected override void OnInitialized()
     {
         options = new ApexChartOptions<EvaluationData>
-        {
-            Chart = new Chart
             {
-                Height = Height,
-                Width = Width,
-                Toolbar = new Toolbar
+                Chart = new Chart
                 {
-                    Show = false
+                    Height = Height,
+                    Width = Width,
+                    Toolbar = new Toolbar
+                    {
+                        Show = false
+                    },
+                    DropShadow = new DropShadow
+                    {
+                        Enabled = true,
+                        Color = "",
+                        Top = 18,
+                        Left = 7,
+                        Blur = 10,
+                        Opacity = 0.2d
+                    }
                 },
-                DropShadow = new DropShadow
+
+                Theme = new Theme
                 {
-                    Enabled = true,
-                    Color = "",
-                    Top = 18,
-                    Left = 7,
-                    Blur = 10,
-                    Opacity = 0.2d
-                }
-            },
+                    Mode = Mode.Dark,
+                    Palette = PaletteType.Palette1
+                },
 
-            Theme = new Theme
-            {
-                Mode = Mode.Dark,
-                Palette = PaletteType.Palette1
-            },
-
-            DataLabels = new ApexCharts.DataLabels
-            {
-                OffsetY = -6d
-            },
-            Grid = new Grid
-            {
-                BorderColor = "#e7e7e7",
-                Row = new GridRow
+                DataLabels = new ApexCharts.DataLabels
                 {
-                    Colors = new List<string> { "#f3f3f3", "transparent" },
-                    Opacity = 0.5d
-                }
-            },
+                    OffsetY = -6d
+                },
+                Grid = new Grid
+                {
+                    BorderColor = "#e7e7e7",
+                    Row = new GridRow
+                    {
+                        Colors = new List<string> { "#f3f3f3", "transparent" },
+                        Opacity = 0.5d
+                    }
+                },
 
-            Colors = new List<string> { "#77B6EA", "#545454" },
-            Markers = new Markers { Shape = ShapeEnum.Circle, Size = 5, FillOpacity = new Opacity(0.8d) },
-            Stroke = new Stroke { Curve = Curve.Smooth },
-            Legend = new Legend
-            {
-                Position = LegendPosition.Top,
-                HorizontalAlign = ApexCharts.Align.Right,
-                Floating = true,
-                OffsetX = -5,
-                OffsetY = -25
-            },
+                Colors = new List<string> { "#77B6EA", "#545454" },
+                Markers = new Markers { Shape = ShapeEnum.Circle, Size = 5, FillOpacity = new Opacity(0.8d) },
+                Stroke = new Stroke { Curve = Curve.Smooth },
+                Legend = new Legend
+                {
+                    Position = LegendPosition.Top,
+                    HorizontalAlign = ApexCharts.Align.Right,
+                    Floating = true,
+                    OffsetX = -5,
+                    OffsetY = -25
+                },
 
-        };
+            };
 
         Evaluations.Add(new EvaluationData { Day = 1, Rating = 8, Comment = "Nota de exemplo para o dia 1" });
         Evaluations.Add(new EvaluationData { Day = 2, Rating = 6, Comment = "Nota de exemplo para o dia 2" });

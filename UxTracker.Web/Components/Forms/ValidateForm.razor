@@ -1,21 +1,11 @@
-<MudForm
-    @ref="Form"
-    @bind-IsValid="IsValid"
-    @bind-Errors="Errors"
-    Class="@Class"
->
+<MudForm @ref="Form" @bind-IsValid="IsValid" @bind-Errors="Errors" Class="@Class" @onkeydown="HandleKeyDown">
     @ChildContent
-    
+
     @if (!TwoOptions)
     {
         <div class="d-flex justify-center">
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                Class="py-2 px-15"
-                OnClick="SubmitFunction"
-                Disabled="@(!IsValid)"
-            >
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="py-2 px-15" OnClick="SubmitFunction"
+                Disabled="@(!IsValid)">
                 @TextButton
             </MudButton>
         </div>
@@ -23,24 +13,12 @@
     else
     {
         <div class="w-full d-flex gap-9">
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Error"
-                Class="py-2"
-                FullWidth="true"
-                OnClick="SecondFunction"
-            >
+            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="py-2" FullWidth="true" OnClick="SecondFunction">
                 @SecondTextButton
             </MudButton>
-                    
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Success"
-                Class="py-2"
-                FullWidth="true"
-                OnClick="SubmitFunction"
-                Disabled="@(!IsValid)"
-            >
+
+            <MudButton Variant="Variant.Filled" Color="Color.Success" Class="py-2" FullWidth="true" OnClick="SubmitFunction"
+                Disabled="@(!IsValid)">
                 @TextButton
             </MudButton>
         </div>
@@ -55,8 +33,21 @@
     [Parameter] public bool TwoOptions { get; set; }
     [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
-    
+
     private MudForm Form = null!;
     private string[] Errors = [];
     private bool IsValid;
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Form.Validate();
+
+            if (IsValid)
+            {
+                await SubmitFunction.InvokeAsync();
+            }
+        }
+    }
 }

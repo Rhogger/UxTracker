@@ -3,8 +3,8 @@
 @using UxTracker.Web.Utils.Theme
 @inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme"/>
-<MudSnackbarProvider/>
+<MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme" />
+<MudSnackbarProvider />
 
 <MudLayout Style="height: 100vh">
     <MudMainContent Class="mud-height-full pa-0">
@@ -12,12 +12,12 @@
     </MudMainContent>
 </MudLayout>
 
-@code{
+@code {
 
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
-    
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
