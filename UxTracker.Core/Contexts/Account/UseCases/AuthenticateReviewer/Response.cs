@@ -34,4 +34,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(string? researchCode = null, Payload? payload = null);
+public record ResponseData(string ResearchCode = "", Payload? Payload = null);

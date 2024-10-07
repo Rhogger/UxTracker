@@ -2,6 +2,7 @@ using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.CreateReviewer.Contracts;
 using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Contexts.Shared.Extensions;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.CreateReviewer;
 
@@ -43,7 +44,7 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             email = new Email(request.Email);
-            user = new Reviewer(email, new Password(), request.Sex, request.BirthDate, request.Country, request.State, request.City);
+            user = new Reviewer(email, new Password(), request.Sex.ToSex(), request.BirthDate, request.Country, request.State, request.City);
 
             role = await _repository.GetRoleByNameAsync("Reviewer", cancellationToken);
 
@@ -105,7 +106,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 06. Retornar os dados
         
-        return new Response("Conta criada com sucesso!", new ResponseData(request.ResearchCode));
+        return new Response("Conta criada com sucesso!", 201);
 
         #endregion
     }

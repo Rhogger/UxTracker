@@ -1,7 +1,5 @@
-@using UxTracker.Core.Contexts.Account.Enums
 @using UxTracker.Core.Contexts.Account.Handlers
-@using UxTracker.Web.Components.TextFields
-@using DeleteUseCase = UxTracker.Core.Contexts.Account.UseCases.Delete;
+@using DeleteUseCase = UxTracker.Core.Contexts.Account.UseCases.DeleteReviewer;
 
 <MudDialog Class="pa-4">
     <TitleContent>
@@ -14,13 +12,6 @@
         <MudText Class="pb-8">
             Deseja mesmo excluir a conta? Após exclusão não será possível recuperar a conta.
         </MudText>
-
-        <MudForm
-            @bind-IsValid="IsValid"
-            @bind-Errors="Errors"
-        >
-            <PasswordTextField @bind-Password="Password" ValidatorType="ValidatorTypes.None" Class="pb-6"/>
-        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton
@@ -34,7 +25,6 @@
             Color="Color.Error"
             Variant="Variant.Filled"
             OnClick="DeleteAccount"
-            Disabled="@(!IsValid)"
         >
             Excluir conta
         </MudButton>
@@ -48,13 +38,8 @@
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-    [Parameter] public string Password { get; set; } = string.Empty;
-
-    private string[] Errors = [];
-    private bool IsValid { get; set; } = false;
-
     protected DeleteUseCase.Request Request = new();
-
+    
     private void Cancel() => MudDialog.Cancel();
 
     private void DeleteAccount() => MudDialog.Close(DialogResult.Ok(DeleteAccountAsync()));
@@ -63,16 +48,14 @@
     {
         try
         {
-            Request.Password = Password;
-            
-            var response = await AccountContextHandler.DeleteAccountAsync(Request);
+            var response = await AccountContextHandler.DeleteReviewerAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)
                 {
                     Snackbar.Add(response.Data!.Message, Severity.Success);
                     await AccountContextHandler.SignOutAsync();
-                    Navigation.NavigateTo("/register");
+                    Navigation.NavigateTo("reviewers/login");
                 }
                 else
                 {

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.Enums;
@@ -33,6 +34,7 @@ public class Rate: Entity
     public string Comment { get; private set; }
     public DateTime RatedAt { get; private set; }
     public Reviewer User { get; private set; }
+    [JsonIgnore]
     public Project Project { get; private set; }
 
     public bool ValidToRate(PeriodType periodType, DateTime lastRate)
@@ -48,6 +50,6 @@ public class Rate: Entity
             _ => limitDate
         };
 
-        return DateTime.UtcNow >= limitDate;
+        return DateTime.UtcNow > limitDate;
     }
 }

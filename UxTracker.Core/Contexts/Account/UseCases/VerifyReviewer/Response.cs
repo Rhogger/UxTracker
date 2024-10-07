@@ -5,7 +5,7 @@ namespace UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
 
 public class Response: Shared.UseCases.Response
 {
-    protected Response() { }
+    protected Response(){}
 
     public Response(string message, int statusCode, IEnumerable<Notification>? notifications = null)
     {
@@ -13,15 +13,17 @@ public class Response: Shared.UseCases.Response
         StatusCode = statusCode;
         Notifications = notifications;
     }
-    
-    public Response(string message, Payload data)
+   
+    public Response(string message, ResponseData data)
     {
         Message = message;
         StatusCode = 200;
         Notifications = null;
         Data = data;
     }
-    
-    public Payload? Data { get; set; }
+
+    public  ResponseData? Data { get; set; }
 }
 
+
+public record ResponseData(string ResearchCode, Payload Payload);

@@ -37,7 +37,7 @@ public class Handler : IRequestHandler<Request, Response>
         {
             var rates = await _repository.GetReviewsByUserAsync(request.UserId, request.ProjectId, cancellationToken);
 
-            if (rates.Count > 1)
+            if (rates.Count > 0)
             {
                 if (!rates[rates.Count - 1].ValidToRate(request.PeriodType, rates[rates.Count - 1].RatedAt))
                     return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);

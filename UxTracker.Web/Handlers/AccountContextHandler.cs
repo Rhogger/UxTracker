@@ -1,18 +1,25 @@
 using Blazored.LocalStorage;
 using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
-using Authenticate = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
-using Create = UxTracker.Core.Contexts.Account.UseCases.Create;
-using Delete = UxTracker.Core.Contexts.Account.UseCases.Delete;
-using GetUser = UxTracker.Core.Contexts.Account.UseCases.GetUser;
+using AuthenticateResearcher = UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher;
+using AuthenticateReviewer = UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer;
+using CreateResearcher = UxTracker.Core.Contexts.Account.UseCases.CreateResearcher;
+using CreateReviewer = UxTracker.Core.Contexts.Account.UseCases.CreateReviewer;
+using DeleteResearcher = UxTracker.Core.Contexts.Account.UseCases.DeleteResearcher;
+using DeleteReviewer = UxTracker.Core.Contexts.Account.UseCases.DeleteReviewer;
+using GetResearcher = UxTracker.Core.Contexts.Account.UseCases.GetResearcher;
+using GetReviewer = UxTracker.Core.Contexts.Account.UseCases.GetReviewer;
 using PasswordRecovery = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 using PasswordRecoveryVerify = UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
 using RefreshToken = UxTracker.Core.Contexts.Account.UseCases.RefreshToken;
 using ResendResetCode = UxTracker.Core.Contexts.Account.UseCases.ResendResetCode;
-using ResendVerificationCode = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCode;
-using UpdateAccount = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
+using ResendVerificationCodeResearcher = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeResearcher;
+using ResendVerificationCodeReviewer = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
+using UpdateResearcher = UxTracker.Core.Contexts.Account.UseCases.UpdateResearcher;
+using UpdateReviewer = UxTracker.Core.Contexts.Account.UseCases.UpdateReviewer;
 using UpdatePassword = UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
-using Verify = UxTracker.Core.Contexts.Account.UseCases.Verify;
+using VerifyResearcher = UxTracker.Core.Contexts.Account.UseCases.VerifyResearcher;
+using VerifyReviewer = UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
 
 namespace UxTracker.Web.Handlers;
 
@@ -31,21 +38,20 @@ public class AccountContextHandler: IAccountContextHandler
         LocalStorage = localStorage;
     }
     
-    public async Task<RestResponse<Authenticate.Response>?> SignInAsync(Authenticate.Request requestModel)
+    public async Task<RestResponse<AuthenticateResearcher.Response>?> SignInResearcherAsync(AuthenticateResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/authenticate", Method.Post)
             .AddJsonBody(requestModel);
 
         try
         {
-            var response = await RestClient.ExecuteAsync<Authenticate.Response>(request);
+            var response = await RestClient.ExecuteAsync<AuthenticateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        if (await LocalStorage.ContainKeyAsync("email") == false)
-                            await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
 
                         await CookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
                         await CookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
@@ -57,7 +63,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -65,7 +71,49 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
-    public async Task<RestResponse<GetUser.Response>?> GetUserAsync()
+    public async Task<RestResponse<AuthenticateReviewer.Response>?> SignInReviewerAsync(AuthenticateReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/authenticate", Method.Post)
+            .AddJsonBody(requestModel);
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<AuthenticateReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                    {
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        
+                        await LocalStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
+
+                        await CookieHandler.SaveAccessToken(response.Data.Data!.Payload.AccessToken);
+                        await CookieHandler.SaveRefreshToken(response.Data.Data!.Payload.RefreshToken);
+
+                        return response;
+                    }
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                {
+                    await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        
+                    await LocalStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
+                    
+                    return response;
+                }
+            
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<GetResearcher.Response>?> GetResearcherAsync()
     {
         try
         {
@@ -81,7 +129,7 @@ public class AccountContextHandler: IAccountContextHandler
                 throw new Exception("Token JWT não encontrado.");
             }
         
-            var response = await RestClient.ExecuteAsync<GetUser.Response>(request);
+            var response = await RestClient.ExecuteAsync<GetResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -92,7 +140,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -100,14 +148,49 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
     
-    public async Task<RestResponse<Create.Response>?> SignUpAsync(Create.Request requestModel)
+    public async Task<RestResponse<GetReviewer.Response>?> GetReviewerAsync()
+    {
+        try
+        {
+            var request = new RestRequest("/api/v1/users/reviewers/account/");
+
+            var token = await CookieHandler.GetAccessToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                throw new Exception("Token JWT não encontrado.");
+            }
+        
+            var response = await RestClient.ExecuteAsync<GetReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<CreateResearcher.Response>?> SignUpResearchAsync(CreateResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/create", Method.Post)
             .AddJsonBody(requestModel);
 
         try
         {
-            var response = await RestClient.ExecuteAsync<Create.Response>(request);
+            var response = await RestClient.ExecuteAsync<CreateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -122,7 +205,37 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<CreateReviewer.Response>?> SignUpReviewerAsync(CreateReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/create", Method.Post)
+            .AddJsonBody(requestModel);
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<CreateReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 201)
+                    {
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+
+                        return response;
+                    }
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -132,18 +245,18 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task SignOutAsync()
     {
-    await CookieHandler.RemoveAccessTokenAsync();
-    await CookieHandler.RemoveRefreshTokenAsync();
+        await CookieHandler.RemoveAccessTokenAsync();
+        await CookieHandler.RemoveRefreshTokenAsync();
     } 
 
-    public async Task<RestResponse<Verify.Response>?> VerifyAsync(Verify.Request requestModel)
+    public async Task<RestResponse<VerifyResearcher.Response>?> VerifyResearcherAsync(VerifyResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/verify", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
         {
-            var response = await RestClient.ExecuteAsync<Verify.Response>(request);
+            var response = await RestClient.ExecuteAsync<VerifyResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -160,7 +273,39 @@ public class AccountContextHandler: IAccountContextHandler
                 else
                     return response;
 
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<VerifyReviewer.Response>?> VerifyReviewerAsync(VerifyReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/verify", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<VerifyReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                    {
+                        await CookieHandler.SaveAccessToken(response.Data.Data!.Payload.AccessToken);
+                        await CookieHandler.SaveRefreshToken(response.Data.Data!.Payload.RefreshToken);
+                        
+                        return response;
+                    }
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -168,14 +313,14 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
 
-    public async Task<RestResponse<ResendVerificationCode.Response>?> ResendVerificationCodeAsync(ResendVerificationCode.Request requestModel)
+    public async Task<RestResponse<ResendVerificationCodeResearcher.Response>?> ResendVerificationCodeResearcherAsync(ResendVerificationCodeResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/verify/resend", Method.Patch)
             .AddJsonBody(requestModel);
 
         try
         {
-            var response = await RestClient.ExecuteAsync<ResendVerificationCode.Response>(request);
+            var response = await RestClient.ExecuteAsync<ResendVerificationCodeResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -190,7 +335,37 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<ResendVerificationCodeReviewer.Response>?> ResendVerificationCodeReviewerAsync(ResendVerificationCodeReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/verify/resend", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync<ResendVerificationCodeReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                    {
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+
+                        return response;
+                    }
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -211,8 +386,7 @@ public class AccountContextHandler: IAccountContextHandler
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        if (await LocalStorage.ContainKeyAsync("email") == false)
-                            await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -221,7 +395,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -249,7 +423,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -270,8 +444,7 @@ public class AccountContextHandler: IAccountContextHandler
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        if (await LocalStorage.ContainKeyAsync("email") == false)
-                            await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -280,7 +453,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -301,8 +474,7 @@ public class AccountContextHandler: IAccountContextHandler
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        if (await LocalStorage.ContainKeyAsync("email") == false)
-                            await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await LocalStorage.SetItemAsync("email", requestModel.Email);
    
                         return response;
                     }
@@ -311,7 +483,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -319,7 +491,7 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
     
-    public async Task<RestResponse<UpdateAccount.Response>?> UpdateAccountAsync(UpdateAccount.Request requestModel)
+    public async Task<RestResponse<UpdateResearcher.Response>?> UpdateResearcherAsync(UpdateResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/account", Method.Patch)
             .AddJsonBody(requestModel);
@@ -336,7 +508,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<UpdateAccount.Response>(request);
+            var response = await RestClient.ExecuteAsync<UpdateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -347,7 +519,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -355,7 +527,43 @@ public class AccountContextHandler: IAccountContextHandler
         }
     }
     
-    public async Task<RestResponse<Delete.Response>?> DeleteAccountAsync(Delete.Request requestModel)
+    public async Task<RestResponse<UpdateReviewer.Response>?> UpdateReviewerAsync(UpdateReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/account", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        var token = await CookieHandler.GetAccessToken();
+        if (!string.IsNullOrEmpty(token?.Value))
+        {
+            request.AddHeader("Authorization", $"Bearer {token.Value}");
+        }
+        else
+        {
+            throw new Exception("Token JWT não encontrado.");
+        }
+        
+        try
+        {
+            var response = await RestClient.ExecuteAsync<UpdateReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<DeleteResearcher.Response>?> DeleteResearcherAsync(DeleteResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/account/inactivate", Method.Patch)
             .AddJsonBody(requestModel);
@@ -372,7 +580,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<Delete.Response>(request);
+            var response = await RestClient.ExecuteAsync<DeleteResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -383,7 +591,43 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<DeleteReviewer.Response>?> DeleteReviewerAsync(DeleteReviewer.Request requestModel)
+    {
+        var request = new RestRequest("/api/v1/users/reviewers/account/inactivate", Method.Patch)
+            .AddJsonBody(requestModel);
+
+        var token = await CookieHandler.GetAccessToken();
+        if (!string.IsNullOrEmpty(token?.Value))
+        {
+            request.AddHeader("Authorization", $"Bearer {token.Value}");
+        }
+        else
+        {
+            throw new Exception("Token JWT não encontrado.");
+        }
+        
+        try
+        {
+            var response = await RestClient.ExecuteAsync<DeleteReviewer.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {
@@ -422,7 +666,7 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                     return response;
-            throw new Exception($"Status Code {response.StatusCode} - Conteúdo: {response.Content}");
+            throw new Exception($"{response.StatusCode} - {response.Content}");
         }
         catch (Exception ex)
         {

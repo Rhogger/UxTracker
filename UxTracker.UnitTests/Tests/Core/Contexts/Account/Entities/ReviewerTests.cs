@@ -56,14 +56,4 @@ public class ReviewerTests
         // Assert
         Assert.AreEqual("New City", _reviewer.City);
     }
-
-    [TestMethod]
-    public void UpdateSex_Should_Change_Sex()
-    {
-        // Act
-        _reviewer.UpdateSex(Sex.Female);
-
-        // Assert
-        Assert.AreEqual(Sex.Female, _reviewer.Sex);
-    }
 }

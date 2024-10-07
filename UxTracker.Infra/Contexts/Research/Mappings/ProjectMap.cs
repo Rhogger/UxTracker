@@ -45,11 +45,6 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnName("SurveyCollections")
             .HasColumnType("INTEGER")
             .IsRequired(true);
-        
-        builder.Property(x => x.LastSurveyCollection)
-            .HasColumnName("LastSurveyCollection")
-            .HasColumnType("INTEGER")
-            .IsRequired(true);
 
         builder.Property(x => x.ConsentTermHash)
             .HasColumnName("ConsentTermHash")

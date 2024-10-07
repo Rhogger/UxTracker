@@ -53,7 +53,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            return new Response(string.Empty, new ResponseData(user.Id.ToString(), user.Email, user.Sex.ToString(), user.BirthDate,user.Country, user.State, user.City));
+            return new Response(string.Empty, new ResponseData(user.Id.ToString(), user.Email, user.Sex.ToString(), user.BirthDate,user.Country, user.State, user.City, user.Email.ToSha256Hash()));
         }
         catch
         {

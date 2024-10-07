@@ -1,0 +1,49 @@
+@using UxTracker.Web.Components.TextFields
+@using UxTracker.Web.Components.Forms
+
+@page "/reviewers/login"
+@layout HeadlessLayout
+@inherits Login
+
+<MudContainer 
+    MaxWidth="MaxWidth.Small"
+    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full"
+>
+    <MudText
+        Typo="Typo.h4"
+        Align="Align.Center"
+    >
+        Acessar a pesquisa
+    </MudText>
+    
+    <MudContainer 
+        MaxWidth="MaxWidth.ExtraSmall" 
+        Class="d-flex flex-column gap-4"
+    >
+        <MudPaper
+            Class="pa-6 rounded-lg"
+            Outlined="true">
+            <ValidateForm 
+                SubmitFunction="SignInAsync" 
+                TextButton="Acessar"
+            >
+                <EmailTextField @bind-Email="Request.Email"/>
+
+                <MudTextField
+                    ShrinkLabel="true"
+                    T="string"
+                    Label="Código da avaliação"
+                    Variant="Variant.Filled"
+                    @bind-Value="Request.ResearchCode"
+                />
+            </ValidateForm>
+        </MudPaper>
+        
+        <MudPaper Class="px-4 py-7 rounded-lg" Outlined="true">
+            <MudText Align="Align.Center">
+                É novo no UxTracker?
+                <MudLink Href="/reviewers/register" Style="font-weight: bold">Cadastre-se</MudLink>
+            </MudText>
+        </MudPaper>
+    </MudContainer>
+</MudContainer>

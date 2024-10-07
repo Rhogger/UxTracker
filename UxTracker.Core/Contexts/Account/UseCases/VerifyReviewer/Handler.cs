@@ -93,7 +93,21 @@ public class Handler: IRequestHandler<Request, Response>
         }
         #endregion
         
-        #region 05. Gerar os tokens JWT
+        #region 06. Verificar se usuário informou código de pesquisa
+
+        if(string.IsNullOrEmpty(request.ResearchCode))
+            return new Response("Código de pesquisa não informado", 200);
+
+        #endregion
+        
+        #region 07. Checar validade do código da pesquisa
+        
+        if (!await _repository.AnyProjectAsync(request.ResearchCode, cancellationToken))
+            return new Response("Pesquisa não encontrada", 404);
+
+        #endregion
+        
+        #region 08. Gerar os tokens JWT
 
         string accessToken;
         string refreshToken;
@@ -110,14 +124,16 @@ public class Handler: IRequestHandler<Request, Response>
         
         #endregion
         
-        #region 06. Retornar os dados
+        #region 09. Retornar os dados
 
-        return new Response("Conta verificada com sucesso!", new Payload
+        var data = new Payload
         {
             Id = user.Id.ToString(),
             AccessToken = accessToken,
             RefreshToken = refreshToken
-        });
+        };
+        
+        return new Response("Conta verificada com sucesso!", new ResponseData(request.ResearchCode, data));
 
         #endregion
     }

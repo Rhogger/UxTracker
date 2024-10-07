@@ -63,9 +63,6 @@ public class Handler: IRequestHandler<Request, Response>
         
         if(user.IsNewCity(request.City))
             user.UpdateCity(request.City);
-        
-        if(user.IsNewSex(request.Sex))
-            user.UpdateSex(request.Sex);
 
         #endregion
         

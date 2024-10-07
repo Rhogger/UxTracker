@@ -36,7 +36,10 @@ public class Project: Entity
                 
             return EndDate <= DateTime.UtcNow ? Status.Finished : Status.InProgress;
         }
+
+        private set{}
     }
+
     public DateTime StartDate {get; private set; }
     public DateTime? EndDate {get; private set; }
     public PeriodType PeriodType { get; private set; } = PeriodType.Daily;
@@ -45,10 +48,13 @@ public class Project: Entity
     {
         get
         {
-            return  Reviews
-                .GroupBy(x => x.UserId)
-                .Select(x => x.Count())
-                .Max();
+            return Reviews.Count > 0 
+                    ? Reviews
+                        .GroupBy(x => x.UserId)
+                        .Select(x => x.Count())
+                        .Max()
+                    : 0
+                ;
         }
     }
     public string ConsentTermHash { get; private set; }

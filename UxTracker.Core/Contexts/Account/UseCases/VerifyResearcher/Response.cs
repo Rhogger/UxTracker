@@ -5,8 +5,8 @@ namespace UxTracker.Core.Contexts.Account.UseCases.VerifyResearcher;
 
 public class Response: Shared.UseCases.Response
 {
-    protected Response() { }
-
+    protected Response(){}
+    
     public Response(string message, int statusCode, IEnumerable<Notification>? notifications = null)
     {
         Message = message;

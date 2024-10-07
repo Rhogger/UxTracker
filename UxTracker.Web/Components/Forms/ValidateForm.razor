@@ -13,6 +13,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 Class="py-2 px-15"
+                FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
                 Disabled="@(!IsValid)"
             >
@@ -25,9 +26,9 @@
         <div class="w-full d-flex gap-9">
             <MudButton
                 Variant="Variant.Filled"
-                Color="Color.Error"
+                Color="Color.Default"
                 Class="py-2"
-                FullWidth="true"
+                FullWidth="@FullWidthButton"
                 OnClick="SecondFunction"
             >
                 @SecondTextButton
@@ -37,7 +38,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Success"
                 Class="py-2"
-                FullWidth="true"
+                FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
                 Disabled="@(!IsValid)"
             >
@@ -55,6 +56,7 @@
     [Parameter] public bool TwoOptions { get; set; }
     [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
+    [Parameter] public bool FullWidthButton { get; set; } = true;
     
     private MudForm Form = null!;
     private string[] Errors = [];

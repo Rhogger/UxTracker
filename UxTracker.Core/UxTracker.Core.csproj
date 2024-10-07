@@ -13,8 +13,4 @@
     <PackageReference Include="RestSharp" Version="111.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contexts\Review\UseCases\Rate\" />
-  </ItemGroup>
-
 </Project>

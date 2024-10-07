@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
-using CreateUseCase = UxTracker.Core.Contexts.Account.UseCases.Create;
+using CreateUseCase = UxTracker.Core.Contexts.Account.UseCases.CreateResearcher;
 
-namespace UxTracker.Web.Pages.Contexts.Account.UseCases.Create;
+namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateResearcher;
 
 public class Register : ComponentBase
 {
@@ -19,7 +19,7 @@ public class Register : ComponentBase
     {
         try
         {
-            var response = await AccountContextHandler.SignUpAsync(Request);
+            var response = await AccountContextHandler.SignUpResearchAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)

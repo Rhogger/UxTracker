@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Web.Components.Dialogs;
 using UxTracker.Core.Contexts.Account.Handlers;
-using GetUserUseCase = UxTracker.Core.Contexts.Account.UseCases.GetUser;
-using UpdateAccountUseCase = UxTracker.Core.Contexts.Account.UseCases.UpdateAccount;
+using GetResearcherUseCase = UxTracker.Core.Contexts.Account.UseCases.GetResearcher;
+using UpdateResearcherUseCase = UxTracker.Core.Contexts.Account.UseCases.UpdateResearcher;
 
-namespace UxTracker.Web.Pages.Contexts.Account.UseCases.GetUser;
+namespace UxTracker.Web.Pages.Contexts.Account.UseCases.GetResearcher;
 
 public class Profile : ComponentBase
 {
@@ -14,8 +14,8 @@ public class Profile : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
-    protected GetUserUseCase.Response Response { get; set; } = null!;
-    protected UpdateAccountUseCase.Request Request { get; set; } = new();
+    protected GetResearcherUseCase.Response Response { get; set; } = null!;
+    protected UpdateResearcherUseCase.Request Request { get; set; } = new();
     protected string DeleteRequest { get; set; } = string.Empty;
 
     protected string ConfirmPassword { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ public class Profile : ComponentBase
     {
         try
         {
-            var response = await AccountContextHandler.GetUserAsync();
+            var response = await AccountContextHandler.GetResearcherAsync();
 
             if (response is not null)
                 if (response.IsSuccessful)
@@ -68,7 +68,7 @@ public class Profile : ComponentBase
     {
         try
         {
-            var response = await AccountContextHandler.UpdateAccountAsync(Request);
+            var response = await AccountContextHandler.UpdateResearcherAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)
@@ -101,8 +101,8 @@ public class Profile : ComponentBase
 
     protected async Task DeleteAccountAsync(string password)
     {
-        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.Password, password} };
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete Reviewer", parameters);
+        var parameters = new DialogParameters<DeleteResearchConfirmationDialog> { { x => x.Password, password} };
+        var dialog = await DialogService.ShowAsync<DeleteResearchConfirmationDialog>("Delete Researcher", parameters);
         await dialog.Result;
     }
 

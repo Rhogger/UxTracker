@@ -30,6 +30,8 @@
     <_ContentIncludedByDefault Remove="Pages\Contexts\Account\UseCases\UpdatePasswordAuthenticated\UpdatePassword.razor" />
     <_ContentIncludedByDefault Remove="Pages\Contexts\Projects\GetAllProjects\ProjectsPage.razor" />
     <_ContentIncludedByDefault Remove="Pages\Contexts\Research\Home\HomePage.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Contexts\Reviewer\UseCases\Create\RegisterPage.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Contexts\Reviewer\UseCases\Authenticate\LoginPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,8 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Pages\Contexts\Reviewer\UseCases\Authenticate\LoginPage.razor" />
-    <AdditionalFiles Include="Pages\Contexts\Reviewer\UseCases\Create\RegisterPage.razor" />
+    <AdditionalFiles Include="Pages\Contexts\Account\UseCases\GetReviewer\ProfilePage.razor" />
+    <AdditionalFiles Include="Pages\Contexts\Account\UseCases\VerifyReviewer\AccountVerificationPage.razor" />
   </ItemGroup>
 
 </Project>

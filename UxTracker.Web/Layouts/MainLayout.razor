@@ -13,15 +13,16 @@
 
 <MudLayout Style="height: 100vh">
     <MudAppBar>
-        <AuthorizeView>
+        <MudText
+            Typo="Typo.h5"
+            Style="font-weight: bold; color: white;">
+            UxTracker
+        </MudText>
+        
+        <MudSpacer/>
+
+        <AuthorizeView Policy="ResearcherPolicy">
             <Authorized>
-                <MudLink Href="/projects">
-                    <MudText Typo="Typo.h5" Style="font-weight: bold; cursor: pointer; color: white;">UxTracker
-                    </MudText>
-                </MudLink>
-
-                <MudSpacer/>
-
                 <div class="d-flex gap-3">
                     <MudIconButton
                         Icon="@Icon"
@@ -39,30 +40,44 @@
                         OnClick="SignOutAsync"/>
                 </div>
             </Authorized>
-        
+        </AuthorizeView>
 
+        <AuthorizeView Policy="ReviewerPolicy">
+            <Authorized>
+                <div class="d-flex gap-3">
+                    <MudIconButton
+                        Icon="@Icon"
+                        Color="Color.Inherit"
+                        OnClick="ChangeMode"/>
+
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Person"
+                        Color="Color.Inherit"
+                        Href="/reviewers/account"/>
+
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Logout"
+                        Color="Color.Inherit"
+                        OnClick="SignOutAsync"/>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView>
+            <Authorized/>
             <NotAuthorized>
-                <MudLink Href="/">
-                    <MudText Typo="Typo.h5" Style="font-weight: bold; cursor: pointer; color: white;">UxTracker
-                    </MudText>
-                </MudLink>
-
-                <MudSpacer/>
-
                 <div class="d-flex gap-3">
                     <MudButton
                         Href="/login"
                         Variant="Variant.Text"
-                        Color="Color.Inherit"
-                    >
+                        Color="Color.Inherit">
                         Login
                     </MudButton>
-            
+
                     <MudButton
                         Href="/register"
                         Variant="Variant.Outlined"
-                        Color="Color.Inherit"
-                    >
+                        Color="Color.Inherit">
                         Cadastre-se
                     </MudButton>
                 </div>

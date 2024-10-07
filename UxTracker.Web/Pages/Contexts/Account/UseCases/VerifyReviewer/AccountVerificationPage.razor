@@ -1,0 +1,52 @@
+@using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Web.Components.TextFields
+@using UxTracker.Web.Components.Forms
+
+@page "/reviewers/verify"
+@layout HeadlessLayout
+@inherits AccountVerification
+
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+    <MudText Typo="Typo.h4" Align="Align.Center">Verifique sua conta</MudText>
+            
+    <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column gap-4">
+        <MudPaper Class="pa-6 rounded-lg" Outlined="true">
+            <ValidateForm SubmitFunction="VerifyAsync" TextButton="Verificar conta">
+                <EmailTextField @bind-Email="Request.Email" />
+
+                <MudTextField
+                    MaxLength="6"
+                    ShrinkLabel="true"
+                    T="string"
+                    Label="Código de verificação"
+                    HelperText="O código deve ter 6 caracteres"
+                    HelperTextOnFocus
+                    InputType="InputType.Text"
+                    Variant="Variant.Filled"
+                    @bind-Value="Request.VerificationCode"
+                    Required="true"
+                    RequiredError="O código deve ser informado"
+                    Immediate="true"
+                    OnlyValidateIfDirty="true"
+                    Validation="@VerificationCodeValidator.Validate"
+                />
+            </ValidateForm>
+        </MudPaper>
+
+        <MudPaper Class="pa-6 rounded-lg d-flex flex-column gap-3" Outlined="true">
+            <MudText Align="Align.Center">O código foi enviado para seu e-mail.</MudText>
+            <MudText Align="Align.Center">
+                <strong>
+                    Não esqueça de verificar a caixa de spam.
+                </strong>
+            </MudText>
+
+            <MudLink Style="text-align: center" OnClick="ResendVerificationCodeAsync">
+                <strong>
+                    Reenviar código
+                </strong>
+            </MudLink>
+        </MudPaper>
+    </MudContainer>
+</MudContainer>

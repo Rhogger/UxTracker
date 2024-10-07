@@ -36,4 +36,10 @@ public class Repository: IRepository
 
         await _context.SaveChangesAsync(cancellationToken);
     }
+    
+    public async Task<bool> AnyProjectAsync(string id, CancellationToken cancellationToken) =>
+        await _context
+            .Projects
+            .AsNoTracking()
+            .AnyAsync(x => x.Id.ToString() == id,cancellationToken: cancellationToken);
 }

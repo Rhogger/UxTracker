@@ -18,5 +18,6 @@ public class Repository : IRepository
         .Projects
         .AsNoTracking()
         .Include(x => x.Relatories)
+        .Include(x => x.Reviews)
         .FirstOrDefaultAsync(x => x.Id.ToString() == id, cancellationToken);
 }

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Security;
-using AuthenticateUseCase = UxTracker.Core.Contexts.Account.UseCases.Authenticate;
+using AuthenticateUseCase = UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher;
 using PasswordRecoveryUseCase = UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 
-namespace UxTracker.Web.Pages.Contexts.Account.UseCases.Authenticate;
+namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateResearcher;
 
 public class Login : ComponentBase
 {
@@ -24,7 +24,7 @@ public class Login : ComponentBase
     {
         try
         {
-            var response = await AccountContextHandler.SignInAsync(Request);
+            var response = await AccountContextHandler.SignInResearcherAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)

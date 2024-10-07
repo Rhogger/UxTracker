@@ -50,7 +50,7 @@ public class Handler: IRequestHandler<Request, Response>
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
-                return new Response("Usuário não cadastrado", 404);
+                return new Response("Usuário não cadastrado", 404, new ResponseData(request.ResearchCode));
         }
         catch
         {
