@@ -8,52 +8,112 @@
                 Voltar
             </MudButton>
         </div>
-        <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-            <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Titulo da pesquisa</MudText>
-            <MudText Typo="Typo.body1">
-                Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-                PageMaker including versions of Lorem Ipsum.
-            </MudText>
+        @if (!IsEditState)
+{
+    <MudPaper Class="pa-4 rounded-lg" Outlined="true">
+        <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">@Title</MudText>
+        <MudText Typo="Typo.body1" Align="MudBlazor.Align.Center">@Description</MudText>
 
-            <MudForm Class="pa-5">
-                <MudGrid Spacing="3">
-                    <MudItem xs="12" sm="3">
-                        <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="12" sm="3">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled"
-                                      FullWidth="true" ReadOnly="true" />
-                    </MudItem>
+        <MudForm Class="pa-5">
+            <MudGrid Spacing="3">
+                <MudItem xs="12" sm="3">
+                    <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
+                                  Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" 
+                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" 
+                                  OnAdornmentClick="CopyTextToClipboard" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
+                                  FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
+                                  OnAdornmentClick="DownloadFile" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+        @if (Status != "Concluído"){
+        <div class="d-flex justify-end">
+            <MudButton EndIcon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="MudBlazor.Color.Info" 
+                       Class="py-2 px-15" OnClick="ChangeState"> Editar
+            </MudButton>
+        </div>
+        }
+    </MudPaper>
+}
+else
+{
+    <MudPaper Class="pa-4 rounded-lg" Outlined="true">
+        <MudTextField T="string" Label="Título da pesquisa" Variant="Variant.Filled" FullWidth="true" 
+                      @bind-Value="Title" Class="pa-5" />
+        <MudTextField T="string" Label="Descrição da pesquisa" Variant="Variant.Filled" FullWidth="true" 
+                      @bind-Value="Description" Class="pa-5" />
 
-                    <MudItem xs="12" sm="6">
-                        <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
-                                      Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" Adornment="Adornment.End"
-                                      AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="CopyTextToClipboard" />
-                    </MudItem>
+        <MudForm Class="pa-5">
+            <MudGrid Spacing="3">
+                <MudItem xs="12" sm="3">
+                    <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" Variant="Variant.Filled" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
+                                  Value="@evaluationLink" Variant="Variant.Filled" FullWidth="true" 
+                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" 
+                                  OnAdornmentClick="CopyTextToClipboard" ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudDatePicker Label="Data Final" @bind-Date="_endDate" Variant="Variant.Filled" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
+                                  FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
+                                  OnAdornmentClick="DownloadFile" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+        <div class="d-flex justify-center">
+    <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Error" Class="py-2 px-15 mx-2" OnClick="CancelChanges">Cancelar</MudButton>
+    <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15 mx-2" OnClick="ChangeState">Salvar</MudButton>
+</div>
+    </MudPaper>
+}
 
-                    <MudItem xs="12" sm="3">
-                        <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-
-                    <MudItem xs="12" sm="3">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true"
-                                      ReadOnly="true" />
-                    </MudItem>
-
-                    <MudItem xs="12" sm="6">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
-                                      FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
-                                      OnAdornmentClick="DownloadFile" />
-                    </MudItem>
-                </MudGrid>
-            </MudForm>
+@if (Status == "Em andamento")
+{
+    <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatório</MudText>
+    
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudPaper Class="pa-5 rounded-lg" Outlined="true">
+            <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot>
+                <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)"
+                                   Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)"
+                                   Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)" />
+            </ApexChart>
         </MudPaper>
-
-        @* BoxPlot *@
+        
+        <div class="d-flex justify-end mt-3">
+            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15" OnClick="FinishResearch">
+                Finalizar Pesquisa
+            </MudButton>
+        </div>
+    </MudContainer>
+}
+      else if (Status == "Concluído")
+    {
         <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText>
         <MudContainer MaxWidth="MaxWidth.Medium">
             <MudPaper Class="pa-5 rounded-lg" Outlined="true">
@@ -64,36 +124,74 @@
                 </ApexChart>
             </MudPaper>
 
-            @* Bar Chart *@
             <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
                 <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                    <ApexChart TItem="Order" Title="Order Net Value" Options="barChartOptions">
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Gross Value" XValue="@(e => e.Country)"
+                    <ApexChart TItem="Order" Title="Valor Bruto por País" Options="barChartOptions">
+                        <ApexPointSeries TItem="Order" Items="Orders" Name="Valor Bruto" XValue="@(e => e.Country)"
                                          YAggregate="@(e => e.Sum(e => e.GrossValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Net Value" XValue="@(e => e.Country)"
+                        <ApexPointSeries TItem="Order" Items="Orders" Name="Valor Líquido" XValue="@(e => e.Country)"
                                          YAggregate="@(e => e.Sum(e => e.NetValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
                     </ApexChart>
                 </MudPaper>
             </MudContainer>
 
-            @* Cluster *@
             <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
                 <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                    <ApexChart TItem="Cluster" Title="Scatter Sample" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
-                        <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Gross" SeriesType="SeriesType.Scatter"
+                    <ApexChart TItem="Cluster" Title="Distribuição de Desconto" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
+                        <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Bruto" SeriesType="SeriesType.Scatter"
                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
-                        <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Trend"
+                        <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Tendência"
                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
                     </ApexChart>
                 </MudPaper>
             </MudContainer>
-
         </MudContainer>
-    </MudContainer>
+    }
+</MudContainer>
 </AuthorizeView>
 
 
 @code {
+
+    private string Status = "Em andamento";
+    private bool IsEditState = false;
+    private string Title = "Título da pesquisa";
+    private string Description = "Descrição da pesquisa";
+    private string OriginalTitle;
+    private string OriginalDescription;
+
+    private void ChangeState()
+    {
+        if (!IsEditState)
+        {
+            OriginalTitle = Title;
+            OriginalDescription = Description;
+        }
+        IsEditState = !IsEditState;
+    }
+
+
+    private void SaveChanges()
+    {
+
+        IsEditState = false;
+
+    }
+     private void CancelChanges()
+    {
+        Title = OriginalTitle;
+        Description = OriginalDescription;
+
+        IsEditState = false;
+    }
+
+    private async Task FinishResearch()
+{
+
+    Status = "Concluído";
+
+    Snackbar.Add("Pesquisa finalizada com sucesso!", Severity.Success);
+}
 
     // BoxPlot
     private List<BoxPlotSample> incidents { get; set; } = SampleData.GetBoxPlotData();
