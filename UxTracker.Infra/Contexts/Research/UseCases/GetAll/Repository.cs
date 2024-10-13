@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UxTracker.Core.Contexts.Research.DTOs;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
 using UxTracker.Infra.Data;
 
@@ -23,7 +24,18 @@ public class Repository : IRepository
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
                 Status = x.Status,
-                SurveyCollections = x.SurveyCollections
+                ReviewsCount = x.Reviews.Count,
+                ReviewersCount = x.Reviews.Count > 0 
+                    ? x.Reviews
+                        .GroupBy(x => x.UserId)
+                        .Select(x => x.Count())
+                        .FirstOrDefault()
+                    : 0,
             })
+            .OrderBy(x => x.Status == Status.InProgress ? 0 
+                : x.Status == Status.Finished ? 1 
+                : 2)
+            .ThenByDescending(x => x.StartDate)
+            .ThenByDescending(x => x.EndDate)
             .ToListAsync(cancellationToken);
 }

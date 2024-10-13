@@ -1,7 +1,5 @@
 using MediatR;
-using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Research.DTOs;
-using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
@@ -33,7 +31,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        #region 02. Recuperar usuário do banco
+        #region 02. Recuperar projetos do banco
         
         List<GetAllDTO>? projects;
 

@@ -10,6 +10,6 @@ public class GetAllDTO
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public Status Status { get; set; }
+    public int ReviewsCount { get; set; }
     public int ReviewersCount { get; set; }
-    public int SurveyCollections { get; set; }
 }

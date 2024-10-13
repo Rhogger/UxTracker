@@ -80,6 +80,9 @@ public class Handler : ITransactionalHandler<Request, Response>
             if(project.IsNewStartDate(request.StartDate))
                 project.UpdateStartDate(request.StartDate);
             
+            if(project.IsNewEndDate(request.EndDate))
+                project.UpdateEndDate();
+            
             if(project.IsNewPeriodType(request.PeriodType))
                 project.UpdatePeriodType(request.PeriodType);
             
