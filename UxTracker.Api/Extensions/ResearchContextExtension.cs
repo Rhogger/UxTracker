@@ -95,7 +95,7 @@ public static class ResearchContextExtension
 
         app.MapPost(
             "api/v1/projects/create",
-            [Authorize(Policy = "ResearcherPolicy")] [Consumes("multipart/form-data")]
+            [Authorize(Roles = "Researcher")] [Consumes("multipart/form-data")]
             async (
                 HttpContext httpContext,
                 IFormFile? consentTerm,
@@ -177,7 +177,7 @@ public static class ResearchContextExtension
 
         app.MapDelete(
             $"api/v1/projects/{{projectId}}",
-            [Authorize(Policy = "ResearcherPolicy")]
+            [Authorize(Roles = "Researcher")]
             async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,
@@ -228,7 +228,7 @@ public static class ResearchContextExtension
 
         app.MapGet(
             $"api/v1/projects/{{projectId}}",
-            [Authorize(Policy = "ResearcherPolicy")]
+            [Authorize(Roles = "Researcher")]
             async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,
@@ -263,7 +263,7 @@ public static class ResearchContextExtension
 
         app.MapGet(
             "api/v1/projects/",
-            [Authorize(Policy = "ResearcherPolicy")]
+            [Authorize(Roles = "Researcher")]
             async (
                 HttpContext httpContext,
                 IRequestHandler<
@@ -296,7 +296,7 @@ public static class ResearchContextExtension
 
         app.MapGet(
             $"api/v1/review/{{projectId}}",
-            [Authorize(Policy = "ReviewerPolicy")] async (
+            [Authorize(Roles = "Reviewer")] async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,
                 IRequestHandler<
@@ -339,7 +339,7 @@ public static class ResearchContextExtension
 
         app.MapPatch(
             $"api/v1/projects/{{projectId}}",
-            [Authorize (Policy = "ResearcherPolicy")]
+            [Authorize (Roles = "Researcher")]
             [Consumes("multipart/form-data")]
             async (
                 HttpContext httpContext,

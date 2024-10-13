@@ -28,9 +28,13 @@ public class IdentityClaimsService(ICookieHandler cookieHandler) : IIdentityClai
         
         if (!ValidateToken(token)) return EmptyClaimsPrincipal;
 
-        var claims = token.Claims;
+        var claims = token.Claims.ToList();
+
+        var roleClaim = claims.FirstOrDefault(c => c.Type == "role");
         
-        claims = claims.Append(new Claim(Configuration.Cookie.AccessTokenCookieName, accessToken));
+        if(roleClaim is not null) claims.Add(new Claim(ClaimTypes.Role, roleClaim.Value));
+        
+        claims.Add(new Claim(Configuration.Cookie.AccessTokenCookieName, accessToken));
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, "Custom"));
     }
