@@ -16,6 +16,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
         [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
         protected AuthenticateReviewerUseCase.Request Request = new();
+        protected bool IsBusy { get; set; } = false;
         
         protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
@@ -23,12 +24,14 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
         {
             try
             {
+                IsBusy = true;
+
                 var response = await AccountContextHandler.SignInReviewerAsync(Request);
 
                 if (response is not null)
                     if (response.IsSuccessful)
                     {
-                        BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
+                        BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
                         Navigation.NavigateTo("/reviewers/research");
                     }
                     else
@@ -38,8 +41,10 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                                 Snackbar.Add(notification.Message, Severity.Error);
                         else
                         {
-                            if(string.Equals(response.Data.Message, "Conta inativa"))
-                                Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.", Severity.Error,
+                            if (string.Equals(response.Data.Message, "Conta inativa"))
+                                Snackbar.Add(
+                                    $"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.",
+                                    Severity.Error,
                                     config =>
                                     {
                                         config.Action = "Verificar";
@@ -52,10 +57,11 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                                     });
                             else
                             {
-                                if(response.Data.Message.Equals("Usuário não cadastrado"))
+                                if (response.Data.Message.Equals("Usuário não cadastrado"))
                                     Navigation.NavigateTo("/reviewers/register");
-                                
-                                Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+
+                                Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}",
+                                    Severity.Error);
                             }
                         }
                     }
@@ -65,6 +71,10 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
             catch (Exception ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
     }

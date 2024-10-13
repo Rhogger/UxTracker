@@ -7,12 +7,25 @@
 @inherits AccountVerification
 
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
-    <MudText Typo="Typo.h4" Align="Align.Center">Verifique sua conta</MudText>
+<MudContainer 
+    MaxWidth="MaxWidth.Small" 
+    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+    <MudText
+        Typo="Typo.h4"
+        Align="Align.Center">
+        Verifique sua conta
+    </MudText>
             
-    <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex flex-column gap-4">
-        <MudPaper Class="pa-6 rounded-lg" Outlined="true">
-            <ValidateForm SubmitFunction="VerifyAsync" TextButton="Verificar conta">
+    <MudContainer 
+        MaxWidth="MaxWidth.ExtraSmall" 
+        Class="d-flex flex-column gap-4">
+        <MudPaper 
+            Class="pa-6 rounded-lg" 
+            Outlined="true">
+            <ValidateForm 
+                SubmitFunction="VerifyAsync" 
+                TextButton="Verificar conta"
+                IsBusy="IsBusy">
                 <EmailTextField @bind-Email="Request.Email" />
 
                 <MudTextField
@@ -34,19 +47,31 @@
             </ValidateForm>
         </MudPaper>
 
-        <MudPaper Class="pa-6 rounded-lg d-flex flex-column gap-3" Outlined="true">
-            <MudText Align="Align.Center">O código foi enviado para seu e-mail.</MudText>
+        <MudPaper 
+            Class="pa-6 rounded-lg d-flex flex-column align-center gap-3" 
+            Outlined="true">
+            <MudText
+                Align="Align.Center">
+                O código foi enviado para seu e-mail.
+            </MudText>
             <MudText Align="Align.Center">
                 <strong>
                     Não esqueça de verificar a caixa de spam.
                 </strong>
             </MudText>
 
-            <MudLink Style="text-align: center" OnClick="ResendVerificationCodeAsync">
-                <strong>
-                    Reenviar código
-                </strong>
-            </MudLink>
+            @if (!IsBusyResend)
+            {
+                <MudLink Style="text-align: center" OnClick="ResendVerificationCodeAsync">
+                    <strong>
+                        Reenviar código
+                    </strong>
+                </MudLink>
+            }
+            else
+            {
+                <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Small" StrokeWidth="4" />
+            }
         </MudPaper>
     </MudContainer>
 </MudContainer>

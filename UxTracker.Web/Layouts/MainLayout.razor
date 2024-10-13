@@ -1,8 +1,9 @@
+@using System.Security.Claims
 @using Blazored.LocalStorage
 @using UxTracker.Core.Contexts.Account.Handlers
 @using UxTracker.Core.Security
 @using UxTracker.Web.Utils.Theme
-@using UxTracker.Web.Components
+
 @inherits LayoutComponentBase
 
 <MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
@@ -10,86 +11,71 @@
 <MudPopoverProvider />
 <MudSnackbarProvider />
 
+@if (!IsBusy)
+{
+    <AuthorizeView Roles="Researcher, Reviewer">
+        <Authorized>
+            <MudLayout Style="height: 100vh">
+                <MudAppBar>
+                    <MudText
+                        Typo="Typo.h5"
+                        Style="font-weight: bold; color: white;">
+                        UxTracker
+                    </MudText>
 
-<MudLayout Style="height: 100vh">
-    <MudAppBar>
-        <MudText
-            Typo="Typo.h5"
-            Style="font-weight: bold; color: white;">
-            UxTracker
-        </MudText>
+                    <MudSpacer/>
+
+                    <div class="d-flex gap-3">
+                        <MudIconButton
+                            Icon="@Icon"
+                            Color="Color.Inherit"
+                            OnClick="ChangeMode"/>
+
+                        @if (User.IsInRole("Researcher"))
+                        {
+                            <MudIconButton
+                                Icon="@Icons.Material.Filled.Person"
+                                Color="Color.Inherit"
+                                Href="/account"/>
+                        }
+
+                        @if (User.IsInRole("Reviewer"))
+                        {
+                            <MudIconButton
+                                Icon="@Icons.Material.Filled.Person"
+                                Color="Color.Inherit"
+                                Href="/reviewers/account"/>
+                        }
+
+                        <MudIconButton
+                            Icon="@Icons.Material.Filled.Logout"
+                            Color="Color.Inherit"
+                            OnClick="SignOutAsync"/>
+                    </div>
+                </MudAppBar>
+
+                <MudMainContent Class="py-14 h-full r-main-container">
+                    @Body
+                </MudMainContent>
+            </MudLayout>
+        </Authorized>
         
-        <MudSpacer/>
-
-        <AuthorizeView Policy="ResearcherPolicy">
-            <Authorized>
-                <div class="d-flex gap-3">
-                    <MudIconButton
-                        Icon="@Icon"
-                        Color="Color.Inherit"
-                        OnClick="ChangeMode"/>
-
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Person"
-                        Color="Color.Inherit"
-                        Href="/account"/>
-
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Logout"
-                        Color="Color.Inherit"
-                        OnClick="SignOutAsync"/>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Policy="ReviewerPolicy">
-            <Authorized>
-                <div class="d-flex gap-3">
-                    <MudIconButton
-                        Icon="@Icon"
-                        Color="Color.Inherit"
-                        OnClick="ChangeMode"/>
-
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Person"
-                        Color="Color.Inherit"
-                        Href="/reviewers/account"/>
-
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Logout"
-                        Color="Color.Inherit"
-                        OnClick="SignOutAsync"/>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView>
-            <Authorized/>
-            <NotAuthorized>
-                <div class="d-flex gap-3">
-                    <MudButton
-                        Href="/login"
-                        Variant="Variant.Text"
-                        Color="Color.Inherit">
-                        Login
-                    </MudButton>
-
-                    <MudButton
-                        Href="/register"
-                        Variant="Variant.Outlined"
-                        Color="Color.Inherit">
-                        Cadastre-se
-                    </MudButton>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-    </MudAppBar>
-    
-    <MudMainContent Class="py-16">
-        <div style="width: 100%; height: 64px;" />
-        @Body
-    </MudMainContent>
-</MudLayout>
+        <NotAuthorized>
+            @if (User.Identity is { IsAuthenticated: true })
+            {
+                <RedirectToUnauthorizedPage/>
+            }
+            else
+            {
+                <RedirectToLogin/>
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+}
+else
+{
+    <Authorizing/>
+}
 
 @code
 {
@@ -100,19 +86,24 @@
     
     private bool IsDarkMode = true;
     private string Icon = Icons.Material.Filled.WbSunny;
+
+    private ClaimsPrincipal User { get; set; } = null!;
+    private bool IsBusy { get; set; } = true;
     
     protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        User = authState.User;
         
-        if (user.Identity is { IsAuthenticated: false })
+        if (User.Identity is { IsAuthenticated: false })
             Navigation.NavigateTo("/login");
         else
         {
             var currentUrl = Navigation.Uri;
             await LocalStorage.SetItemAsync("currentUrl", currentUrl);
         }
+
+        IsBusy = false;
     }
     
     private void ChangeMode()

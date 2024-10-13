@@ -17,6 +17,8 @@ public class AccountVerification: ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyReviewerUseCase.Request Request = new();
+    protected bool IsBusy { get; set; } = false;
+    protected bool IsBusyResend { get; set; } = false;
 
     protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
@@ -25,8 +27,10 @@ public class AccountVerification: ComponentBase
     {
         try
         {
+            IsBusy = true;
+
             Request.ResearchCode = await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty;
-            
+
             var response = await AccountContextHandler.VerifyReviewerAsync(Request);
 
             if (response is not null)
@@ -53,14 +57,20 @@ public class AccountVerification: ComponentBase
         {
             Snackbar.Add($"{ex.Message}", Severity.Error);
         }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     protected async Task ResendVerificationCodeAsync()
     {
         ResendVerificationCodeReviewerUseCase.Request request = new(Request.Email);
-        
+
         try
         {
+            IsBusyResend = true;
+
             var response = await AccountContextHandler.ResendVerificationCodeReviewerAsync(request);
 
             if (response is not null)
@@ -80,6 +90,10 @@ public class AccountVerification: ComponentBase
         catch (Exception ex)
         {
             Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusyResend = false;
         }
     }
 }

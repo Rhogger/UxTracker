@@ -14,11 +14,14 @@ public class Register : ComponentBase
     protected CreateUseCase.Request Request = new();
     
     protected string ConfirmPassword = string.Empty;
+    protected bool IsBusy = false;
 
     protected async Task SignUpAsync()
     {
         try
         {
+            IsBusy = true;
+
             var response = await AccountContextHandler.SignUpResearchAsync(Request);
 
             if (response is not null)
@@ -41,6 +44,10 @@ public class Register : ComponentBase
         catch (Exception ex)
         {
             Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }

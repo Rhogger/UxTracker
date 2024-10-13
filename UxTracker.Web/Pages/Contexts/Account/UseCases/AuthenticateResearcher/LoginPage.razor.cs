@@ -17,6 +17,7 @@ public class Login : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly AuthenticateUseCase.Request Request = new();
+    protected bool IsBusy { get; set; } = false;
 
     protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
@@ -24,12 +25,14 @@ public class Login : ComponentBase
     {
         try
         {
+            IsBusy = true;
+            
             var response = await AccountContextHandler.SignInResearcherAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
+                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
                     Navigation.NavigateTo("/projects");
                 }
                 else
@@ -39,8 +42,10 @@ public class Login : ComponentBase
                             Snackbar.Add(notification.Message, Severity.Error);
                     else
                     {
-                        if(string.Equals(response.Data.Message, "Conta inativa"))
-                            Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.", Severity.Error,
+                        if (string.Equals(response.Data.Message, "Conta inativa"))
+                            Snackbar.Add(
+                                $"Erro: {response.Data.StatusCode} - {response.Data.Message}. Por favor, verifique primeiro.",
+                                Severity.Error,
                                 config =>
                                 {
                                     config.Action = "Verificar";
@@ -61,6 +66,10 @@ public class Login : ComponentBase
         catch (Exception ex)
         {
             Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 
