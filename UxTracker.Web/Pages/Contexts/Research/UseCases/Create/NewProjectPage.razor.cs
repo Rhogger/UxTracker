@@ -51,10 +51,54 @@ public class NewProject: ComponentBase
         }
     } 
     
-    protected void NavigateToPreviousPage()
+    protected void NavigateToProjects()
     {
         Navigation.NavigateTo("/projects");
     }
 
     protected void OnDateChanged() => StateHasChanged();
+    
+    // Drag and drop
+#nullable enable
+    protected const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    protected string _dragClass = DefaultDragClass;
+    protected string? _fileName;
+    protected MudFileUpload<IBrowserFile>? _fileUpload;
+
+    protected async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileName = null;
+        ClearDragClass();
+    }
+
+    protected Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    protected void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var file = e.File;
+
+        if (file.ContentType == "application/pdf")
+        {
+            _fileName = file.Name;
+        }
+        else
+        {
+            Snackbar.Add($"Arquivo '{file.Name}' não é um PDF.", Severity.Error);
+        }
+    }
+
+    protected void Upload()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Arquivo enviado com sucesso!.", Severity.Success);
+    }
+
+    protected void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    protected void ClearDragClass()
+        => _dragClass = DefaultDragClass;
 }

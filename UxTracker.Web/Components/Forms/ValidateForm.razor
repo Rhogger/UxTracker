@@ -75,4 +75,17 @@
     private MudForm Form = null!;
     private string[] Errors = [];
     private bool IsValid;
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Form.Validate();
+
+            if (IsValid)
+            {
+                await SubmitFunction.InvokeAsync();
+            }
+        }
+    }
 }

@@ -9,7 +9,6 @@
 
 <AuthorizeView Roles="Researcher">
     <Authorized>
-        <div class="w-full d-flex mt-14">
             <MudContainer
                 MaxWidth="MaxWidth.ExtraSmall"
                 Class="d-flex flex-column justify-center align-content-center mud-height-full">
@@ -161,17 +160,6 @@
                     }
                 </MudPaper>
             </MudContainer>
-
-            <MudContainer
-                MaxWidth="MaxWidth.ExtraSmall"
-                Class="d-flex flex-column justify-center align-content-center mud-height-full">
-                <MudPaper
-                    Class="d-flex flex-column pa-6 rounded-lg gap-12"
-                    Outlined="true">
-                    <ProfileEditSkeleton/>
-                </MudPaper>
-            </MudContainer>
-        </div>
     </Authorized>
     
     
