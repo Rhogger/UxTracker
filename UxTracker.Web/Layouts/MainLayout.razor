@@ -17,11 +17,27 @@
         <Authorized>
             <MudLayout Style="height: 100vh">
                 <MudAppBar>
-                    <MudText
-                        Typo="Typo.h5"
-                        Style="font-weight: bold; color: white;">
-                        UxTracker
-                    </MudText>
+                    @if (User.IsInRole("Researcher"))
+                    {
+                        <MudLink Href="/projects">
+                            <MudText
+                                Typo="Typo.h5"
+                                Style="font-weight: bold; color: white;">
+                                UxTracker
+                            </MudText>
+                        </MudLink>
+                    }
+
+                    @if (User.IsInRole("Reviewer"))
+                    {
+                        <MudLink Href="/reviewers/research">
+                            <MudText
+                                Typo="Typo.h5"
+                                Style="font-weight: bold; color: white;">
+                                UxTracker
+                            </MudText>
+                        </MudLink>
+                    }
 
                     <MudSpacer/>
 
