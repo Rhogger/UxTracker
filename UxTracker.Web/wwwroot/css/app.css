@@ -2,6 +2,10 @@
     width: 100%;
 }
 
+.w-fit{
+    width: fit-content;
+}
+
 .h-full{
     min-height: fit-content;
     height: 100%;
@@ -9,6 +13,11 @@
 
 .h-max{
     height: max-content;
+}
+
+.obj-fit{
+    width: 100%;
+    object-fit: contain;
 }
 
 .title-2{
@@ -35,6 +44,13 @@
 
 .r-add{
     min-width: 150px;
+}
+
+@media screen and (max-width: 961px) {
+    .inverse{
+        display: flex;
+        flex-direction: column-reverse;
+    }
 }
 
 @media screen and (max-width: 715px){
