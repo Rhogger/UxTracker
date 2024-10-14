@@ -2,57 +2,63 @@
 @layout HeadlessLayout
 @using ApexCharts
 
-<AuthorizeView Policy="ReviewerPolicy">
-    <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-4">
-        <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center">Título da pesquisa</MudText>
-        <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-            <MudText Typo="Typo.body1">
-                Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                has
-                been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-                PageMaker including versions of Lorem Ipsum.
-            </MudText>
-        </MudPaper>
-        <MudPaper Class="pa-4 rounded-lg mt-1" Outlined="true">
-            <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
-            <MudContainer Class="d-flex justify-center">
-                <ApexChart TItem="EvaluationData" Options="@options">
-                    <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas" SeriesType="SeriesType.Line"
-                                     XValue="@(e => e.Day)" YValue="@(e => e.Rating)" />
-                </ApexChart>
-            </MudContainer>
-            <MudForm @onsubmit="HandleSubmit">
-                <MudGrid>
-                    <MudItem xs="12" md="4">
-                        <MudSelect T="int" Label="Nota" Variant="Variant.Filled" @bind-Value="SelectedRating">
-                            <MudSelectItem Value="1">1</MudSelectItem>
-                            <MudSelectItem Value="2">2</MudSelectItem>
-                            <MudSelectItem Value="3">3</MudSelectItem>
-                            <MudSelectItem Value="4">4</MudSelectItem>
-                            <MudSelectItem Value="5">5</MudSelectItem>
-                            <MudSelectItem Value="6">6</MudSelectItem>
-                            <MudSelectItem Value="7">7</MudSelectItem>
-                            <MudSelectItem Value="8">8</MudSelectItem>
-                            <MudSelectItem Value="9">9</MudSelectItem>
-                            <MudSelectItem Value="10">10</MudSelectItem>
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" md="8">
-                        <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true" @bind-Value="Comment" />
-                    </MudItem>
-                </MudGrid>
-                <div class="d-flex justify-center mt-4">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"
-                               Class="py-2 px-15">
-                        Enviar
-                    </MudButton>
-                </div>
-            </MudForm>
-        </MudPaper>
-    </MudContainer>
+<AuthorizeView Roles="Reviewer">
+    <Authorized>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-4">
+            <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center">Título da pesquisa</MudText>
+            <MudPaper Class="pa-4 rounded-lg" Outlined="true">
+                <MudText Typo="Typo.body1">
+                    Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                    has
+                    been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                    scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
+                    electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
+                    Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+                    PageMaker including versions of Lorem Ipsum.
+                </MudText>
+            </MudPaper>
+            <MudPaper Class="pa-4 rounded-lg mt-1" Outlined="true">
+                <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
+                <MudContainer Class="d-flex justify-center">
+                    <ApexChart TItem="EvaluationData" Options="@options">
+                        <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas" SeriesType="SeriesType.Line"
+                                         XValue="@(e => e.Day)" YValue="@(e => e.Rating)"/>
+                    </ApexChart>
+                </MudContainer>
+                <MudForm @onsubmit="HandleSubmit">
+                    <MudGrid>
+                        <MudItem xs="12" md="4">
+                            <MudSelect T="int" Label="Nota" Variant="Variant.Filled" @bind-Value="SelectedRating">
+                                <MudSelectItem Value="1">1</MudSelectItem>
+                                <MudSelectItem Value="2">2</MudSelectItem>
+                                <MudSelectItem Value="3">3</MudSelectItem>
+                                <MudSelectItem Value="4">4</MudSelectItem>
+                                <MudSelectItem Value="5">5</MudSelectItem>
+                                <MudSelectItem Value="6">6</MudSelectItem>
+                                <MudSelectItem Value="7">7</MudSelectItem>
+                                <MudSelectItem Value="8">8</MudSelectItem>
+                                <MudSelectItem Value="9">9</MudSelectItem>
+                                <MudSelectItem Value="10">10</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" md="8">
+                            <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true" @bind-Value="Comment"/>
+                        </MudItem>
+                    </MudGrid>
+                    <div class="d-flex justify-center mt-4">
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"
+                                   Class="py-2 px-15">
+                            Enviar
+                        </MudButton>
+                    </div>
+                </MudForm>
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {

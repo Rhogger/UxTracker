@@ -1,95 +1,102 @@
-@page "/projects/project"
 @using ApexCharts
 
-<AuthorizeView Policy="ResearcherPolicy">
-    <MudContainer Fixed="true" Class="pa-20">
-        <div class="d-flex justify-start mb-2">
-            <MudButton Href="/researchers/home" Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
-                Voltar
-            </MudButton>
-        </div>
-        <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-            <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Titulo da pesquisa</MudText>
-            <MudText Typo="Typo.body1">
-                Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-                PageMaker including versions of Lorem Ipsum.
-            </MudText>
+@page "/project/{id:int}"
 
-            <MudForm Class="pa-5">
-                <MudGrid Spacing="3">
-                    <MudItem xs="12" sm="3">
-                        <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="12" sm="3">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled"
-                                      FullWidth="true" ReadOnly="true" />
-                    </MudItem>
+<AuthorizeView Roles="Researcher">
+    <Authorized>
+        <MudContainer Fixed="true" Class="pa-20">
+            <div class="d-flex justify-start mb-2">
+                <MudButton Href="/researchers/home" Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
+                    Voltar
+                </MudButton>
+            </div>
+            <MudPaper Class="pa-4 rounded-lg" Outlined="true">
+                <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Titulo da pesquisa</MudText>
+                <MudText Typo="Typo.body1">
+                    Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                    been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                    scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
+                    electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
+                    Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+                    PageMaker including versions of Lorem Ipsum.
+                </MudText>
 
-                    <MudItem xs="12" sm="6">
-                        <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
-                                      Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" Adornment="Adornment.End"
-                                      AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="CopyTextToClipboard" />
-                    </MudItem>
+                <MudForm Class="pa-5">
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12" sm="3">
+                            <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="12" sm="3">
+                            <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled"
+                                          FullWidth="true" ReadOnly="true" />
+                        </MudItem>
 
-                    <MudItem xs="12" sm="3">
-                        <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
+                                          Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="CopyTextToClipboard" />
+                        </MudItem>
 
-                    <MudItem xs="12" sm="3">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true"
-                                      ReadOnly="true" />
-                    </MudItem>
+                        <MudItem xs="12" sm="3">
+                            <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
 
-                    <MudItem xs="12" sm="6">
-                        <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
-                                      FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
-                                      OnAdornmentClick="DownloadFile" />
-                    </MudItem>
-                </MudGrid>
-            </MudForm>
-        </MudPaper>
+                        <MudItem xs="12" sm="3">
+                            <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true"
+                                          ReadOnly="true" />
+                        </MudItem>
 
-        @* BoxPlot *@
-        <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText>
-        <MudContainer MaxWidth="MaxWidth.Medium">
-            <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot>
-                    <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)"
-                                       Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)"
-                                       Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)" />
-                </ApexChart>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
+                                          FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
+                                          OnAdornmentClick="DownloadFile" />
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
             </MudPaper>
 
-            @* Bar Chart *@
-            <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
+            @* BoxPlot *@
+            <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText>
+            <MudContainer MaxWidth="MaxWidth.Medium">
                 <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                    <ApexChart TItem="Order" Title="Order Net Value" Options="barChartOptions">
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Gross Value" XValue="@(e => e.Country)"
-                                         YAggregate="@(e => e.Sum(e => e.GrossValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Net Value" XValue="@(e => e.Country)"
-                                         YAggregate="@(e => e.Sum(e => e.NetValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
+                    <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot>
+                        <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)"
+                                           Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)"
+                                           Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)" />
                     </ApexChart>
                 </MudPaper>
-            </MudContainer>
 
-            @* Cluster *@
-            <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
-                <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                    <ApexChart TItem="Cluster" Title="Scatter Sample" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
-                        <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Gross" SeriesType="SeriesType.Scatter"
-                                         XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
-                        <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Trend"
-                                         XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
-                    </ApexChart>
-                </MudPaper>
-            </MudContainer>
+                @* Bar Chart *@
+                <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
+                    <MudPaper Class="pa-5 rounded-lg" Outlined="true">
+                        <ApexChart TItem="Order" Title="Order Net Value" Options="barChartOptions">
+                            <ApexPointSeries TItem="Order" Items="Orders" Name="Gross Value" XValue="@(e => e.Country)"
+                                             YAggregate="@(e => e.Sum(e => e.GrossValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
+                            <ApexPointSeries TItem="Order" Items="Orders" Name="Net Value" XValue="@(e => e.Country)"
+                                             YAggregate="@(e => e.Sum(e => e.NetValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
+                        </ApexChart>
+                    </MudPaper>
+                </MudContainer>
 
+                @* Cluster *@
+                <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
+                    <MudPaper Class="pa-5 rounded-lg" Outlined="true">
+                        <ApexChart TItem="Cluster" Title="Scatter Sample" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
+                            <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Gross" SeriesType="SeriesType.Scatter"
+                                             XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
+                            <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Trend"
+                                             XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
+                        </ApexChart>
+                    </MudPaper>
+                </MudContainer>
+
+            </MudContainer>
         </MudContainer>
-    </MudContainer>
+    </Authorized>
+    
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
 </AuthorizeView>
 
 
