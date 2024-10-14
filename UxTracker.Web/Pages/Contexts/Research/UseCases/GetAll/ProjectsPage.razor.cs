@@ -62,13 +62,10 @@ public class Projects : ComponentBase
         };
     }
 
-    protected void AddNewProject()
-    {
+    protected void AddNewProject() =>
         Navigation.NavigateTo("/projects/new");
-    }
     
-    protected void NavigateToProject(string projectId)
-    {
+    protected void NavigateToProject(string projectId) =>
         Navigation.NavigateTo($"/project/{projectId}");
-    }
+    
 }
