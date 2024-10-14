@@ -37,7 +37,7 @@ public static class ReviewContextExtension
 
         app.MapPost(
             "api/v1/review/accept-term",
-            [Authorize(Policy = "ReviewerPolicy")]
+            [Authorize(Roles = "Reviewer")]
             async (
                 HttpContext httpContext,
                 AcceptTerm.Request request,
@@ -68,7 +68,7 @@ public static class ReviewContextExtension
 
         app.MapPost(
             $"api/v1/review/{{projectId}}",
-            [Authorize(Policy = "ReviewerPolicy")]
+            [Authorize(Roles = "Reviewer")]
             async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,

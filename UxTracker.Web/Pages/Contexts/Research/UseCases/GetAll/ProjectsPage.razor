@@ -1,0 +1,101 @@
+@page "/projects"
+@inherits Projects
+@layout MainLayout
+
+<AuthorizeView Roles="Researcher">
+    <Authorized>
+        <MudContainer
+            MaxWidth="MaxWidth.Large"
+            Class="pt-14 h-full r-container">
+            <MudPaper Class="h-max paper-projects r-paper">
+                <div Class="projects">
+                    <MudText
+                        Typo="Typo.h4"
+                        Align="Align.Start"
+                        Class="title-projects-page w-full">
+                        Projetos de pesquisa
+                    </MudText>
+
+                    <MudButton
+                        Class="r-add d-flex gap-2"
+                        Color="Color.Primary"
+                        Variant="Variant.Filled"
+                        Href="/projects/new"
+                        OnClick="AddNewProject">
+                        <MudText Typo="Typo.button" Class="add-hidden">
+                            Novo Projeto
+                        </MudText>
+
+                        <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                    </MudButton>
+                </div>
+                
+                @if (!IsBusy)
+                {
+                    @if (Response.Data?.Projects.Count > 0)
+                    {
+                        <MudGrid>
+                            @foreach (var project in Response.Data.Projects)
+                            {
+                                <MudItem xxl="4" xs="12" xl="4" sm="12" md="6" lg="6">
+                                    <MudButton
+                                        Class="pa-0 ma-0"
+                                        FullWidth="true"
+                                        OnClick="() => NavigateToProject(project.Id.ToString())">
+                                        <MudCard
+                                            Class="w-full"
+                                            Style="background-color: #313945;">
+                                            <MudCardHeader
+                                                Class="d-flex align-start justify-space-between">
+                                                <MudText
+                                                    Typo="Typo.h6"
+                                                    Align="Align.Start"
+                                                    Class="title-projects">
+                                                    @project.Title
+                                                </MudText>
+                    
+                                                <MudIcon
+                                                    Icon="@Icons.Material.Filled.Circle"
+                                                    Color="@GetStatusColor(project.Status)"/>
+                                            </MudCardHeader>
+                                            <MudCardContent Class="d-flex flex-column justify-start gap-5">
+                                                <MudText Align="Align.Start" Class="text-projects">Participantes: @project.ReviewersCount</MudText>
+                                                <MudText Align="Align.Start" Class="text-projects">Entregas: @project.ReviewsCount</MudText>
+                    
+                                                <div class="d-flex justify-space-between gap-6">
+                                                    <MudText Align="Align.Start" Class="text-projects">Data início: @project.StartDate.ToString("dd/MM/yyyy")</MudText>
+                                                    @if (project.EndDate != null)
+                                                    {
+                                                        <MudText Align="Align.Start" Class="text-projects">Data fim: @project.EndDate.Value.ToString("dd/MM/yyyy")</MudText>
+                                                    }
+                                                </div>
+                                            </MudCardContent>
+                                        </MudCard>
+                                    </MudButton>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    }
+                    else
+                    {
+                        <div class="no-projects">
+                            <MudText Typo="Typo.h6" Class="no-projects-text">
+                                Não há projetos.
+                            </MudText>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-projects">
+                        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Medium" StrokeWidth="4" />
+                    </div>
+                }
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
+</AuthorizeView>

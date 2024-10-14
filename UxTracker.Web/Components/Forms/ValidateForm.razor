@@ -17,7 +17,14 @@
                 OnClick="SubmitFunction"
                 Disabled="@(!IsValid)"
             >
-                @TextButton
+                @if (!IsBusy)
+                {
+                    @TextButton
+                }
+                else
+                {
+                    <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4" />
+                }
             </MudButton>
         </div>
     }
@@ -40,9 +47,15 @@
                 Class="py-2"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
-                Disabled="@(!IsValid)"
-            >
+                Disabled="@(!IsValid)">
+                @if (!IsBusy)
+                {
                 @TextButton
+                }
+                else
+                {
+                    <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4" />
+                }
             </MudButton>
         </div>
     }
@@ -57,8 +70,22 @@
     [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
     [Parameter] public bool FullWidthButton { get; set; } = true;
+    [Parameter] public bool IsBusy { get; set; } = false;
     
     private MudForm Form = null!;
     private string[] Errors = [];
     private bool IsValid;
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Form.Validate();
+
+            if (IsValid)
+            {
+                await SubmitFunction.InvokeAsync();
+            }
+        }
+    }
 }

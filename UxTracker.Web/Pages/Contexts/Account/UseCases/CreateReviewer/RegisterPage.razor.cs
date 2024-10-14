@@ -15,6 +15,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
         [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
         protected CreateUseCase.Request Request { get; set; } = new();
+        protected bool IsBusy { get; set; } = false;
         
         protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
 
@@ -22,6 +23,8 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
         {
             try
             {
+                IsBusy = true;
+                
                 var response = await AccountContextHandler.SignUpReviewerAsync(Request);
 
                 if (response is not null)
@@ -44,6 +47,10 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
             catch (Exception ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

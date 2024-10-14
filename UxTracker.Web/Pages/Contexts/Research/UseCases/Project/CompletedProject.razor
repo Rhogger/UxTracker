@@ -1,7 +1,9 @@
-@page "/projects/project"
 @using ApexCharts
 
-<AuthorizeView Policy="ResearcherPolicy">
+@page "/project/{id:int}"
+
+<AuthorizeView Roles="Researcher">
+    <Authorized>
     <MudContainer Fixed="true" Class="pa-20">
         <div class="d-flex justify-start mb-2">
             <MudButton Href="/researchers/home" Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
@@ -126,17 +128,6 @@ else
 
             <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
                 <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                    <ApexChart TItem="Order" Title="Valor Bruto por País" Options="barChartOptions">
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Valor Bruto" XValue="@(e => e.Country)"
-                                         YAggregate="@(e => e.Sum(e => e.GrossValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
-                        <ApexPointSeries TItem="Order" Items="Orders" Name="Valor Líquido" XValue="@(e => e.Country)"
-                                         YAggregate="@(e => e.Sum(e => e.NetValue))" OrderByDescending="e=>e.Y" SeriesType="SeriesType.Bar" />
-                    </ApexChart>
-                </MudPaper>
-            </MudContainer>
-
-            <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
-                <MudPaper Class="pa-5 rounded-lg" Outlined="true">
                     <ApexChart TItem="Cluster" Title="Distribuição de Desconto" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
                         <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Bruto" SeriesType="SeriesType.Scatter"
                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
@@ -148,6 +139,11 @@ else
         </MudContainer>
     }
 </MudContainer>
+</Authorized>
+    
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
 </AuthorizeView>
 
 

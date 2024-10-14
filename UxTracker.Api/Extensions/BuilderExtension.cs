@@ -93,20 +93,7 @@ public static class BuilderExtensions
                 };
             });
 
-        builder.Services.AddAuthorizationBuilder()
-            .AddPolicy("ResearcherPolicy", policy =>
-            {
-                policy.RequireRole("Researcher");
-            })
-            .AddPolicy("ReviewerPolicy", policy =>
-            {
-                policy.RequireRole("Reviewer");
-            })
-            .AddPolicy("AdminPolicy", policy =>
-            {
-                policy.RequireRole("Admin");
-            });
-        
+        builder.Services.AddAuthorizationBuilder();
     }
 
     public static void AddSecurity(this WebApplicationBuilder builder)

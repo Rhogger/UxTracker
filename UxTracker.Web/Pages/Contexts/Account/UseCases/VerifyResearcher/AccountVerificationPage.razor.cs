@@ -17,6 +17,8 @@ public class AccountVerification: ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyResearcherUseCase.Request Request = new();
+    protected bool IsBusy { get; set; } = false;
+    protected bool IsBusyResend { get; set; } = false;
 
     protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
@@ -25,12 +27,14 @@ public class AccountVerification: ComponentBase
     {
         try
         {
+            IsBusy = true;
+
             var response = await AccountContextHandler.VerifyResearcherAsync(Request);
 
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();   
+                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
 
                     Snackbar.Add(response.Data.Message, Severity.Success);
                     Navigation.NavigateTo("/projects");
@@ -50,14 +54,20 @@ public class AccountVerification: ComponentBase
         {
             Snackbar.Add($"{ex.Message}", Severity.Error);
         }
+        finally
+        {
+            IsBusy = true;
+        }
     }
 
     protected async Task ResendVerificationCodeAsync()
     {
         ResendVerificationCodeResearcherUseCase.Request request = new(Request.Email);
-        
+
         try
         {
+            IsBusyResend = true;
+
             var response = await AccountContextHandler.ResendVerificationCodeResearcherAsync(request);
 
             if (response is not null)
@@ -79,6 +89,10 @@ public class AccountVerification: ComponentBase
         catch (Exception ex)
         {
             Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusyResend = false;
         }
     }
 }

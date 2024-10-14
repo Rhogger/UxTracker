@@ -1,0 +1,140 @@
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Validators
+@using UxTracker.Web.Components.Forms
+
+@page "/projects/new"
+@inherits NewProject
+
+<AuthorizeView Roles="Researcher">
+    <Authorized>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 py-10">
+            <MudText
+                Typo="Typo.h4"
+                Align="Align.Center">
+                Nova pesquisa
+            </MudText>
+
+            <MudPaper Class="pa-4 rounded-lg w-100" Outlined="true">
+                <ValidateForm
+                    SubmitFunction="CreateProjectAsync"
+                    TwoOptions="true"
+                    SecondFunction="NavigateToProjects"
+                    SecondTextButton="Voltar">
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12">
+                            <MudTextField
+                                ShrinkLabel="true"
+                                T="string"
+                                Label="Título"
+                                Variant="Variant.Filled"
+                                FullWidth="true"
+                                @bind-Value="Request.Title"
+                                Required="true"
+                                RequiredError="O título deve ser informado"
+                                DebounceInterval="500"
+                                OnlyValidateIfDirty="true"
+                                Validation="@TitleValidator.Validate"/>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField
+                                ShrinkLabel="true"
+                                T="string"
+                                Label="Descrição"
+                                Variant="Variant.Filled"
+                                FullWidth="true"
+                                Lines="5"
+                                @bind-Value="Request.Description"
+                                Required="true"
+                                RequiredError="A descrição deve ser informada"
+                                DebounceInterval="500"
+                                OnlyValidateIfDirty="true"
+                                Validation="@DescriptionValidator.Validate"/>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="Period" T="string" Label="Tipo de periodo" AnchorOrigin="Origin.BottomCenter"
+                                       Variant="Variant.Filled">
+                                <MudSelectItem Value="PeriodType.Daily">Diario</MudSelectItem>
+                                <MudSelectItem Value="PeriodType.Weekly">Semanal</MudSelectItem>
+                                <MudSelectItem Value="PeriodType.Monthly">Mensal</MudSelectItem>
+                                <MudSelectItem Value="PeriodType.Yearly">Anual</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField ShrinkLabel="true" T="string" Label="Quantidade coletas" Variant="Variant.Filled" FullWidth="true" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="12" class="d-flex justify-center mt-4">
+                            <MudStack Style="width: 100%">
+                                <MudFileUpload T="IBrowserFile"
+                                               @ref="_fileUpload"
+                                               OnFilesChanged="OnInputFileChanged"
+                                               AcceptedFileTypes="application/pdf"
+                                               Hidden="@false"
+                                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                               InputStyle="opacity:0"
+                                               tabindex="-1"
+                                               @ondrop="@ClearDragClass"
+                                               @ondragenter="@SetDragClass"
+                                               @ondragleave="@ClearDragClass"
+                                               @ondragend="@ClearDragClass">
+                                    <ActivatorContent>
+                                        <MudPaper Height="300px" Outlined="true" Class="d-flex justify-center align-center">
+                                            <MudText Typo="Typo.h6" Align="Align.Center">
+                                                Arraste e solte o Termo de aceite ou clique aqui (somente PDF)
+                                            </MudText>
+                                            @if (_fileName is not null)
+                                            {
+                                                <MudChip T="string"
+                                                         Color="Color.Dark"
+                                                         Text="@_fileName"
+                                                         tabindex="-1" />
+                                            }
+                                        </MudPaper>
+                                    </ActivatorContent>
+                                </MudFileUpload>
+                                <MudToolBar Gutters="@false"
+                                            Class="relative d-flex justify-end gap-4">
+                                    <MudButton Color="Color.Primary"
+                                               Disabled="@(_fileName is null)"
+                                               OnClick="@Upload"
+                                               Variant="Variant.Filled">
+                                        Enviar
+                                    </MudButton>
+                                    <MudButton Color="Color.Error"
+                                               Disabled="@(_fileName is null)"
+                                               OnClick="@ClearAsync"
+                                               Variant="Variant.Filled">
+                                        Limpar
+                                    </MudButton>
+                                </MudToolBar>
+                            </MudStack>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6">Relatórios</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudCheckBox T="bool" Label="Visão geral da evolução das avaliações"/>
+                            <MudCheckBox T="bool" Label="Avaliações de cada usuário por período"/>
+                            <MudCheckBox T="bool" Label="Distribuição das avaliações por período"/>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudCheckBox T="bool" Label="Frequências das avaliações por intervalo de tempo"/>
+                            <MudCheckBox T="bool" Label="Número adequado de clusters de usuários"/>
+                            <MudCheckBox T="bool" Label="Média da experiência do usuário ao longo do período"/>
+                        </MudItem>
+                    </MudGrid>
+                </ValidateForm>
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
+</AuthorizeView>

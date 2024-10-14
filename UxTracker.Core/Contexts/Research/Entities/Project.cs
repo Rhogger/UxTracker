@@ -90,6 +90,11 @@ public class Project: Entity
         StartDate = date;
     }
     
+    public void UpdateEndDate()
+    {
+        EndDate = DateTime.UtcNow;
+    }
+    
     public void UpdatePeriodType(PeriodType periodType)
     {
         if(IsInvalidToUpdateWhenFinishedStatus)
@@ -134,6 +139,7 @@ public class Project: Entity
     public bool IsNewTitle(string title) => !Title.Equals(title);
     public bool IsNewDescription(string description) => !Description.Equals(description);
     public bool IsNewStartDate(DateTime startDate) => !StartDate.Equals(startDate);
+    public bool IsNewEndDate(DateTime? endDate) => !EndDate.Equals(endDate);
     public bool IsNewPeriodType(PeriodType periodType) => !PeriodType.Equals(periodType);
     public bool IsNewSurveyCollections(int surveyCollections) => !SurveyCollections.Equals(surveyCollections);
     public bool IsNewConsentTerm(string hash) => !ConsentTermHash.Equals(hash);

@@ -4,9 +4,14 @@
 @page "/reviewers/account"
 @inherits Profile
 
-<AuthorizeView Policy="ReviewerPolicy">
-<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column justify-center align-content-center mud-height-full">
-<MudPaper Class="d-flex flex-column pa-6 rounded-lg gap-10" Outlined="true">
+<AuthorizeView Roles="Reviewer">
+<Authorized>
+<MudContainer 
+    MaxWidth="MaxWidth.Medium" 
+    Class="d-flex flex-column justify-center align-content-center mud-height-full">
+<MudPaper 
+    Class="d-flex flex-column pa-6 rounded-lg gap-10" 
+    Outlined="true">
 @if (!IsEditState)
 {
     @if (!IsBusy)
@@ -288,4 +293,9 @@ else
 }
 </MudPaper>
 </MudContainer>
+</Authorized>
+
+<NotAuthorized>
+    <RedirectToUnauthorizedPage/>
+</NotAuthorized>
 </AuthorizeView>

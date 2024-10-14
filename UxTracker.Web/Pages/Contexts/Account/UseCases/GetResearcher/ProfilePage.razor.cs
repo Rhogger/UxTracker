@@ -14,13 +14,14 @@ public class Profile : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
-    protected GetResearcherUseCase.Response Response { get; set; } = null!;
+    protected GetResearcherUseCase.Response? Response { get; set; }
     protected UpdateResearcherUseCase.Request Request { get; set; } = new();
     protected string DeleteRequest { get; set; } = string.Empty;
 
     protected string ConfirmPassword { get; set; } = string.Empty;
     
     protected bool IsBusy = true;
+    protected bool IsBusyUpdate = false;
     protected bool IsEditState = false;
 
     protected string Link = string.Empty;
@@ -68,6 +69,8 @@ public class Profile : ComponentBase
     {
         try
         {
+            IsBusyUpdate = true;
+            
             var response = await AccountContextHandler.UpdateResearcherAsync(Request);
 
             if (response is not null)
@@ -94,7 +97,7 @@ public class Profile : ComponentBase
         }
         finally
         {
-            IsBusy = false;
+            IsBusyUpdate = false;
             StateHasChanged();
         }
     }

@@ -1,5 +1,4 @@
 @using UxTracker.Core.Contexts.Account.Enums
-@using UxTracker.Core.Contexts.Shared.Extensions
 @using UxTracker.Web.Components.Forms
 @using UxTracker.Web.Components.TextFields
 
@@ -24,7 +23,8 @@
                 SubmitFunction="SignUpAsync"
                 TwoOptions="true"
                 SecondTextButton="Voltar"
-                SecondFunction="Back">
+                SecondFunction="Back"
+                IsBusy="IsBusy">
                 <MudGrid>
                     <MudItem
                         xs="12"

@@ -347,7 +347,7 @@ public static class AccountContextExtension
         #region DeleteResearcher
         app.MapPatch(
             "api/v1/users/researchers/account/inactivate",
-            [Authorize (Policy = "ResearcherPolicy")] async (
+            [Authorize (Roles = "Researcher")] async (
                 HttpContext httpContext, 
                 DeleteResearcher.Request request,
                 [FromServices] IRequestHandler<DeleteResearcher.Request, DeleteResearcher.Response> handler
@@ -372,7 +372,7 @@ public static class AccountContextExtension
         #region DeleteReviewer
         app.MapPatch(
             "api/v1/users/reviewers/account/inactivate",
-            [Authorize (Policy = "ReviewerPolicy")] async (
+            [Authorize (Roles = "Reviewer")] async (
                 HttpContext httpContext, 
                 DeleteReviewer.Request request,
                 [FromServices] IRequestHandler<DeleteReviewer.Request, DeleteReviewer.Response> handler
@@ -397,7 +397,7 @@ public static class AccountContextExtension
         #region GetResearcher
         app.MapGet(
             "api/v1/users/researchers/account/",
-            [Authorize (Policy = "ResearcherPolicy")] async (
+            [Authorize (Roles = "Researcher")] async (
                 HttpContext httpContext, 
                 [FromServices] IRequestHandler<GetResearcher.Request, GetResearcher.Response> handler
             ) =>
@@ -424,7 +424,7 @@ public static class AccountContextExtension
         #region GetReviewer
         app.MapGet(
             "api/v1/users/reviewers/account/",
-            [Authorize (Policy = "ReviewerPolicy")] async (
+            [Authorize (Roles = "Reviewer")] async (
                 HttpContext httpContext, 
                 [FromServices] IRequestHandler<GetReviewer.Request, GetReviewer.Response> handler
             ) =>
@@ -599,7 +599,7 @@ public static class AccountContextExtension
         
         app.MapPatch(
                 "api/v1/users/researchers/account",
-                [Authorize (Policy = "ResearcherPolicy")] async (
+                [Authorize (Roles = "Researcher")] async (
                     HttpContext httpContext,
                     UpdateResearcher.Request request,
                     IRequestHandler<
@@ -629,7 +629,7 @@ public static class AccountContextExtension
         
         app.MapPatch(
                 "api/v1/users/reviewers/account",
-                [Authorize (Policy = "ReviewerPolicy")] async (
+                [Authorize (Roles = "Reviewer")] async (
                     HttpContext httpContext,
                     UpdateReviewer.Request request,
                     IRequestHandler<
