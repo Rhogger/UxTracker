@@ -1,24 +1,26 @@
 <div class="d-flex flex-column align-center gap-10">
-    <div>
-        <MudSkeleton
-            SkeletonType="SkeletonType.Circle"
-            Animation="Animation.Wave"
-            Height="180px"
-            Width="180px"/>
-
-        <div class="d-flex justify-end" style="width: 180px;">
+    <div class="d-flex flex-column align-center gap-5">
+        <div class="relative">
             <MudSkeleton
                 SkeletonType="SkeletonType.Circle"
                 Animation="Animation.Wave"
-                Height="24px"
-                Width="24px"/>
-        </div>
-    </div>
+                Height="180px"
+                Width="180px"/>
 
-    <MudSkeleton
-        Animation="Animation.Wave"
-        Width="50%" Height="36px"
-        Style="transform: none"/>
+            <div class="absolute" style="bottom: 0; right: 0;">
+                <MudSkeleton
+                    SkeletonType="SkeletonType.Circle"
+                    Animation="Animation.Wave"
+                    Height="18px"
+                    Width="18px"/>
+            </div>
+        </div>
+
+        <MudSkeleton
+            Animation="Animation.Wave"
+            Width="70%" Height="32px"
+            Style="transform: none"/>
+    </div>
 
     <MudSkeleton
         Animation="Animation.Wave"
@@ -27,11 +29,18 @@
         Style="transform: none"/>
 </div>
 
-<MudSkeleton
-    Animation="Animation.Wave"
-    Width="100%"
-    Height="40px"
-    Style="transform: none"
-/>
+<div class="d-flex gap-10">
+    <MudSkeleton
+        Animation="Animation.Wave"
+        Width="100%"
+        Height="40px"
+        Style="transform: none"
+    />
 
-@code{}
+    <MudSkeleton
+        Animation="Animation.Wave"
+        Width="100%"
+        Height="40px"
+        Style="transform: none"
+    />
+</div>

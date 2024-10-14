@@ -1,23 +1,24 @@
 <div class="d-flex flex-column align-center gap-10">
-    <div>
+    <div class="relative mt-2">
         <MudSkeleton
             SkeletonType="SkeletonType.Circle"
             Animation="Animation.Wave"
             Height="180px"
             Width="180px"/>
 
-        <div class="d-flex justify-end" style="width: 180px;">
+        <div class="absolute" style="bottom: 0; right: 0;">
             <MudSkeleton
                 SkeletonType="SkeletonType.Circle"
                 Animation="Animation.Wave"
-                Height="24px"
-                Width="24px"/>
+                Height="20px"
+                Width="20px"/>
         </div>
     </div>
 
     <MudSkeleton
         Animation="Animation.Wave"
-        Width="50%" Height="36px"
+        Width="100%"
+        Height="56px"
         Style="transform: none"/>
 
     <MudSkeleton
@@ -25,13 +26,32 @@
         Width="100%"
         Height="56px"
         Style="transform: none"/>
+
+    <MudSkeleton
+        Animation="Animation.Wave"
+        Width="100%"
+        Height="56px"
+        Style="transform: none"/>
+
+    <MudSkeleton
+        Animation="Animation.Wave"
+        Width="100%"
+        Height="56px"
+        Style="transform: none"/>
+
+    <div class="d-flex w-full gap-10">
+        <MudSkeleton
+            Animation="Animation.Wave"
+            Width="100%"
+            Height="40px"
+            Style="transform: none"
+        />
+
+        <MudSkeleton
+            Animation="Animation.Wave"
+            Width="100%"
+            Height="40px"
+            Style="transform: none"
+        />
+    </div>
 </div>
-
-<MudSkeleton
-    Animation="Animation.Wave"
-    Width="100%"
-    Height="40px"
-    Style="transform: none"
-/>
-
-@code{}
