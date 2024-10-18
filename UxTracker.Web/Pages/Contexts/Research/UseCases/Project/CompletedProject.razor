@@ -335,7 +335,6 @@ else
             var textToCopy = textFieldRef.Value;
             await CopyToClipboardAsync(textToCopy);
             Snackbar.Add("Link copiado para sua área de transferência!", Severity.Success);
-            Console.WriteLine($"Texto copiado: {textToCopy}");
         }
     }
 

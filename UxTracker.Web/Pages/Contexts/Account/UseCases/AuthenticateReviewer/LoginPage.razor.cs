@@ -32,7 +32,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                     if (response.IsSuccessful)
                     {
                         BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
-                        Navigation.NavigateTo("/reviewers/research");
+                        Navigation.NavigateTo($"/reviewers/research/{response.Data.Data.ResearchCode}");
                     }
                     else
                     {

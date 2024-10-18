@@ -131,6 +131,11 @@ else
     private async void SignOutAsync()
     {
         await AccountContextHandler.SignOutAsync();
-        Navigation.NavigateTo("/login");
+        
+        if(User.IsInRole("Researcher"))
+            Navigation.NavigateTo("/login");
+        if(User.IsInRole("Reviewer"))
+            Navigation.NavigateTo("/reviewers/login");
+        
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using UxTracker.Core.Contexts.Account.Extensions;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using GetAllUseCase = UxTracker.Core.Contexts.Research.UseCases.GetAll;
