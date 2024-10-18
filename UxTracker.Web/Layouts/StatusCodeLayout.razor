@@ -1,11 +1,8 @@
-﻿@using Blazored.LocalStorage
-@using UxTracker.Core.Security
+﻿@using UxTracker.Core.Security
 @using UxTracker.Web.Utils.Theme
 @inherits LayoutComponentBase
 
 <MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme"/>
-<MudSnackbarProvider/>
-<MudPopoverProvider/>
 
 <MudLayout Style="height: 100vh">
     <MudMainContent Class="mud-height-full pa-0">
@@ -15,20 +12,11 @@
 
 @code{
 
-    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
-    [Inject] protected NavigationManager Navigation { get; set; } = null!;
     
     protected override async Task OnInitializedAsync()
     {
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-
-        if (user.Identity is { IsAuthenticated: true })
-        {
-            var returnUrl = await LocalStorage.GetItemAsync<string>("currentUrl");
-
-            Navigation.NavigateTo(!string.IsNullOrEmpty(returnUrl) ? returnUrl : "/");
-        }
     }
 }

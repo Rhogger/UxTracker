@@ -83,7 +83,18 @@
             }
             else
             {
-                <RedirectToLogin/>
+                if (UserType.Equals("researcher"))
+                {
+                    <RedirectToLoginResearcher/>
+                }
+                else if (UserType.Equals("reviewer"))
+                {
+                    <RedirectToLoginReviewer/>
+                }
+                else
+                {
+                    <RedirectToLandingPage/>
+                }
             }
         </NotAuthorized>
     </AuthorizeView>
@@ -105,9 +116,11 @@ else
 
     private ClaimsPrincipal User { get; set; } = null!;
     private bool IsBusy { get; set; } = true;
+    protected string UserType { get; set; } = string.Empty;
     
     protected override async Task OnInitializedAsync()
     {
+        UserType = await LocalStorage.GetItemAsync<string>("type") ?? string.Empty;
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         User = authState.User;
         

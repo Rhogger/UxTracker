@@ -19,7 +19,12 @@ public class Login : ComponentBase
     protected readonly AuthenticateUseCase.Request Request = new();
     protected bool IsBusy { get; set; } = false;
 
-    protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+        await LocalStorage.SetItemAsync("type", "researcher");
+    }
+
     
     protected async Task SignInAsync()
     {

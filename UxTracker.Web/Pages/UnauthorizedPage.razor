@@ -1,5 +1,7 @@
+@using Blazored.LocalStorage
+
 @page "/unauthorized"
-@layout HeadlessLayout
+@layout StatusCodeLayout
 
 <MudContainer 
     MaxWidth="MaxWidth.Medium" 
@@ -29,7 +31,7 @@
 
     <AuthorizeView Roles="Reviewer">
         <MudButton
-            Href="/reviewers/research"
+            Href="@Link"
             Variant="Variant.Filled"
             Color="Color.Primary">
             Voltar para a pesquisa
@@ -48,3 +50,17 @@
         </NotAuthorized>
     </AuthorizeView>
 </MudContainer>
+
+@code{
+
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
+
+    protected string ResearchCode { get; set; } = string.Empty;
+    protected string Link { get; set; } = "/reviewers/login";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResearchCode = await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty;
+        Link = $"reviewers/research/{ResearchCode}";
+    }
+}

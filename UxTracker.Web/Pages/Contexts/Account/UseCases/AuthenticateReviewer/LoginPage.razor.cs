@@ -18,8 +18,13 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
         protected AuthenticateReviewerUseCase.Request Request = new();
         protected bool IsBusy { get; set; } = false;
         
-        protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
-    
+        protected override async Task OnInitializedAsync()
+        {
+            Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
+            Request.ResearchCode = await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty;
+            await LocalStorage.SetItemAsync("type", "reviewer");
+        }
+
         protected async Task SignInAsync()
         {
             try
