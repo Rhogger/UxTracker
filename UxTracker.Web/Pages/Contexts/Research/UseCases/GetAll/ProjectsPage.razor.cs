@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UxTracker.Core.Contexts.Account.Extensions;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using GetAllUseCase = UxTracker.Core.Contexts.Research.UseCases.GetAll;
@@ -16,9 +17,9 @@ public class Projects : ComponentBase
 
     protected bool IsBusy { get; set; } = true;
     
-    protected override async Task OnInitializedAsync() => await GetProjectsAsync();
+    protected override async Task OnInitializedAsync() => await GetProjectForReviewAsync();
     
-    private async Task GetProjectsAsync()
+    private async Task GetProjectForReviewAsync()
     {
         try
         {

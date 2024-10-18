@@ -10,12 +10,13 @@ public class Project: Entity
 {
     protected Project() { }
 
-    public Project(Guid userId, string title, string description, DateTime startDate, PeriodType periodType,int surveyCollections, string consentTermHash, List<Relatory> relatories)
+    public Project(Guid userId, string title, string description, DateTime? startDate, DateTime? endDate, PeriodType periodType,int surveyCollections, string consentTermHash, List<Relatory> relatories)
     {
         UserId = userId;
         Title = title;
         Description = description;
-        StartDate = startDate;
+        StartDate = startDate ?? DateTime.UtcNow;
+        EndDate = endDate;
         PeriodType = periodType;
         SurveyCollections = surveyCollections;
         ConsentTermHash = consentTermHash;

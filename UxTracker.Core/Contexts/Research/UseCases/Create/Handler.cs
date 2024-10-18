@@ -19,16 +19,17 @@ public class Handler : IRequestHandler<Request, Response>
     {
         #region 01. Validar Requisição
         
-        Contract<Notification> req;
-        
         try
         {
-            req = Specification.Ensure(request);
-
             if (request.Relatories.Any(string.IsNullOrEmpty))
             {
-                req.AddNotification("Relatories", "Relatório inválido");
+                foreach (var relatory in request.Relatories.ToList())
+                {
+                    request.Relatories.Remove(relatory);
+                }
             }
+            
+            var req = Specification.Ensure(request);
             
             if (!req.IsValid)
                 return new Response("Requisição inválida", 400, req.Notifications);
@@ -53,7 +54,7 @@ public class Handler : IRequestHandler<Request, Response>
                 return new Response("Nenhum relatório foi encontrado", 404);
             }
             
-            project = new Project(Guid.Parse(request.UserId), request.Title, request.Description, request.StartDate, request.PeriodType, request.SurveyCollections, request.ConsentTermHash, relatories);
+            project = new Project(Guid.Parse(request.UserId), request.Title, request.Description, request.StartDate, request.EndDate, request.PeriodType, request.SurveyCollections, request.ConsentTermHash, relatories);
         }
         catch (Exception ex)
         {

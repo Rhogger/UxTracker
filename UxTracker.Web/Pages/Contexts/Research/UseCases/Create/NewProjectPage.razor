@@ -7,20 +7,34 @@
 
 <AuthorizeView Roles="Researcher">
     <Authorized>
-        <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 py-10">
+        <MudContainer 
+            MaxWidth="MaxWidth.Medium" 
+            Class="d-flex flex-column align-items-center gap-10 pt-14 r-container">
             <MudText
                 Typo="Typo.h4"
-                Align="Align.Center">
+                Align="Align.Center"
+                Class="r-container-title">
                 Nova pesquisa
             </MudText>
 
-            <MudPaper Class="pa-4 rounded-lg w-100" Outlined="true">
+            <MudPaper
+                Class="pa-8 rounded-lg w-full r-paper"
+                Outlined="true">
+                <MudText
+                    Typo="Typo.h4"
+                    Align="Align.Center"
+                    Class="pb-12 r-container-title-hidden">
+                    Nova pesquisa
+                </MudText>
+                
                 <ValidateForm
-                    SubmitFunction="CreateProjectAsync"
                     TwoOptions="true"
+                    SubmitFunction="CreateProjectAsync"
                     SecondFunction="NavigateToProjects"
                     SecondTextButton="Voltar">
-                    <MudGrid Spacing="3">
+                    <MudGrid
+                        Class="mb-4"
+                        Spacing="6">
                         <MudItem xs="12">
                             <MudTextField
                                 ShrinkLabel="true"
@@ -53,8 +67,14 @@
                         </MudItem>
 
                         <MudItem xs="12" sm="6">
-                            <MudSelect @bind-Value="Period" T="string" Label="Tipo de periodo" AnchorOrigin="Origin.BottomCenter"
-                                       Variant="Variant.Filled">
+                            <MudSelect
+                                T="PeriodType"
+                                Label="Tipo de periodo"
+                                AnchorOrigin="Origin.BottomCenter"
+                                @bind-Value="Request.PeriodType"
+                                Required="true"
+                                RequiredError="Selecione o tipo de periodo"
+                                Variant="Variant.Filled">
                                 <MudSelectItem Value="PeriodType.Daily">Diario</MudSelectItem>
                                 <MudSelectItem Value="PeriodType.Weekly">Semanal</MudSelectItem>
                                 <MudSelectItem Value="PeriodType.Monthly">Mensal</MudSelectItem>
@@ -63,53 +83,80 @@
                         </MudItem>
 
                         <MudItem xs="12" sm="6">
-                            <MudTextField ShrinkLabel="true" T="string" Label="Quantidade coletas" Variant="Variant.Filled" FullWidth="true" />
+                            <MudNumericField
+                                T="int"
+                                ShrinkLabel="true"
+                                Label="Quantidade coletas"
+                                @bind-Value="Request.SurveyCollections"
+                                Variant="Variant.Filled"
+                                Min="1"
+                                HideSpinButtons="true"
+                                Required="true"
+                                RequiredError="Informe a quantidade de coleta"
+                                FullWidth="true"/>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker
+                                Label="Data Inicial"
+                                @bind-Date="Request.StartDate"
+                                Variant="Variant.Filled"/>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker
+                                Label="Data Final"
+                                @bind-Date="Request.EndDate"
+                                Variant="Variant.Filled"/>
                         </MudItem>
 
                         <MudItem xs="12" sm="12" class="d-flex justify-center mt-4">
-                            <MudStack Style="width: 100%">
-                                <MudFileUpload T="IBrowserFile"
-                                               @ref="_fileUpload"
-                                               OnFilesChanged="OnInputFileChanged"
-                                               AcceptedFileTypes="application/pdf"
-                                               Hidden="@false"
-                                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                                               InputStyle="opacity:0"
-                                               tabindex="-1"
-                                               @ondrop="@ClearDragClass"
-                                               @ondragenter="@SetDragClass"
-                                               @ondragleave="@ClearDragClass"
-                                               @ondragend="@ClearDragClass">
+                            <MudStack Class="w-full">
+                                <MudFileUpload
+                                    T="IBrowserFile"
+                                    @ref="FileUpload"
+                                    OnFilesChanged="OnInputFileChanged"
+                                    Hidden="false"
+                                    InputClass="absolute w-full h-full overflow-hidden z-10"
+                                    InputStyle="opacity:0"
+                                    AppendMultipleFiles="false"
+                                    Required="true"
+                                    RequiredError="Envie um Termo de Consentimento Livre e Esclarecido"
+                                    AcceptedFileTypes="application/pdf"
+                                    @ondrop="ClearDragClass"
+                                    @ondragenter="SetDragClass"
+                                    @ondragleave="ClearDragClass"
+                                    @ondragend="ClearDragClass"
+                                    @onfocus="SetDragClass"
+                                    @onfocusin="SetDragClass"
+                                    @onfocusout="() => ClearDragClass()">
                                     <ActivatorContent>
-                                        <MudPaper Height="300px" Outlined="true" Class="d-flex justify-center align-center">
-                                            <MudText Typo="Typo.h6" Align="Align.Center">
+                                        <MudPaper
+                                            Height="300px"
+                                            Outlined="true"
+                                            Class="@DragClass">
+                                            <MudText
+                                                Typo="Typo.body1"
+                                                Align="Align.Center">
                                                 Arraste e solte o Termo de aceite ou clique aqui (somente PDF)
                                             </MudText>
-                                            @if (_fileName is not null)
+                                            @if (FileName is not null)
                                             {
                                                 <MudChip T="string"
                                                          Color="Color.Dark"
-                                                         Text="@_fileName"
-                                                         tabindex="-1" />
+                                                         Text="@FileName"
+                                                         tabindex="-1"/>
                                             }
                                         </MudPaper>
+                                        <MudIconButton
+                                            Class="absolute clear-btn rounded-lg border-none"
+                                            Color="Color.Error"
+                                            Icon="@Icons.Material.Filled.Close"
+                                            Disabled="@(FileName is null)"
+                                            OnClick="@ClearAsync"
+                                            Variant="Variant.Outlined"/>
                                     </ActivatorContent>
                                 </MudFileUpload>
-                                <MudToolBar Gutters="@false"
-                                            Class="relative d-flex justify-end gap-4">
-                                    <MudButton Color="Color.Primary"
-                                               Disabled="@(_fileName is null)"
-                                               OnClick="@Upload"
-                                               Variant="Variant.Filled">
-                                        Enviar
-                                    </MudButton>
-                                    <MudButton Color="Color.Error"
-                                               Disabled="@(_fileName is null)"
-                                               OnClick="@ClearAsync"
-                                               Variant="Variant.Filled">
-                                        Limpar
-                                    </MudButton>
-                                </MudToolBar>
                             </MudStack>
                         </MudItem>
 
@@ -117,17 +164,38 @@
                             <MudText Typo="Typo.h6">Relatórios</MudText>
                         </MudItem>
 
-                        <MudItem xs="12" sm="6">
-                            <MudCheckBox T="bool" Label="Visão geral da evolução das avaliações"/>
-                            <MudCheckBox T="bool" Label="Avaliações de cada usuário por período"/>
-                            <MudCheckBox T="bool" Label="Distribuição das avaliações por período"/>
-                        </MudItem>
+                        @if (!IsBusy)
+                        {
+                            @foreach (var relatory in Relatories)
+                            {
+                                <MudItem
+                                    xs="12" sm="12"
+                                    md="6" lg="6"
+                                    xl="6" xxl="6">
+                                    <MudCheckBox
+                                        T="bool"
+                                        Label="@relatory.Title"
+                                        ValueChanged="(b) => AddRelatoryOnList(b, relatory.Id.ToString())"
+                                        Validation="@RelatoriesValidator.Validate(Request.Relatories)"/>
+                                </MudItem>
+                            }
 
-                        <MudItem xs="12" sm="6">
-                            <MudCheckBox T="bool" Label="Frequências das avaliações por intervalo de tempo"/>
-                            <MudCheckBox T="bool" Label="Número adequado de clusters de usuários"/>
-                            <MudCheckBox T="bool" Label="Média da experiência do usuário ao longo do período"/>
-                        </MudItem>
+                            if (!IsValid)
+                            {
+                                <MudText
+                                    Align="Align.Start"
+                                    Color="Color.Error"
+                                    Class="pa-8">
+                                    @RelatoriesValidator.Validate(Request.Relatories)
+                                </MudText>
+                            }
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-center align-center w-full" style="min-height: 100px;">
+                                <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Medium" StrokeWidth="4"/>
+                            </div>
+                        }
                     </MudGrid>
                 </ValidateForm>
             </MudPaper>

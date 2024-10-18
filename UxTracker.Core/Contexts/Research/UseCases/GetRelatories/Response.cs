@@ -1,6 +1,7 @@
 using Flunt.Notifications;
+using UxTracker.Core.Contexts.Research.DTOs;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.Create;
+namespace UxTracker.Core.Contexts.Research.UseCases.GetRelatories;
 
 public class Response : Shared.UseCases.Response
 {
@@ -12,11 +13,11 @@ public class Response : Shared.UseCases.Response
         StatusCode = statusCode;
         Notifications = notifications;
     }
-    
+
     public Response(string message, ResponseData data)
     {
         Message = message;
-        StatusCode = 201;
+        StatusCode = 200;
         Notifications = null;
         Data = data;
     }
@@ -24,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(string? Id);
+public record ResponseData(List<GetRelatoriesDTO> Relatories);

@@ -15,6 +15,8 @@ using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
 using GetAllInfra = UxTracker.Infra.Contexts.Research.UseCases.GetAll;
 using GetForReview = UxTracker.Core.Contexts.Research.UseCases.GetForReview;
 using GetForReviewInfra = UxTracker.Infra.Contexts.Research.UseCases.GetForReview;
+using GetRelatories = UxTracker.Core.Contexts.Research.UseCases.GetRelatories;
+using GetRelatoriesInfra = UxTracker.Infra.Contexts.Research.UseCases.GetRelatories;
 using Update = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateInfra = UxTracker.Infra.Contexts.Research.UseCases.Update;
 
@@ -70,6 +72,15 @@ public static class ResearchContextExtension
         builder.Services.AddTransient<
             GetForReview.Contracts.IRepository,
             GetForReviewInfra.Repository
+        >();
+        
+        #endregion
+        
+        #region GetRelatories
+
+        builder.Services.AddTransient<
+            GetRelatories.Contracts.IRepository,
+            GetRelatoriesInfra.Repository
         >();
         
         #endregion
@@ -327,6 +338,28 @@ public static class ResearchContextExtension
 
                 result.Data = result.Data with { TermUrl = filePath };
                 
+                return result.IsSuccess
+                    ? Results.Ok(result)
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        );
+
+        #endregion
+        
+        #region GetRelatories
+
+        app.MapGet(
+            $"api/v1/relatories/",
+            [Authorize(Roles = "Researcher")]
+            async (
+                IRequestHandler<
+                    GetRelatories.Request,
+                    GetRelatories.Response
+                > handler
+            ) =>
+            {
+                var result = await handler.Handle(new GetRelatories.Request(), new CancellationToken());
+
                 return result.IsSuccess
                     ? Results.Ok(result)
                     : Results.Json(result, statusCode: result.StatusCode);

@@ -56,7 +56,7 @@ public class AccountVerification: ComponentBase
         }
         finally
         {
-            IsBusy = true;
+            IsBusy = false;
         }
     }
 

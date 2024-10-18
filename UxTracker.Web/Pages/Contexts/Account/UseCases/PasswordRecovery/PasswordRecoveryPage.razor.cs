@@ -51,7 +51,7 @@ public class PasswordRecovery : ComponentBase
         }
         finally
         {
-            IsBusy = true;
+            IsBusy = false;
         }
     }
     

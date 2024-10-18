@@ -18,6 +18,7 @@ public class ProjectTests
             "Test Title", 
             "Test Description", 
             DateTime.UtcNow.AddDays(1), 
+            null,
             PeriodType.Daily, 
             5, 
             "hash123",
@@ -166,7 +167,7 @@ public class ProjectTests
     public void SetStatus_Should_Return_NotStarted_When_StartDate_Is_InFuture()
     {
         // Arrange
-        var project = new Project(Guid.NewGuid(), "Test", "Test", DateTime.UtcNow.AddDays(1), PeriodType.Daily, 5, "hash123", new List<Relatory>());
+        var project = new Project(Guid.NewGuid(), "Test", "Test", DateTime.UtcNow.AddDays(1), null, PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;
@@ -181,8 +182,7 @@ public class ProjectTests
         // Arrange
         var startDate = DateTime.UtcNow.AddDays(-1);
         var endDate = DateTime.UtcNow.AddDays(1);
-        var project = new Project(Guid.NewGuid(), "Test", "Test", startDate, PeriodType.Daily, 5, "hash123", new List<Relatory>());
-        typeof(Project).GetProperty("EndDate").SetValue(project, endDate);
+        var project = new Project(Guid.NewGuid(), "Test", "Test", startDate,endDate, PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;
@@ -197,8 +197,7 @@ public class ProjectTests
         // Arrange
         var startDate = DateTime.UtcNow.AddDays(-2);
         var endDate = DateTime.UtcNow.AddDays(-1);
-        var project = new Project(Guid.NewGuid(), "Test", "Test", startDate, PeriodType.Daily, 5, "hash123", new List<Relatory>());
-        typeof(Project).GetProperty("EndDate").SetValue(project, endDate);
+        var project = new Project(Guid.NewGuid(), "Test", "Test", startDate, endDate, PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;
@@ -221,7 +220,7 @@ public class ProjectTests
         var relatories = new List<Relatory>();
 
         // Act
-        var project = new Project(userId, title, description, startDate, periodType, surveyCollections, consentTermHash, relatories);
+        var project = new Project(userId, title, description, startDate, null, periodType, surveyCollections, consentTermHash, relatories);
 
         // Assert
         Assert.AreEqual(userId, project.UserId);
@@ -238,7 +237,7 @@ public class ProjectTests
     public void SetStatus_Should_Set_Correct_Status_When_Not_Started()
     {
         // Arrange
-        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(1), PeriodType.Daily, 5, "hash123", new List<Relatory>());
+        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(1), null, PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;
@@ -251,8 +250,7 @@ public class ProjectTests
     public void SetStatus_Should_Set_Correct_Status_When_In_Progress()
     {
         // Arrange
-        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(-1), PeriodType.Daily, 5, "hash123", new List<Relatory>());
-        typeof(Project).GetProperty("EndDate").SetValue(project, DateTime.UtcNow.AddDays(1));
+        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;
@@ -265,8 +263,7 @@ public class ProjectTests
     public void SetStatus_Should_Set_Correct_Status_When_Finished()
     {
         // Arrange
-        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(-2), PeriodType.Daily, 5, "hash123", new List<Relatory>());
-        typeof(Project).GetProperty("EndDate").SetValue(project, DateTime.UtcNow.AddDays(-1));
+        var project = new Project(Guid.NewGuid(), "Title", "Description", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), PeriodType.Daily, 5, "hash123", new List<Relatory>());
 
         // Act
         var status = project.Status;

@@ -24,11 +24,19 @@
     font-weight: 500;
 }
 
+.r-container-title{
+    display: block;
+}
+
+.r-container-title-hidden{
+    display: none;
+}
+
 .paper-projects{
     display: flex;
     flex-direction: column;
     gap: 40px;
-    padding: 56px 40px 40px 40px;
+    padding: 80px 64px 64px 64px;
 }
 
 .projects{
@@ -43,6 +51,12 @@
     justify-content: center;
     align-items: center;
     min-height: 200px;
+}
+
+.clear-btn{
+    top: 0;
+    right: 0;
+    z-index: 11;
 }
 
 .r-add{
@@ -69,9 +83,19 @@
         padding: 0 !important;
     }
 
+    .r-container-title{
+        display: none;
+    }
+
+    .r-container-title-hidden{
+        display: block;
+    }
+
     .r-paper{
         min-height: fit-content;
         height: 100%;
+        border: none;
+        border-radius: 0 !important;
     }
     
     .r-add{

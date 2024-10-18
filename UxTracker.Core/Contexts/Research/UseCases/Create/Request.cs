@@ -8,7 +8,8 @@ public class Request : IRequest<Response>
     public string UserId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public DateTime StartDate { get; set; } = DateTime.UtcNow;
+    public DateTime? StartDate { get; set; } = null;
+    public DateTime? EndDate { get; set; } = null;
     public int SurveyCollections { get; set; }
     public string ConsentTermHash { get; set; } = string.Empty;
     public PeriodType PeriodType { get; set; }

@@ -51,14 +51,7 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 03. Retornar os dados
 
-        try
-        {
             return new Response(string.Empty, new ResponseData(project));
-        }
-        catch
-        {
-            return new Response("Não foi possível retornar os dados do perfil", 500);
-        }
 
         #endregion
     }
