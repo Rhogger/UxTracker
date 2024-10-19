@@ -14,7 +14,7 @@ public class ReviewMap: IEntityTypeConfiguration<Rate>
         
         builder.Property(x => x.Rating)
             .HasColumnName("Rating")
-            .HasColumnType("INTEGER")
+            .HasColumnType("DECIMAL(3,1)")
             .IsRequired(true);
         
         builder.Property(x => x.Comment)

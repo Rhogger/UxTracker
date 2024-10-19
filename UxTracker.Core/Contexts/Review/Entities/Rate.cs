@@ -10,7 +10,7 @@ public class Rate: Entity
 {
     protected Rate(){}
     
-    public Rate(Guid userId, Guid projectId, int rating, string comment)
+    public Rate(Guid userId, Guid projectId, decimal rating, string comment)
     {
         UserId = userId;
         ProjectId = projectId;
@@ -19,7 +19,7 @@ public class Rate: Entity
         RatedAt = DateTime.UtcNow;
     }
     
-    public Rate(Guid userId, Guid projectId, int rating, string comment, DateTime ratedAt)
+    public Rate(Guid userId, Guid projectId, decimal rating, string comment, DateTime ratedAt)
     {
         UserId = userId;
         ProjectId = projectId;
@@ -30,7 +30,7 @@ public class Rate: Entity
     
     public Guid UserId { get; private set; }
     public Guid ProjectId { get; private set; }
-    public int Rating { get; private set; }
+    public decimal Rating { get; private set; }
     public string Comment { get; private set; }
     public DateTime RatedAt { get; private set; }
     public Reviewer User { get; private set; }
