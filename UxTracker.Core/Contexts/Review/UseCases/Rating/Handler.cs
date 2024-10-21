@@ -1,7 +1,8 @@
 using MediatR;
-using UxTracker.Core.Contexts.Research.Enums;
+using UxTracker.Core.Contexts.Review.DTO;
 using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Core.Contexts.Review.UseCases.Rating.Contracts;
+using UxTracker.Core.Contexts.Review.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Review.UseCases.Rating;
 
@@ -32,13 +33,13 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        #region 02. Recuperar o tipo de período do projeto
+        #region 02. Recuperar informações do projeto
 
-        PeriodType? periodType;
+        ProjectValidInfoDTO? infos;
         
         try
         {
-            periodType = await _repository.GetPeriodTypeFromProjectAsync(request.ProjectId, cancellationToken);
+            infos = await _repository.GetInfosFromProjectAsync(request.ProjectId, cancellationToken);
         }
         catch
         {
@@ -47,21 +48,35 @@ public class Handler : IRequestHandler<Request, Response>
 
         #endregion
         
-        #region 03. Verificar se pode avaliar durante o período
+        #region 03. Recuperar avaliações do usuário
 
+        List<Rate>? rates;
+        
         try
         {
-            var rates = await _repository.GetReviewsByUserAsync(request.UserId, request.ProjectId, cancellationToken);
-
-            if (rates.Count > 0)
-            {
-                if (!rates[rates.Count - 1].ValidToRate(periodType, rates[rates.Count - 1].RatedAt))
-                    return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
-            }
+            rates = await _repository.GetReviewsByUserAsync(request.UserId, request.ProjectId, cancellationToken);
         }
         catch
         {
             return new Response("Falha ao buscar as avaliações", 500);
+        }
+
+        #endregion
+        
+        #region 03. Validar avaliação
+
+        try
+        {
+            if(rates.Count >= infos.SurveyCollections)
+                return new Response("Você já finalizou as avaliações.", 400);
+            
+            if (rates.Count > 0)
+                if (!rates.Last().ValidToRate(infos.PeriodType, rates.Last().RatedAt))
+                    return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
+        }
+        catch
+        {
+            return new Response("Falha ao validar avaliação", 500);
         }
 
         #endregion
@@ -95,8 +110,16 @@ public class Handler : IRequestHandler<Request, Response>
         #endregion
 
         #region 06. Retornar os dados
+
+        var userRate = new UserRates
+        {
+            Index = rates!.Count,
+            Rate = rate.Rating,
+            Comment = rate.Comment,
+            RatedAt = rate.RatedAt
+        };
         
-        return new Response("Avaliação concluída", 200);
+        return new Response("Avaliação concluída", new ResponseData(userRate));
 
         #endregion
     }
