@@ -9,5 +9,4 @@ public class Request : IRequest<Response>
     public string ProjectId { get; set; } = string.Empty;
     public decimal Rating { get; set; }
     public string Comment { get; set; } = string.Empty;
-    public PeriodType PeriodType { get; set; }
 }

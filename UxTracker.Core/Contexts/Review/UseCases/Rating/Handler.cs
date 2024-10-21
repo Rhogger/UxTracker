@@ -1,4 +1,5 @@
 using MediatR;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Core.Contexts.Review.UseCases.Rating.Contracts;
 
@@ -31,7 +32,22 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        #region 02. Verificar se pode avaliar durante o período
+        #region 02. Recuperar o tipo de período do projeto
+
+        PeriodType? periodType;
+        
+        try
+        {
+            periodType = await _repository.GetPeriodTypeFromProjectAsync(request.ProjectId, cancellationToken);
+        }
+        catch
+        {
+            return new Response("Falha ao buscar dados do projeto", 500);
+        }
+
+        #endregion
+        
+        #region 03. Verificar se pode avaliar durante o período
 
         try
         {
@@ -39,7 +55,7 @@ public class Handler : IRequestHandler<Request, Response>
 
             if (rates.Count > 0)
             {
-                if (!rates[rates.Count - 1].ValidToRate(request.PeriodType, rates[rates.Count - 1].RatedAt))
+                if (!rates[rates.Count - 1].ValidToRate(periodType, rates[rates.Count - 1].RatedAt))
                     return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
             }
         }
@@ -50,7 +66,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #endregion
         
-        #region 03. Gerar os Objetos
+        #region 04. Gerar os Objetos
 
         Rate rate;
 
@@ -65,7 +81,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
         
-        #region 04. Registrar no banco
+        #region 05. Registrar no banco
 
         try
         {
@@ -78,7 +94,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 05. Retornar os dados
+        #region 06. Retornar os dados
         
         return new Response("Avaliação concluída", 200);
 

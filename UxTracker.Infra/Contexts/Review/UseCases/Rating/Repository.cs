@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Review.UseCases.Rating.Contracts;
 using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Infra.Data;
@@ -17,6 +18,13 @@ public class Repository : IRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<PeriodType?> GetPeriodTypeFromProjectAsync(string projectId, CancellationToken cancellationToken) =>
+        await _context
+            .Projects
+            .AsNoTracking()
+            .Where(x => x.Id.ToString().Equals(projectId))
+            .Select(x => x.PeriodType)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
     public async Task<List<Rate>?> GetReviewsByUserAsync(string userId, string projectId,
         CancellationToken cancellationToken) =>
         await _context

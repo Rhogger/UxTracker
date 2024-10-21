@@ -329,15 +329,15 @@ public static class ResearchContextExtension
 
                 var result = await handler.Handle(request, new CancellationToken());
 
-                if (result.Data.Accepted)
-                    return result.IsSuccess
+                if (result.Data is { Accepted: true })
+                    return result.IsSuccess 
                         ? Results.Ok(result)
                         : Results.Json(result, statusCode: result.StatusCode);
                 
                 var filePath = $"{Configuration.ConsentTerm.Url}{projectId}";
 
-                result.Data = result.Data with { TermUrl = filePath };
-                
+                if (result.Data != null) result.Data = result.Data with { TermUrl = filePath };
+
                 return result.IsSuccess
                     ? Results.Ok(result)
                     : Results.Json(result, statusCode: result.StatusCode);

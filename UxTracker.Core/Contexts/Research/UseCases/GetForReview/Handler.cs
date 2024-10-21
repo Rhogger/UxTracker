@@ -31,16 +31,16 @@ public class Handler : IRequestHandler<Request, Response>
         
         #endregion
 
-        #region 02. Recuperar usuário do banco
+        #region 02. Recuperar projeto do banco
         
         GetForReviewDTO? project;
 
         try
         {
-            project = await _repository.GetProjectsByIdAsync(request.ProjectId, cancellationToken);
+            project = await _repository.GetProjectsByIdAsync(request.UserId, request.ProjectId, cancellationToken);
 
             if (project is null)
-                return new Response("Usuário não encontrado", 404);
+                return new Response("Projeto não encontrado", 404);
         }
         catch
         {
