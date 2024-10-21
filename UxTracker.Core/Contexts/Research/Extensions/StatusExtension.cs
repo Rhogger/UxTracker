@@ -1,6 +1,6 @@
 using UxTracker.Core.Contexts.Research.Enums;
 
-namespace UxTracker.Core.Contexts.Account.Extensions;
+namespace UxTracker.Core.Contexts.Research.Extensions;
 
 public static class StatusExtension
 {

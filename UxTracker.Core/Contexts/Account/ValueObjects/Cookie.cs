@@ -1,6 +1,8 @@
+using UxTracker.Core.Contexts.Shared.ValueObjects;
+
 namespace UxTracker.Core.Contexts.Account.ValueObjects;
 
-public class Cookie
+public class Cookie: ValueObject
 {
     public string Key { get; set; }
 

@@ -37,7 +37,7 @@ public class Rate: Entity
     [JsonIgnore]
     public Project Project { get; private set; }
 
-    public bool ValidToRate(PeriodType periodType, DateTime lastRate)
+    public bool ValidToRate(PeriodType? periodType, DateTime lastRate)
     {
         var limitDate = lastRate;
 

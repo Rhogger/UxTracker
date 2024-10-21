@@ -1,7 +1,7 @@
+@using UxTracker.Core.Contexts.Research.Extensions
+
 @page "/projects"
-@using UxTracker.Core.Contexts.Account.Extensions
 @inherits Projects
-@layout MainLayout
 
 <AuthorizeView Roles="Researcher">
     <Authorized>
@@ -30,6 +30,8 @@
                         <MudIcon Icon="@Icons.Material.Filled.Add"/>
                     </MudButton>
                 </div>
+
+                <MudDivider DividerType="DividerType.FullWidth"/>
                 
                 @if (!IsBusy)
                 {
