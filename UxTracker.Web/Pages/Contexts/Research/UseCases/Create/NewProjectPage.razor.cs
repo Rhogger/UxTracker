@@ -91,7 +91,7 @@ public class NewProject: ComponentBase
     
     protected void NavigateToProjects()
     {
-        Navigation.NavigateTo("/projects");
+        Navigation.NavigateTo("/projects/");
     }
 
     protected async Task ClearAsync()

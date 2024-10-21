@@ -4,9 +4,9 @@ namespace UxTracker.Core.Contexts.Research.Validators;
 
 public static class DescriptionValidator
 {
-    public static string? Validate(string title)
+    public static string? Validate(string description)
     {
-        var contract = DescriptionValidation.EnsureDescription(title);
+        var contract = DescriptionValidation.EnsureDescription(description);
 
         if (contract.IsValid)
             return null;
