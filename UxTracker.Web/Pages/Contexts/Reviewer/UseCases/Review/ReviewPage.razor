@@ -1,67 +1,89 @@
 @using ApexCharts
+@using UxTracker.Web.Components.Skeletons
+@using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.Relatories
 
 @page "/reviewers/research/{ProjectId:guid}"
 @inherits Review
 
 <AuthorizeView Roles="Reviewer">
     <Authorized>
-        <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-items-center gap-4 pa-4">
-            <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center">Título da pesquisa</MudText>
-            <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-                <MudText Typo="Typo.body1">
-                    Descrição da pesquisa: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of
-                    type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
-                    into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
-                    release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-                    Aldus PageMaker including versions of Lorem Ipsum.
-                </MudText>
-            </MudPaper>
+        <MudContainer
+            MaxWidth="MaxWidth.Medium"
+            Class="d-flex flex-column justify-center align-center gap-10 pt-14 h-full r-container">
+            <MudPaper
+                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+                Outlined="true">
+                @if (!IsBusy)
+                {
+                    <MudText
+                        Typo="Typo.h4"
+                        Align="MudBlazor.Align.Center"
+                        Class="r-container-title">
+                        @Response.Data.Project.Title
+                    </MudText>
+               
+                    <MudText Typo="Typo.body1">
+                        @Response.Data.Project.Description
+                    </MudText>
+                    
+                    <MudDivider DividerType="DividerType.Middle"/>
 
-            <MudButton OnClick="OpenDialogAsync" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                Abrir Termo de Aceite
-            </MudButton>
-            
-            <MudPaper Class="pa-4 rounded-lg mt-1" Outlined="true">
-                <MudText Typo="Typo.h5" Align="MudBlazor.Align.Center">Acompanhamento da Avaliação</MudText>
-                <MudContainer Class="d-flex justify-center">
-                    <ApexChart TItem="EvaluationData" Options="@options">
-                        <ApexPointSeries TItem="EvaluationData" Items="Evaluations" Name="Notas" SeriesType="SeriesType.Line"
-                                         XValue="@(e => e.Day)" YValue="@(e => e.Rating)"/>
-                    </ApexChart>
-                </MudContainer>
-                <MudForm @onsubmit="HandleSubmit">
-                    <MudGrid>
-                        <MudItem xs="12" md="4">
-                            <MudSelect T="int" Label="Nota" Variant="Variant.Filled" @bind-Value="SelectedRating">
-                                <MudSelectItem Value="1">1</MudSelectItem>
-                                <MudSelectItem Value="2">2</MudSelectItem>
-                                <MudSelectItem Value="3">3</MudSelectItem>
-                                <MudSelectItem Value="4">4</MudSelectItem>
-                                <MudSelectItem Value="5">5</MudSelectItem>
-                                <MudSelectItem Value="6">6</MudSelectItem>
-                                <MudSelectItem Value="7">7</MudSelectItem>
-                                <MudSelectItem Value="8">8</MudSelectItem>
-                                <MudSelectItem Value="9">9</MudSelectItem>
-                                <MudSelectItem Value="10">10</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="12" md="8">
-                            <MudTextField T="string" Label="Comentário" Variant="Variant.Filled" FullWidth="true" @bind-Value="Comment"/>
-                        </MudItem>
-                    </MudGrid>
-                    <div class="d-flex justify-center mt-4">
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"
-                                   Class="py-2 px-15">
-                            Enviar
-                        </MudButton>
-                    </div>
-                </MudForm>
+                    <MudText
+                        Typo="Typo.h5"
+                        Align="MudBlazor.Align.Center">
+                        Acompanhamento da Avaliação
+                    </MudText>
+                    
+                    <ReviewMonitoring 
+                        Rates="Response.Data.Project.Reviews" 
+                        SurveyCollections="Response.Data.Project.SurveyCollections" 
+                        PeriodType="Response.Data.Project.PeriodType"/>
+                    
+                    <ValidateForm
+                        SubmitFunction="HandleSubmit"
+                        TextButton="Enviar"
+                        ButtonClass="h-full px-8"
+                        Class="d-flex flex-row gap-3 w-full">
+                        <MudGrid
+                            Spacing="3"
+                            Class="w-full">
+                            <MudItem xs="12" md="2">
+                                <MudNumericField
+                                    T="decimal"
+                                    Label="Nota"
+                                    Variant="Variant.Filled"
+                                    Min="0"
+                                    Max="10"
+                                    Step=".1M"
+                                    Format="F1"
+                                    @bind-Value="RatingRequest.Rating"
+                                    Required="true"
+                                    RequiredError="Informe a nota"/>
+                            </MudItem>
+                            
+                            <MudItem xs="12" md="10">
+                                <MudTextField 
+                                    T="string" 
+                                    Label="Comentário" 
+                                    Variant="Variant.Filled" 
+                                    FullWidth="true" 
+                                    @bind-Value="RatingRequest.Comment"/>
+                            </MudItem>
+                        </MudGrid>
+                    </ValidateForm>
+                }
+                else
+                {
+                    <ResearchTitleSkeleton/>
+                    <ResearchDescriptionSkeleton/>
+                    <ResearchFormSkeleton/>
+                }
             </MudPaper>
         </MudContainer>
     </Authorized>
 
-    @* <NotAuthorized> *@
-    @* <RedirectToUnauthorizedPage/> *@
-    @* </NotAuthorized> *@
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
 </AuthorizeView>
