@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Public\ConsentTerms\" />
+    <Folder Include="wwwroot\ConsentTerms\" />
   </ItemGroup>
 
   <PropertyGroup>

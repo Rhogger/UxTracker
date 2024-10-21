@@ -484,4 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Consent Terms Files
-UxTracker.Api/Public/ConsentTerms
+UxTracker.Api/wwwroot/ConsentTerms
