@@ -12,7 +12,7 @@
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Primary"
-                Class="py-2 px-15"
+                Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
                 Disabled="@(!IsValid)"
@@ -65,6 +65,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public EventCallback SubmitFunction { get; set; }
     [Parameter] public string TextButton { get; set; } = "Salvar";
+    [Parameter] public string ButtonClass { get; set; } = "py-2 px-15";
     [Parameter] public string Class { get; set; } = "d-flex flex-column gap-7";
     [Parameter] public bool TwoOptions { get; set; }
     [Parameter] public EventCallback SecondFunction { get; set; }

@@ -41,12 +41,32 @@
     <AuthorizeView>
         <Authorized/>
         <NotAuthorized>
+            @if (UserType.Equals("researcher"))
+            {
             <MudButton
-                Href="/"
+                Href="/login"
                 Variant="Variant.Filled"
                 Color="Color.Primary">
                 Voltar para a página inicial
             </MudButton>
+            }else if (UserType.Equals("reviewer"))
+            {
+                <MudButton
+                    Href="/reviewers/login"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voltar para a página inicial
+                </MudButton>
+            }
+            else
+            {
+                <MudButton
+                    Href="/"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voltar para a página inicial
+                </MudButton>
+            }
         </NotAuthorized>
     </AuthorizeView>
 </MudContainer>
@@ -57,6 +77,7 @@
 
     protected string ResearchCode { get; set; } = string.Empty;
     protected string Link { get; set; } = "/reviewers/login";
+    protected string UserType { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,5 +1,4 @@
-﻿@using UxTracker.Core.Security
-@using UxTracker.Web.Utils.Theme
+﻿@using UxTracker.Web.Utils.Theme
 @inherits LayoutComponentBase
 
 <MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme"/>
@@ -9,14 +8,3 @@
         @Body
     </MudMainContent>
 </MudLayout>
-
-@code{
-
-    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-    }
-}

@@ -30,7 +30,7 @@
 
                     @if (User.IsInRole("Reviewer"))
                     {
-                        <MudLink Href="/reviewers/research">
+                        <MudLink Href="@ResearchLink">
                             <MudText
                                 Typo="Typo.h5"
                                 Style="font-weight: bold; color: white;">
@@ -116,11 +116,13 @@ else
 
     private ClaimsPrincipal User { get; set; } = null!;
     private bool IsBusy { get; set; } = true;
-    protected string UserType { get; set; } = string.Empty;
+    private string UserType { get; set; } = string.Empty;
+    private string ResearchLink { get; set; } = "reviewers/research/";
     
     protected override async Task OnInitializedAsync()
     {
         UserType = await LocalStorage.GetItemAsync<string>("type") ?? string.Empty;
+        ResearchLink = $"{ResearchLink}{await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty}";
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         User = authState.User;
         
