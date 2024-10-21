@@ -2,6 +2,7 @@ using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Review.Handlers;
 using AcceptTerm = UxTracker.Core.Contexts.Review.UseCases.AcceptTerm;
+using Rating = UxTracker.Core.Contexts.Review.UseCases.Rating;
 
 namespace UxTracker.Web.Handlers;
 
@@ -34,6 +35,42 @@ public class ReviewContextHandler: IReviewContextHandler
             }
         
             var response = await RestClient.ExecuteAsync<AcceptTerm.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<Rating.Response>?> RatingAsync(Rating.Request requestModel)
+    {
+        try
+        {
+            var request = new RestRequest($"/api/v1/review/{requestModel.ProjectId}", Method.Post)
+                .AddJsonBody(requestModel);
+
+            var token = await CookieHandler.GetAccessToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                throw new Exception("Token JWT não encontrado.");
+            }
+        
+            var response = await RestClient.ExecuteAsync<Rating.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)

@@ -6,8 +6,9 @@
 
 <div class="w-full">
     <ApexChart 
-        TItem="UserRates" 
-        Options="@options">
+        TItem="UserRates"
+        @ref="Ref"
+        Options="@Options">
         <ApexPointSeries
             TItem="UserRates" 
             Items="Rates" 
@@ -22,12 +23,27 @@
     [Parameter] public PeriodType PeriodType { get; set; }
     [Parameter] public int SurveyCollections { get; set; }
     [Parameter] public List<UserRates> Rates { get; set; } = new();
+    [Parameter] public EventCallback Event { get; set; }
 
-    private ApexChartOptions<UserRates> options;
+    private ApexChart<UserRates>? Ref { get; set; }
+    private ApexChartOptions<UserRates> Options = null!;
+    private int PreviousRatesCount { get; set; }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Rates.Count != PreviousRatesCount)
+        {
+            StateHasChanged();
+            Ref.UpdateSeriesAsync(true);
+            PreviousRatesCount = Rates.Count;
+        }
+    }
 
     protected override void OnInitialized()
     {
-        options = new ApexChartOptions<UserRates>
+        PreviousRatesCount = Rates.Count;
+
+        Options = new ApexChartOptions<UserRates>
         {
             Chart = new Chart
             {

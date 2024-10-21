@@ -24,6 +24,10 @@
     font-weight: 500;
 }
 
+.r-direction{
+    flex-direction: row;
+}
+
 .r-container-title{
     display: block;
 }
@@ -114,6 +118,14 @@
 }
 
 @media screen and (max-width: 622px){
+    .r-direction{
+        flex-direction: column;
+    }
+    
+    .r-fit-btn{
+        width: fit-content;
+    }
+    
     .title-projects-page{
         font-size: 32px;
     }

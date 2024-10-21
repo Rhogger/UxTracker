@@ -1,4 +1,4 @@
-@using ApexCharts
+@using UxTracker.Core.Contexts.Review.Validators
 @using UxTracker.Web.Components.Skeletons
 @using UxTracker.Web.Components.Forms
 @using UxTracker.Web.Components.Relatories
@@ -18,8 +18,7 @@
                 {
                     <MudText
                         Typo="Typo.h4"
-                        Align="MudBlazor.Align.Center"
-                        Class="r-container-title">
+                        Align="Align.Center">
                         @Response.Data.Project.Title
                     </MudText>
                
@@ -31,24 +30,29 @@
                     
                     <MudText
                         Typo="Typo.h5"
-                        Align="MudBlazor.Align.Center">
+                        Align="Align.Center">
                         Acompanhamento da Avaliação
                     </MudText>
                     
                     <ReviewMonitoring 
+                        Event="RatingAsync"
                         Rates="Response.Data.Project.Reviews" 
                         SurveyCollections="Response.Data.Project.SurveyCollections" 
                         PeriodType="Response.Data.Project.PeriodType"/>
                     
                     <ValidateForm
-                        SubmitFunction="HandleSubmit"
+                        Class="d-flex r-direction gap-3 w-full"
+                        SubmitFunction="RatingAsync"
                         TextButton="Enviar"
-                        ButtonClass="h-full px-8"
-                        Class="d-flex flex-row gap-3 w-full">
+                        ButtonClass="h-full px-8 r-fit-btn"
+                        IsBusy="IsBusyRate">
                         <MudGrid
                             Spacing="3"
                             Class="w-full">
-                            <MudItem xs="12" md="2">
+                            <MudItem
+                                xs="12" sm="2"
+                                md="2" lg="2"
+                                xl="2" xxl="2">
                                 <MudNumericField
                                     T="decimal"
                                     Label="Nota"
@@ -59,19 +63,37 @@
                                     Format="F1"
                                     @bind-Value="RatingRequest.Rating"
                                     Required="true"
-                                    RequiredError="Informe a nota"/>
+                                    RequiredError="Informe a nota"
+                                    Disabled="IsDisabled"
+                                    Validation="RateValidator.Validate"/>
                             </MudItem>
                             
-                            <MudItem xs="12" md="10">
+                            <MudItem 
+                                xs="12" sm="10" 
+                                md="10" lg="10" 
+                                xl="10" xxl="10">
                                 <MudTextField 
                                     T="string" 
                                     Label="Comentário" 
                                     Variant="Variant.Filled" 
                                     FullWidth="true" 
-                                    @bind-Value="RatingRequest.Comment"/>
+                                    @bind-Value="RatingRequest.Comment"
+                                    Required="true"
+                                    RequiredError="Dê a sua justificativa"
+                                    Disabled="IsDisabled"
+                                    Validation="CommentValidator.Validate"/>
                             </MudItem>
                         </MudGrid>
                     </ValidateForm>
+                    
+                    @if (!IsDisabledCountdown)
+                    {
+                        <MudText
+                            Align="Align.Center"
+                            Typo="Typo.caption">
+                            Tempo até a próxima avaliação: @Days.ToString("D2") Dias, @Hours.ToString("D2"):@Minutes.ToString("D2"):@Seconds.ToString("D2")
+                        </MudText>
+                    }
                 }
                 else
                 {
