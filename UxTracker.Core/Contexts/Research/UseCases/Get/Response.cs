@@ -25,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(Project project);
+public record ResponseData(Project Project);
