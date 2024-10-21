@@ -24,13 +24,6 @@ public class Review: ComponentBase
 
     protected bool IsBusy { get; set; } = true;
 
-    
-    protected Task OpenDialogAsync()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Large, FullWidth = true };
-        return DialogService.ShowAsync<ShowAcceptTerm>("Termo de Aceite", options);
-    }
-
     protected override async Task OnInitializedAsync() => await GetProjectForReviewAsync();
     
     private async Task GetProjectForReviewAsync()
@@ -43,6 +36,9 @@ public class Review: ComponentBase
                 if (response.IsSuccessful)
                 {
                     Response = response.Data!;
+
+                    if (!Response.Data.Accepted)
+                        await OpenDialogAsync();
                 }
                 else
                 {
@@ -64,6 +60,26 @@ public class Review: ComponentBase
             IsBusy = false;
             StateHasChanged();
         }
+    }
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = false, 
+            CloseButton = false, 
+            BackdropClick = false, 
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large, 
+        };
+        
+        var parameters = new DialogParameters
+        {
+            { nameof(ShowAcceptTerm.TermUrl), Response.Data.TermUrl },
+            { nameof(ShowAcceptTerm.ProjectId), ProjectId }
+        };
+        
+        return DialogService.ShowAsync<ShowAcceptTerm>("Termo de Consentimento Livre e Esclarecido", parameters, options);
     }
 
     protected void HandleSubmit()

@@ -7,6 +7,7 @@ using RestSharp.Serializers.NewtonsoftJson;
 using UxTracker.Core;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Research.Handlers;
+using UxTracker.Core.Contexts.Review.Handlers;
 using UxTracker.Core.Security;
 using UxTracker.Core.Services;
 using UxTracker.Web.Handlers;
@@ -40,6 +41,7 @@ public static class BuilderExtension
         builder.Services.AddTransient<ICookieHandler, CookieHandler>();
         builder.Services.AddTransient<IAccountContextHandler, AccountContextHandler>();
         builder.Services.AddTransient<IResearchContextHandler, ResearchContextHandler>();
+        builder.Services.AddTransient<IReviewContextHandler, ReviewContextHandler>();
     }
     
     public static void AddSecurity(this WebAssemblyHostBuilder builder)
