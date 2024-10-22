@@ -9,7 +9,7 @@ public class Service : IService
 {
     private readonly JwtService _jwtService = new();
 
-    public string GenerateAccessToken(Researcher user, CancellationToken cancellationToken)
+    public string GenerateAccessToken(User user, CancellationToken cancellationToken)
     {
         var payload = new Payload
         {
@@ -20,7 +20,7 @@ public class Service : IService
         return _jwtService.Generate(payload);
     }
 
-    public string GenerateRefreshToken(Researcher user, CancellationToken cancellationToken)   
+    public string GenerateRefreshToken(User user, CancellationToken cancellationToken)   
     {
         var payload = new Payload
         {
