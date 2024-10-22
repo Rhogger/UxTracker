@@ -40,7 +40,7 @@ public class AccountVerification: ComponentBase
 
                     Navigation.NavigateTo(string.IsNullOrEmpty(response.Data.Data.ResearchCode)
                         ? "reviewers/login"
-                        : $"reviewers/projects/{response.Data.Data.ResearchCode}");
+                        : $"reviewers/research/{response.Data.Data.ResearchCode}");
                 }
                 else
                 {
