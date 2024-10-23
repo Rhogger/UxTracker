@@ -3,6 +3,7 @@ using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Research.Handlers;
 using Create = UxTracker.Core.Contexts.Research.UseCases.Create;
+using Get = UxTracker.Core.Contexts.Research.UseCases.Get;
 using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
 using GetForReview = UxTracker.Core.Contexts.Research.UseCases.GetForReview;
 using GetRelatories = UxTracker.Core.Contexts.Research.UseCases.GetRelatories;
@@ -134,6 +135,41 @@ public class ResearchContextHandler: IResearchContextHandler
             }
         
             var response = await RestClient.ExecuteAsync<GetForReview.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<Get.Response>?> GetProjectAsync(string projectId)
+    {
+        try
+        {
+            var request = new RestRequest($"/api/v1/projects/{projectId}");
+            
+            var token = await CookieHandler.GetAccessToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                throw new Exception("Token JWT não encontrado.");
+            }
+        
+            var response = await RestClient.ExecuteAsync<Get.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
