@@ -17,12 +17,16 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
 
         protected AuthenticateReviewerUseCase.Request Request = new();
         protected bool IsBusy { get; set; } = false;
-        
+        protected bool IsRequired { get; set; } = false;
+
         protected override async Task OnInitializedAsync()
         {
             Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
             Request.ResearchCode = await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty;
             await LocalStorage.SetItemAsync("type", "reviewer");
+            
+            IsRequired = true;
+            Console.WriteLine($"Aqui primeiro {IsRequired}");
         }
 
         protected async Task SignInAsync()
