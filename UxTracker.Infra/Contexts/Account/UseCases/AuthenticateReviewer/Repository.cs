@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer.Contracts;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.AuthenticateReviewer;
@@ -21,5 +22,13 @@ public class Repository: IRepository
         await _context
             .Projects
             .AsNoTracking()
-            .AnyAsync(x => x.Id.ToString() == id,cancellationToken: cancellationToken);
+            .AnyAsync(x => x.Id.ToString() == id, cancellationToken);
+
+    public async Task<Status> GetStatusAsync(string id, CancellationToken cancellationToken) =>
+        await _context
+            .Projects
+            .AsNoTracking()
+            .Where(x => x.Id.ToString().Equals(id))
+            .Select(x => x.Status)
+            .FirstOrDefaultAsync(cancellationToken);
 }

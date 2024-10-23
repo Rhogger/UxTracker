@@ -26,10 +26,12 @@ public class Repository : IRepository
             .Where(x => x.Id.ToString().Equals(projectId))
             .Select(x => new ProjectValidInfoDTO
             {
+                Status = x.Status,
                 PeriodType = x.PeriodType,
                 SurveyCollections = x.SurveyCollections
             })
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+    
     public async Task<List<Rate>?> GetReviewsByUserAsync(string userId, string projectId,
         CancellationToken cancellationToken) =>
         await _context

@@ -1,4 +1,5 @@
 using MediatR;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Review.DTO;
 using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Core.Contexts.Review.UseCases.Rating.Contracts;
@@ -67,6 +68,9 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
+            if(!infos.Status.Equals(Status.InProgress))
+                return new Response("Não é possível avaliar se a pesquisa não iniciou.", 400);        
+            
             if(rates.Count >= infos.SurveyCollections)
                 return new Response("Você já finalizou as avaliações.", 400);
             

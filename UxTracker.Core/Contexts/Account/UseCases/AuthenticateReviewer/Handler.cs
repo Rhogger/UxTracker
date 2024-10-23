@@ -4,6 +4,7 @@ using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer.Contracts;
 using UxTracker.Core.Contexts.Account.ValueObjects;
+using UxTracker.Core.Contexts.Research.Enums;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer;
 
@@ -77,6 +78,15 @@ public class Handler: IRequestHandler<Request, Response>
         
         if (!await _repository.AnyProjectAsync(request.ResearchCode, cancellationToken))
             return new Response("Pesquisa não encontrada", 404);
+
+        #endregion
+        
+        #region 05. Checar status da pesquisa
+
+        var status = await _repository.GetStatusAsync(request.ResearchCode, cancellationToken);
+        
+        if (status.Equals(Status.NotStarted))
+            return new Response("Pesquisa ainda não foi iniciada", 400);
 
         #endregion
 

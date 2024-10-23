@@ -24,18 +24,18 @@ public class Repository : IRepository
                 Id = x.Id,
                 Title = x.Title,
                 Description = x.Description,
-                StartDate = x.StartDate,
+                Status = x.Status,
                 PeriodType = x.PeriodType,
                 SurveyCollections = x.SurveyCollections,
                 Reviews = x.Reviews
                     .Where(x => x.UserId.ToString().Equals(userId))
                     .OrderBy(r => r.RatedAt)
                     .Select(x => new UserRates
-                {
-                    Rate = x.Rating,
-                    Comment = x.Comment,
-                    RatedAt = x.RatedAt
-                }).ToList()
+                    {
+                        Rate = x.Rating,
+                        Comment = x.Comment,
+                        RatedAt = x.RatedAt
+                    }).ToList()
             })
             .FirstOrDefaultAsync(cancellationToken);
         
@@ -58,7 +58,7 @@ public class Repository : IRepository
             Id = project.Id,
             Title = project.Title,
             Description = project.Description,
-            StartDate = project.StartDate,
+            Status = project.Status,
             PeriodType = project.PeriodType,
             SurveyCollections = project.SurveyCollections,
             Reviews = indexedReviews

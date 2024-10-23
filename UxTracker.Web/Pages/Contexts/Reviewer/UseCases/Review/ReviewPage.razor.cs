@@ -1,6 +1,7 @@
-using System.Timers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UxTracker.Core.Contexts.Account.Handlers;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Review.Handlers;
 using UxTracker.Core.Contexts.Review.ValueObjects;
@@ -12,6 +13,7 @@ namespace UxTracker.Web.Pages.Contexts.Reviewer.UseCases.Review;
 
 public class Review: ComponentBase
 {
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected IResearchContextHandler ResearchContextHandler { get; set; } = null!;
     [Inject] protected IReviewContextHandler ReviewContextHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
@@ -43,6 +45,12 @@ public class Review: ComponentBase
                 {
                     Response = response.Data!;
 
+                    if (!Response.Data.Project.Status.Equals(Status.InProgress))
+                    {
+                        Snackbar.Add("A Pesquisa ainda não iniciou", Severity.Error);
+                        await AccountContextHandler.SignOutAsync();
+                    }
+                    
                     if (!Response.Data.Accepted)
                         await OpenDialogAsync();
 
