@@ -24,11 +24,6 @@
     
     [Parameter] public EventCallback<string> EmailChanged { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Console.WriteLine(IsRequired);
-    }
-
     private async Task SetEmailAsync(string value)
     {
         Email = value;

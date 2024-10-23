@@ -26,7 +26,6 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
             await LocalStorage.SetItemAsync("type", "reviewer");
             
             IsRequired = true;
-            Console.WriteLine($"Aqui primeiro {IsRequired}");
         }
 
         protected async Task SignInAsync()
