@@ -1,8 +1,8 @@
-using UxTracker.Core.Contexts.Research.Entities;
+using UxTracker.Core.Contexts.Research.DTOs;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.Get.Contracts;
 
 public interface IRepository
 {
-    Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken);
+    Task<GetDTO?> GetProjectByIdAsync(string id, CancellationToken cancellationToken);
 }

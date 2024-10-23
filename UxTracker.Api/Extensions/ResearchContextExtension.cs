@@ -261,6 +261,26 @@ public static class ResearchContextExtension
                 };
 
                 var result = await handler.Handle(request, new CancellationToken());
+                
+                var consentTermFolder = Path.Combine(Configuration.ConsentTerm.Url, projectId);
+
+                if (!Directory.Exists(consentTermFolder))
+                    return Results.NotFound("Termo de Aceite não existe");
+                
+                var files = Directory.GetFiles(consentTermFolder);
+                
+                if (files.Length == 0)
+                    return Results.NotFound("Termo de Aceite não existe");
+
+                var fileName = Path.GetFileName(files[0]);
+
+                var fileUrl = Path.Combine(Configuration.ApplicationUrl.BackendUrl, Configuration.ConsentTerm.Folder, projectId, fileName);
+
+                if (result.Data != null)
+                {
+                    result.Data.Project.ConsentTermName = fileName;
+                    result.Data.Project.ConsentTermUrl = fileUrl;
+                }
 
                 return result.IsSuccess
                     ? Results.Ok(result)

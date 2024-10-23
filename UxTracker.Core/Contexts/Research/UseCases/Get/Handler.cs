@@ -1,5 +1,5 @@
 using MediatR;
-using UxTracker.Core.Contexts.Research.Entities;
+using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.UseCases.Get.Contracts;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.Get;
@@ -33,7 +33,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         #region 02. Recuperar projeto do banco
 
-        Project? project;
+        GetDTO? project;
 
         try
         {
