@@ -176,6 +176,14 @@
 }
 
 @media screen and (max-width: 390px){
+    .headless-title{
+        font-size: 28px;
+    }
+
+    .headless-text{
+        font-size: 14px;
+    }
+    
     .title-projects-page{
         font-size: 20px;
     }

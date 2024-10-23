@@ -8,109 +8,115 @@
 
 <MudContainer 
     MaxWidth="MaxWidth.Medium"
-    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full py-10"
->
+    Class="d-flex flex-column justify-center align-content-center gap-10 py-14 h-full">
     <MudText 
         Typo="Typo.h4" 
-        Align="Align.Center">
+        Align="Align.Center"
+        Class="headless-title">
         Formulário de registro
     </MudText>
 
-    <MudContainer MaxWidth="MaxWidth.Medium">
-        <MudPaper Class="pa-6 rounded-lg" Outlined="true">
-            <ValidateForm
-                TextButton="Cadastrar"
-                SubmitFunction="SignUpAsync"
-                TwoOptions="true"
-                SecondTextButton="Voltar"
-                SecondFunction="Back"
-                IsBusy="IsBusy">
-                <MudGrid>
-                    <MudItem
-                        xs="12"
-                        sm="6"
-                        Class="d-flex flex-column gap-5">
-                        <MudItem xs="12">
-                            <EmailTextField @bind-Email="Request.Email"/>
-                        </MudItem>
+    <MudPaper Class="pa-6 rounded-lg" Outlined="true">
+        <ValidateForm
+            TextButton="Cadastrar"
+            SubmitFunction="SignUpAsync"
+            TwoOptions="true"
+            SecondTextButton="Voltar"
+            SecondFunction="Back"
+            IsBusy="IsBusy">
+            <MudGrid>
+                <MudItem
+                    xs="12" sm="6" 
+                    md="6" lg="6" 
+                    xl="6" xxl="6"
+                    Class="d-flex flex-column gap-5">
+                    <EmailTextField @bind-Email="Request.Email"/>
+                </MudItem>
 
-                        <MudItem xs="12">
-                            <MudSelect
-                                ShrinkLabel="true"
-                                T="string"
-                                AnchorOrigin="Origin.BottomCenter"
-                                Label="Sexo"
-                                Variant="Variant.Filled"
-                                @bind-Value="Request.Sex"
-                                Required="true"
-                                RequiredError="O sexo deve ser selecionado"
-                                Immediate="true"
-                                OnlyValidateIfDirty="true">
-                                <MudSelectItem Value="Sex.Male.ToString()">Masculino</MudSelectItem>
-                                <MudSelectItem Value="Sex.Female.ToString()">Feminino</MudSelectItem>
-                                <MudSelectItem Value="Sex.PreferNotSay.ToString()">Prefiro não informar</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
+                <MudItem
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudSelect
+                        ShrinkLabel="true"
+                        T="string"
+                        AnchorOrigin="Origin.BottomCenter"
+                        Label="Sexo"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.Sex"
+                        Required="true"
+                        RequiredError="O sexo deve ser selecionado"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true">
+                        <MudSelectItem Value="Sex.Male.ToString()">Masculino</MudSelectItem>
+                        <MudSelectItem Value="Sex.Female.ToString()">Feminino</MudSelectItem>
+                        <MudSelectItem Value="Sex.PreferNotSay.ToString()">Prefiro não informar</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
 
-                        <MudItem xs="12">
-                            <MudDatePicker
-                                ShowToolbar="false"
-                                Label="Data de nascimento"
-                                Variant="Variant.Filled"
-                                Placeholder="01/01/2024"
-                                @bind-Date="Request.BirthDate"
-                                Required="true"
-                                RequiredError="A data de nascimento deve ser informada"
-                            />
-                        </MudItem>
-                    </MudItem>
+                <MudItem
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudDatePicker
+                        ShowToolbar="false"
+                        Label="Data de nascimento"
+                        Variant="Variant.Filled"
+                        Placeholder="01/01/2024"
+                        @bind-Date="Request.BirthDate"
+                        Required="true"
+                        RequiredError="A data de nascimento deve ser informada"/>
+                </MudItem>
 
+                <MudItem
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6"
+                    Class="d-flex flex-column gap-5">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="País"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.Country"
+                        Required="true"
+                        RequiredError="O país deve ser informado"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"/>
+                </MudItem>
 
-                    <MudItem
-                        xs="12"
-                        sm="6"
-                        Class="d-flex flex-column gap-5">
-                        <MudItem xs="12">
-                            <MudTextField
-                                ShrinkLabel="true"
-                                T="string"
-                                Label="País"
-                                Variant="Variant.Filled"
-                                @bind-Value="Request.Country"
-                                Required="true"
-                                RequiredError="O país deve ser informado"
-                                Immediate="true"
-                                OnlyValidateIfDirty="true"/>
-                        </MudItem>
+                <MudItem
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Estado"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.State"
+                        Required="true"
+                        RequiredError="O estado deve ser informado"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"/>
+                </MudItem>
 
-                        <MudItem xs="12">
-                            <MudTextField
-                                ShrinkLabel="true"
-                                T="string"
-                                Label="Estado"
-                                Variant="Variant.Filled"
-                                @bind-Value="Request.State"
-                                Required="true"
-                                RequiredError="O estado deve ser informado"
-                                Immediate="true"
-                                OnlyValidateIfDirty="true"/>
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudTextField
-                                ShrinkLabel="true"
-                                T="string"
-                                Label="Cidade"
-                                Variant="Variant.Filled"
-                                @bind-Value="Request.City"
-                                Required="true"
-                                RequiredError="A cidade deve ser informada"
-                                Immediate="true"
-                                OnlyValidateIfDirty="true"/>
-                        </MudItem>
-                    </MudItem>
-                </MudGrid>
-            </ValidateForm>
-        </MudPaper>
-    </MudContainer>
+                <MudItem
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Cidade"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.City"
+                        Required="true"
+                        RequiredError="A cidade deve ser informada"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"/>
+                </MudItem>
+            </MudGrid>
+        </ValidateForm>
+    </MudPaper>
 </MudContainer>
