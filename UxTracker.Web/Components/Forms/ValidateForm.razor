@@ -30,11 +30,11 @@
     }
     else
     {
-        <div class="w-full d-flex gap-9">
+        <div class="@ButtonContainerClass">
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Default"
-                Class="py-2"
+                Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SecondFunction"
             >
@@ -44,7 +44,7 @@
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Success"
-                Class="py-2"
+                Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
                 Disabled="@(!IsValid)">
@@ -66,6 +66,7 @@
     [Parameter] public EventCallback SubmitFunction { get; set; }
     [Parameter] public string TextButton { get; set; } = "Salvar";
     [Parameter] public string ButtonClass { get; set; } = "py-2 px-15";
+    [Parameter] public string ButtonContainerClass { get; set; } = "w-full d-flex justify-center align-center gap-6";
     [Parameter] public string Class { get; set; } = "d-flex flex-column gap-7";
     [Parameter] public bool TwoOptions { get; set; }
     [Parameter] public EventCallback SecondFunction { get; set; }

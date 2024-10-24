@@ -13,7 +13,7 @@
                     <MudText
                         Typo="Typo.h5"
                         Align="Align.Start"
-                        Class="title-projects-page w-full">
+                        Class="r-paper-title w-full">
                         Projetos de pesquisa
                     </MudText>
 
@@ -40,7 +40,10 @@
                         <MudGrid>
                             @foreach (var project in Response.Data.Projects)
                             {
-                                <MudItem xs="12" sm="12" md="6" lg="6" xl="4" xxl="4" >
+                                <MudItem 
+                                    xs="12" sm="12" 
+                                    md="6" lg="6" 
+                                    xl="4" xxl="4">
                                     <MudButton
                                         Class="pa-0 ma-0"
                                         FullWidth="true"

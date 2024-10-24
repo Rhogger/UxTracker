@@ -1,5 +1,6 @@
 @using UxTracker.Web.Components.Forms
 @using UxTracker.Web.Components.Skeletons
+@using UxTracker.Core.Contexts.Account.Extensions
 
 @page "/reviewers/account"
 @inherits Profile
@@ -8,36 +9,33 @@
 <Authorized>
 <MudContainer 
     MaxWidth="MaxWidth.Medium" 
-    Class="d-flex flex-column justify-center align-content-center mud-height-full">
+    Class="d-flex flex-column justify-center align-content-center pt-14 h-full r-container">
 <MudPaper 
-    Class="d-flex flex-column pa-6 rounded-lg gap-10" 
+    Class="d-flex flex-column pa-6 rounded-lg gap-10 h-max r-paper r-account" 
     Outlined="true">
 @if (!IsEditState)
 {
     @if (!IsBusy)
     {
-        <div class="d-flex flex-column align-center gap-10">
+        <div class="d-flex flex-column align-center gap-10 w-full">
             <div class="d-flex flex-column align-center gap-4 w-full">
                 <div class="relative">
                     <MudImage
                         Src="@Link"
                         Class="rounded-circle"
                         Width="180"
-                        Height="180"
-                    />
+                        Height="180"/>
 
                     <div class="absolute" style="bottom: 0; right: 0;">
                         <MudTooltip
                             Delay="400"
                             Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
-                            Style="width: 200px;"
-                        >
+                            Style="width: 200px;">
                             <MudIconButton
                                 Icon="@Icons.Material.Filled.HelpOutline"
                                 Size="Size.Small"
                                 Href="https://br.gravatar.com/profile"
-                                Target="_blank"
-                            />
+                                Target="_blank"/>
                         </MudTooltip>
                     </div>
                 </div>
@@ -45,10 +43,14 @@
 
             <MudGrid>
                 <MudItem
-                    xs="12"
-                    sm="6"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6"
                     Class="d-flex flex-column gap-5">
-                    <MudItem xs="12">
+                    <MudItem 
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
@@ -60,19 +62,25 @@
                     </MudItem>
 
 
-                    <MudItem xs="12">
+                    <MudItem 
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
-                            Label="E-mail"
+                            Label="Sexo"
                             Variant="Variant.Filled"
-                            Value="@Response.Data!.Sex"
+                            Value="@Response.Data!.Sex.ToEnum().ToHumanize()"
                             ReadOnly="true"
                             FullWidth="true"/>
                     </MudItem>
 
 
-                    <MudItem xs="12">
+                    <MudItem 
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudDatePicker
                             Label="Data de nascimento"
                             Variant="Variant.Filled"
@@ -80,13 +88,16 @@
                             ReadOnly="true"/>
                     </MudItem>
                 </MudItem>
-
-
+                
                 <MudItem
-                    xs="12"
-                    sm="6"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6"
                     Class="d-flex flex-column gap-5">
-                    <MudItem xs="12">
+                    <MudItem
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
@@ -98,7 +109,10 @@
                     </MudItem>
 
 
-                    <MudItem xs="12">
+                    <MudItem
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
@@ -110,7 +124,10 @@
                     </MudItem>
 
 
-                    <MudItem xs="12">
+                    <MudItem
+                        xs="12" sm="12"
+                        md="12" lg="12"
+                        xl="12" xxl="12">
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
@@ -122,18 +139,15 @@
                     </MudItem>
                 </MudItem>
             </MudGrid>
-                        
         </div>
 
-        <div class="d-flex justify-center gap-9">
+        <div class="d-flex justify-center align-center gap-6 w-full">
             <MudButton
                 EndIcon="@Icons.Material.Filled.Delete"
                 Variant="Variant.Filled"
                 Color="Color.Error"
-                Class="py-2 px-15"
-                OnClick="DeleteAccountAsync"
-                FullWidth="true"
-            >
+                Class="py-2 r-max-btn w-full"
+                OnClick="DeleteAccountAsync">
                 Excluir
             </MudButton>
 
@@ -141,155 +155,156 @@
                 EndIcon="@Icons.Material.Filled.Edit"
                 Variant="Variant.Filled"
                 Color="Color.Info"
-                Class="py-2 px-15"
-                OnClick="ChangeState"
-                FullWidth="true"
-            >
+                Class="py-2 r-max-btn w-full"
+                OnClick="ChangeState">
                 Editar
             </MudButton>
         </div>
     }
     else
     {
-        <ProfileSkeleton/>
+        <ReviewerProfileSkeleton/>
     }
 }
 else
 {
-    @if (!IsBusy)
-    {
-        <ValidateForm
-            Class="d-flex flex-column align-center gap-10"
-            SubmitFunction="UpdateAccountAsync"
-            TwoOptions="true"
-            SecondTextButton="Cancelar"
-            SecondFunction="ChangeState"
-            FullWidthButton="true"
-        >
-            <div class="relative">
-                <MudImage
-                    Src="@Link"
-                    Class="rounded-circle"
-                    Width="180"
-                    Height="180"
-                />
+    <div class="relative">
+        <MudImage
+            Src="@Link"
+            Class="rounded-circle"
+            Width="180"
+            Height="180"/>
 
-                <div class="absolute" style="bottom: 0; right: 0;">
-                    <MudTooltip
-                        Delay="400"
-                        Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
-                        Style="width: 200px;"
-                    >
-                        <MudIconButton
-                            Icon="@Icons.Material.Filled.HelpOutline"
-                            Size="Size.Small"
-                            Href="https://br.gravatar.com/profile"
-                            Target="_blank"
-                        />
-                    </MudTooltip>
-                </div>
-            </div>
-
-            <MudGrid>
+        <div class="absolute" style="bottom: 0; right: 0;">
+            <MudTooltip
+                Delay="400"
+                Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
+                Style="width: 200px;">
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.HelpOutline"
+                    Size="Size.Small"
+                    Href="https://br.gravatar.com/profile"
+                    Target="_blank"/>
+            </MudTooltip>
+        </div>
+    </div>
+        
+    <ValidateForm
+        Class="d-flex flex-column align-center gap-10 w-full"
+        SubmitFunction="UpdateAccountAsync"
+        ButtonClass="py-2 r-max-btn w-full"
+        TwoOptions="true"
+        SecondTextButton="Cancelar"
+        SecondFunction="ChangeState"
+        FullWidthButton="true"
+        IsBusy="IsBusy">
+        <MudGrid>
+            <MudItem
+                xs="12" sm="6"
+                md="6" lg="6"
+                xl="6" xxl="6"
+                Class="d-flex flex-column gap-5">
                 <MudItem
-                    xs="12"
-                    sm="6"
-                    Class="d-flex flex-column gap-5">
-                    <MudItem xs="12">
-                        <MudTextField
-                            ShrinkLabel="true"
-                            T="string"
-                            Label="E-mail"
-                            Variant="Variant.Filled"
-                            Value="@Response.Data!.Email"
-                            ReadOnly="true"
-                            Disabled="true"
-                            FullWidth="true"/>
-                    </MudItem>
-
-
-                    <MudItem xs="12">
-                        <MudTextField
-                            ShrinkLabel="true"
-                            T="string"
-                            Label="E-mail"
-                            Variant="Variant.Filled"
-                            Value="@Response.Data!.Sex"
-                            ReadOnly="true"
-                            Disabled="true"
-                            FullWidth="true"/>
-                    </MudItem>
-
-
-                    <MudItem xs="12">
-                        <MudDatePicker
-                            Label="Data de nascimento"
-                            Variant="Variant.Filled"
-                            Date="Response.Data!.BirthDate"
-                            ReadOnly="true"
-                            Disabled="true"/>
-                    </MudItem>
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="E-mail"
+                        Variant="Variant.Filled"
+                        Value="@Response.Data!.Email"
+                        ReadOnly="true"
+                        Disabled="true"
+                        FullWidth="true"/>
+                </MudItem>
+                    
+                <MudItem
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Sexo"
+                        Variant="Variant.Filled"
+                        Value="@Response.Data!.Sex.ToEnum().ToHumanize()"
+                        ReadOnly="true"
+                        Disabled="true"
+                        FullWidth="true"/>
                 </MudItem>
 
-
                 <MudItem
-                    xs="12"
-                    sm="6"
-                    Class="d-flex flex-column gap-5">
-                    <MudItem xs="12">
-                        <MudTextField
-                            ShrinkLabel="true"
-                            T="string"
-                            Label="País"
-                            Variant="Variant.Filled"
-                            @bind-Value="Request.Country"
-                            Required="true"
-                            RequiredError="O país deve ser informado"
-                            Immediate="true"
-                            OnlyValidateIfDirty="true"
-                            FullWidth="true"
-                        />
-                    </MudItem>
-
-
-                    <MudItem xs="12">
-                        <MudTextField
-                            ShrinkLabel="true"
-                            T="string"
-                            Label="Estado"
-                            Variant="Variant.Filled"
-                            @bind-Value="Request.State"
-                            Required="true"
-                            RequiredError="O estado deve ser informado"
-                            Immediate="true"
-                            OnlyValidateIfDirty="true"
-                            FullWidth="true"
-                        />
-                    </MudItem>
-
-
-                    <MudItem xs="12">
-                        <MudTextField
-                            ShrinkLabel="true"
-                            T="string"
-                            Label="Cidade"
-                            Variant="Variant.Filled"
-                            @bind-Value="Request.City"
-                            Required="true"
-                            RequiredError="A cidade deve ser informado"
-                            Immediate="true"
-                            OnlyValidateIfDirty="true"
-                            FullWidth="true"
-                        />
-                    </MudItem>
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudDatePicker
+                        Label="Data de nascimento"
+                        Variant="Variant.Filled"
+                        Date="Response.Data!.BirthDate"
+                        ReadOnly="true"
+                        Disabled="true"/>
                 </MudItem>
-            </MudGrid>
-        </ValidateForm>
-    }
-    else
-    {
-        <ProfileEditSkeleton/>
-    }
+            </MudItem>
+                
+            <MudItem
+                xs="12" sm="6"
+                md="6" lg="6"
+                xl="6" xxl="6"
+                Class="d-flex flex-column gap-5">
+                <MudItem
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="País"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.Country"
+                        Required="true"
+                        RequiredError="O país deve ser informado"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"
+                        FullWidth="true"/>
+                </MudItem>
+                    
+                <MudItem
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Estado"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.State"
+                        Required="true"
+                        RequiredError="O estado deve ser informado"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"
+                        FullWidth="true"/>
+                </MudItem>
+                    
+                <MudItem
+                    xs="12" sm="12"
+                    md="12" lg="12"
+                    xl="12" xxl="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Cidade"
+                        Variant="Variant.Filled"
+                        @bind-Value="Request.City"
+                        Required="true"
+                        RequiredError="A cidade deve ser informada"
+                        Immediate="true"
+                        OnlyValidateIfDirty="true"
+                        FullWidth="true"/>
+                </MudItem>
+            </MudItem>
+        </MudGrid>
+    </ValidateForm>
 }
 </MudPaper>
 </MudContainer>

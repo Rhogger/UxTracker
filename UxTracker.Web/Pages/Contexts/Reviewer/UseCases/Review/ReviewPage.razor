@@ -18,88 +18,128 @@
                 {
                     <MudText
                         Typo="Typo.h4"
-                        Align="Align.Center">
+                        Align="Align.Center"
+                        Class="r-padding-top r-paper-title">
                         @Response.Data.Project.Title
                     </MudText>
                
-                    <MudText Typo="Typo.body1">
+                    <MudText 
+                        Typo="Typo.body1"
+                        Class="r-paper-description">
                         @Response.Data.Project.Description
                     </MudText>
                     
-                    <MudDivider DividerType="DividerType.Middle"/>
+                    <MudDivider DividerType="DividerType.FullWidth"/>
                     
-                    <MudText
-                        Typo="Typo.h5"
-                        Align="Align.Center">
-                        Acompanhamento da Avaliação
-                    </MudText>
-                    
-                    <ReviewMonitoring 
-                        Event="RatingAsync"
-                        Rates="Response.Data.Project.Reviews" 
-                        SurveyCollections="Response.Data.Project.SurveyCollections" 
-                        PeriodType="Response.Data.Project.PeriodType"/>
-                    
-                    <ValidateForm
-                        Class="d-flex r-direction gap-3 w-full"
-                        SubmitFunction="RatingAsync"
-                        TextButton="Enviar"
-                        ButtonClass="h-full px-8 r-fit-btn"
-                        IsBusy="IsBusyRate">
-                        <MudGrid
-                            Spacing="3"
-                            Class="w-full">
-                            <MudItem
-                                xs="12" sm="2"
-                                md="2" lg="2"
-                                xl="2" xxl="2">
-                                <MudNumericField
-                                    T="decimal"
-                                    Label="Nota"
-                                    Variant="Variant.Filled"
-                                    Min="0"
-                                    Max="10"
-                                    Step=".1M"
-                                    Format="F1"
-                                    @bind-Value="RatingRequest.Rating"
-                                    Required="true"
-                                    RequiredError="Informe a nota"
-                                    Disabled="IsDisabled"
-                                    Validation="RateValidator.Validate"/>
-                            </MudItem>
-                            
-                            <MudItem 
-                                xs="12" sm="10" 
-                                md="10" lg="10" 
-                                xl="10" xxl="10">
-                                <MudTextField 
-                                    T="string" 
-                                    Label="Comentário" 
-                                    Variant="Variant.Filled" 
-                                    FullWidth="true" 
-                                    @bind-Value="RatingRequest.Comment"
-                                    Required="true"
-                                    RequiredError="Dê a sua justificativa"
-                                    Disabled="IsDisabled"
-                                    Validation="CommentValidator.Validate"/>
-                            </MudItem>
-                        </MudGrid>
-                    </ValidateForm>
-                    
-                    @if (!IsDisabledCountdown)
-                    {
+                    <div class="break-review w-full">
+                        <MudText
+                            Typo="Typo.h5"
+                            Align="Align.Center"
+                            Class="r-paper-subtitle r-no-graphics">
+                            Acompanhamento da Avaliação
+                        </MudText>
+
+                        <ReviewMonitoring
+                            ContainerClass="w-full r-no-graphics"
+                            Event="RatingAsync"
+                            Rates="Response.Data.Project.Reviews"
+                            SurveyCollections="Response.Data.Project.SurveyCollections"
+                            PeriodType="Response.Data.Project.PeriodType"/>
+
                         <MudText
                             Align="Align.Center"
-                            Typo="Typo.caption">
-                            Tempo até a próxima avaliação: @Days.ToString("D2") Dias, @Hours.ToString("D2"):@Minutes.ToString("D2"):@Seconds.ToString("D2")
+                            Typo="Typo.body2"
+                            Class="d-none r-graphics-warning pb-3"
+                            Color="Color.Inherit">
+                            O acompanhamento das suas avaliações só está disponível em telas maiores
                         </MudText>
-                    }
+
+                        <MudDivider
+                            Class="d-none r-graphics-warning"
+                            DividerType="DividerType.FullWidth"/>
+
+                        <MudText
+                            Typo="Typo.h5"
+                            Align="Align.Center"
+                            Class="r-paper-subtitle r-no-graphics d-none r-graphics-warning">
+                            Avaliação
+                        </MudText>
+                        
+                        <ValidateForm
+                            Class="d-flex r-direction gap-3 w-full"
+                            SubmitFunction="RatingAsync"
+                            TextButton="Enviar"
+                            ButtonClass="h-full px-8 r-fit-btn h-btn-review"
+                            IsBusy="IsBusyRate">
+                            <MudGrid
+                                Spacing="3"
+                                Class="w-full">
+                                <MudItem
+                                    xs="12" sm="2"
+                                    md="2" lg="2"
+                                    xl="2" xxl="2">
+                                    <MudNumericField
+                                        T="decimal"
+                                        Label="Nota"
+                                        Variant="Variant.Filled"
+                                        HelperText="Notas de 0 a 10"
+                                        Min="0"
+                                        Max="10"
+                                        Step=".1M"
+                                        Format="F1"
+                                        @bind-Value="RatingRequest.Rating"
+                                        Required="true"
+                                        RequiredError="Informe a nota"
+                                        Disabled="IsDisabled"
+                                        Validation="RateValidator.Validate"/>
+                                </MudItem>
+
+                                <MudItem
+                                    xs="12" sm="10"
+                                    md="10" lg="10"
+                                    xl="10" xxl="10">
+                                    <MudTextField
+                                        T="string"
+                                        Label="Comentário"
+                                        Variant="Variant.Filled"
+                                        FullWidth="true"
+                                        @bind-Value="RatingRequest.Comment"
+                                        Required="true"
+                                        RequiredError="Dê a sua justificativa"
+                                        Disabled="IsDisabled"
+                                        Validation="CommentValidator.Validate"/>
+                                </MudItem>
+                            </MudGrid>
+                        </ValidateForm>
+
+                        @if (!IsDisabledCountdown)
+                        {
+                            <MudText
+                                Align="Align.Center"
+                                Typo="Typo.caption"
+                                Class="r-countdown">
+                                <span>Tempo até a próxima avaliação:</span> @Days.ToString("D2") Dias, @Hours.ToString("D2"):@Minutes.ToString("D2"):@Seconds.ToString("D2")
+                            </MudText>
+                        }
+                    </div>
                 }
                 else
                 {
                     <ResearchTitleSkeleton/>
                     <ResearchDescriptionSkeleton/>
+                    <MudDivider DividerType="DividerType.FullWidth"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-paper-subtitle r-no-graphics"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
+                    <MudDivider
+                        Class="d-none r-graphics-warning"
+                        DividerType="DividerType.FullWidth"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
+                    <ResearchReviewChartSkeleton SkeletonClass="w-full r-no-graphics"/>
                     <ResearchFormSkeleton/>
+                    @if (!IsDisabledCountdown)
+                    {
+                        <ResearchCountdownSkeleton/>
+                    }
                 }
             </MudPaper>
         </MudContainer>

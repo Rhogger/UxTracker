@@ -4,7 +4,7 @@
 @using UxTracker.Core.Contexts.Review.ValueObjects
 @using ChartType = ApexCharts.ChartType
 
-<div class="w-full">
+<div class="@ContainerClass">
     <ApexChart 
         TItem="UserRates"
         @ref="Ref"
@@ -24,6 +24,7 @@
     [Parameter] public int SurveyCollections { get; set; }
     [Parameter] public List<UserRates> Rates { get; set; } = new();
     [Parameter] public EventCallback Event { get; set; }
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
 
     private ApexChart<UserRates>? Ref { get; set; }
     private ApexChartOptions<UserRates> Options = null!;
