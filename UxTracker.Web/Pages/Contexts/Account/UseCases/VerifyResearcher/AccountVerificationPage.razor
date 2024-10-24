@@ -10,10 +10,11 @@
 
 <MudContainer 
     MaxWidth="MaxWidth.Small" 
-    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+    Class="d-flex flex-column justify-center align-center gap-9 h-full py-14">
     <MudText
         Typo="Typo.h4"
-        Align="Align.Center">
+        Align="Align.Center"
+        Class="headless-title">
         Verifique sua conta
     </MudText>
             
@@ -25,6 +26,7 @@
             Outlined="true">
             <ValidateForm 
                 SubmitFunction="VerifyAsync" 
+                ButtonClass="py-2"
                 TextButton="Verificar conta"
                 IsBusy="IsBusy">
                 <EmailTextField @bind-Email="Request.Email" />
@@ -51,10 +53,13 @@
             Class="pa-6 rounded-lg d-flex flex-column align-center gap-3" 
             Outlined="true">
             <MudText
+                Class="headless-text"
                 Align="Align.Center">
                 O código foi enviado para seu e-mail.
             </MudText>
-            <MudText Align="Align.Center">
+            <MudText
+                Class="headless-text"
+                Align="Align.Center">
                 <strong>
                     Não esqueça de verificar a caixa de spam.
                 </strong>
@@ -62,7 +67,10 @@
 
             @if (!IsBusyResend)
             {
-                <MudLink Style="text-align: center" OnClick="ResendVerificationCodeAsync">
+                <MudLink 
+                    Class="headless-text" 
+                    Style="text-align: center" 
+                    OnClick="ResendVerificationCodeAsync">
                     <strong>
                         Reenviar código
                     </strong>

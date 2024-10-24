@@ -7,28 +7,25 @@
 
 <MudContainer 
     MaxWidth="MaxWidth.Small" 
-    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full"
+    Class="d-flex flex-column justify-center align-center gap-9 h-full py-14"
 >
     <MudText
         Typo="Typo.h4"
         Align="Align.Center"
-    >
+        Class="headless-title">
         Faça login no UxTracker
     </MudText>
             
     <MudContainer 
         MaxWidth="MaxWidth.ExtraSmall" 
-        Class="d-flex flex-column gap-4"
-    >
+        Class="d-flex flex-column gap-4">
         <MudPaper 
             Class="pa-6 rounded-lg" 
-            Outlined="true"
-        >
-            <ValidateForm 
+            Outlined="true">
+            <ValidateForm
                 SubmitFunction="SignInAsync" 
                 TextButton="Acessar"
-                IsBusy="IsBusy"
-            >
+                IsBusy="IsBusy">
                 <EmailTextField @bind-Email="@Request.Email"/>
 
                 <PasswordTextField @bind-Password="@Request.Password"/>
@@ -37,23 +34,24 @@
 
         <MudPaper 
             Class="px-4 py-7 rounded-lg d-flex flex-column gap-3" 
-            Outlined="true"
-        >
-            <MudText Align="Align.Center">
+            Outlined="true">
+            <MudText 
+                Class="headless-text"
+                Align="Align.Center">
                 É novo no UxTracker?
                 <MudLink
+                    Class="headless-text"
                     Href="/register"
-                    Style="font-weight: bold"
-                >
+                    Style="font-weight: bold">
                     Cadastre-se
                 </MudLink>
             </MudText>
 
             <MudText Align="Align.Center">
                 <MudLink 
+                    Class="headless-text"
                     Style="font-weight: bold" 
-                    OnClick="SendResetCodeAsync"
-                >
+                    OnClick="SendResetCodeAsync">
                     Esqueceu a senha?
                 </MudLink>
             </MudText>
