@@ -29,7 +29,7 @@
                         @Response.Data.Project.Description
                     </MudText>
                     
-                    <MudDivider DividerType="DividerType.FullWidth"/>
+                    <MudDivider Class="ma-0 w-full" DividerType="DividerType.Inset"/>
                     
                     <div class="break-review w-full">
                         <MudText
@@ -127,11 +127,14 @@
                 {
                     <ResearchTitleSkeleton/>
                     <ResearchDescriptionSkeleton/>
-                    <MudDivider DividerType="DividerType.FullWidth"/>
+                    <MudDivider
+                        Light="true"
+                        Class="no-flex"
+                        DividerType="DividerType.FullWidth"/>
                     <ResearchTitleSkeleton SkeletonClass="r-paper-subtitle r-no-graphics"/>
                     <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
                     <MudDivider
-                        Class="d-none r-graphics-warning"
+                        Class="ma-0 w-full d-none r-graphics-warning no-flex"
                         DividerType="DividerType.FullWidth"/>
                     <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
                     <ResearchReviewChartSkeleton SkeletonClass="w-full r-no-graphics"/>
