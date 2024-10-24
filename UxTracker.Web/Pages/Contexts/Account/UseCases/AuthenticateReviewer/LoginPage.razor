@@ -7,7 +7,7 @@
 
 <MudContainer 
     MaxWidth="MaxWidth.Small"
-    Class="d-flex flex-column justify-center align-content-center gap-9 mud-height-full">
+    Class="d-flex flex-column justify-center align-center gap-9 h-full py-14">
     <MudText
         Typo="Typo.h4"
         Align="Align.Center"
@@ -36,10 +36,19 @@
             </ValidateForm>
         </MudPaper>
         
-        <MudPaper Class="px-4 py-7 rounded-lg" Outlined="true">
-            <MudText Align="Align.Center" Class="headless-text d-flex flex-wrap align-center justify-center gap-2">
+        <MudPaper 
+            Class="px-4 py-7 rounded-lg" 
+            Outlined="true">
+            <MudText 
+                Align="Align.Center" 
+                     Class="headless-text d-flex flex-wrap align-center justify-center gap-2">
                 É novo no UxTracker?
-                <MudLink Href="/reviewers/register" Style="font-weight: bold" Class="headless-text">Cadastre-se</MudLink>
+                <MudLink
+                    Href="/reviewers/register"
+                    Style="font-weight: bold"
+                    Class="headless-text">
+                    Cadastre-se
+                </MudLink>
             </MudText>
         </MudPaper>
     </MudContainer>
