@@ -15,6 +15,15 @@
     height: max-content;
 }
 
+.max-account-container{
+    width: 100%;
+    max-width: 100%;
+}
+
+.r-paper{
+    width: 100%;
+}
+
 .no-flex{
     flex: none;
 }
@@ -120,6 +129,16 @@
     
     .r-container{
         padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100%;
+    }
+    
+    .max-account-container{
+        max-width: 360px;
+    }
+    
+    .add-py{
+        padding: 16px 0;
     }
 
     .r-container-title{

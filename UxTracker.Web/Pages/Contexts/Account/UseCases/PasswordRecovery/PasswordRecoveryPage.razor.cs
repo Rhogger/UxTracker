@@ -88,4 +88,6 @@ public class PasswordRecovery : ComponentBase
             IsBusyResend = false;
         }
     }
+    
+    protected void NavigateToLogin() => Navigation.NavigateTo("/login");
 }

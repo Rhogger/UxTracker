@@ -52,4 +52,6 @@ public partial class UpdatePasswordRecovery : ComponentBase
             IsBusy = false;
         }
     }
+
+    protected void NavigateToLogin() => Navigation.NavigateTo("/login");
 }
