@@ -21,15 +21,33 @@
     <link href="manifest.webmanifest" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+
+    <script>
+      window.downloadFile = function(dataUrl) {
+        const link = document.createElement('a');
+        console.log("Opa, caiu aqui"); // Verifique se esta mensagem aparece
+        link.href = dataUrl;
+        link.download = 'TermoDeConsentimento.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    </script>
+
+    <script>
+      function downloadFile(dataUrl, fileName) {
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    </script>
   </head>
 
   <body>
     <div id="app">
-      <svg class="loading-progress">
-        <circle r="40%" cx="50%" cy="50%" />
-        <circle r="40%" cx="50%" cy="50%" />
-      </svg>
-      <div class="loading-progress-text"></div>
     </div>
 
     <div id="blazor-error-ui">

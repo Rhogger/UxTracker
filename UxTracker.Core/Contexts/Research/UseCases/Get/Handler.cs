@@ -31,7 +31,13 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        #region 02. Recuperar projeto do banco
+        #region 02. Gerar objetos
+
+        var projectUrl = $"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/{request.ProjectId}";
+
+        #endregion
+        
+        #region 03. Recuperar projeto do banco
 
         GetDTO? project;
 
@@ -49,9 +55,11 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
         
-        #region 03. Retornar os dados
+        #region 04. Retornar os dados
 
-            return new Response(string.Empty, new ResponseData(project));
+        project.ResearchUrl = projectUrl;
+
+        return new Response(string.Empty, new ResponseData(project));
 
         #endregion
     }

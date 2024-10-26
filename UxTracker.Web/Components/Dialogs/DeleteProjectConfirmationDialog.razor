@@ -1,0 +1,75 @@
+@using UxTracker.Core.Contexts.Research.Handlers
+@using UxTracker.Web.Handlers
+
+<MudDialog Class="pa-4">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1"/>
+            Deseja deletar o projeto?
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Class="pb-8">
+            Deseja mesmo excluir o projeto? Após exclusão não será possível recuperar.
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton
+            Variant="Variant.Filled"
+            OnClick="Cancel"
+        >
+            Cancelar
+        </MudButton>
+        
+        <MudButton
+            Color="Color.Error"
+            Variant="Variant.Filled"
+            OnClick="DeleteProject"
+        >
+            Excluir projeto
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Inject] protected IResearchContextHandler ResearchContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    
+    [Parameter] public string ProjectId { get; set; } = string.Empty;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void DeleteProject() => MudDialog.Close(DialogResult.Ok(DeleteProjectAsync()));
+
+    private async Task DeleteProjectAsync()
+    {
+        try
+        {
+            var response = await ResearchContextHandler.DeleteAsync(ProjectId);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    Navigation.NavigateTo("/projects");
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+    }
+}

@@ -123,6 +123,12 @@ public class Project: Entity
 
     public void UpdateConsentTermHash(string hash)
     {
+        if(IsInvalidToUpdateWhenFinishedStatus)
+            throw new Exception("Não pode alterar a quantidade de coleta após o fim da pesquisa");
+        
+        if(IsInvalidToUpdateWhenInProgressStatus && IsInvalidToUpdateWhenHaveDeliveries)
+            throw new Exception("Não pode alterar a quantidade de coletas se já iniciaram as avaliações");
+        
         ConsentTermHash = hash;
     }
     

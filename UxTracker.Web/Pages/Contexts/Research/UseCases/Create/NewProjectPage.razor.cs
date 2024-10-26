@@ -38,7 +38,7 @@ public class NewProject: ComponentBase
                 if (response.IsSuccessful)
                 {
                     Snackbar.Add(response.Data!.Message, Severity.Success);
-                    Navigation.NavigateTo("/projects/project");
+                    Navigation.NavigateTo($"/project/{response.Data.Data.Id}");
                 }
                 else
                 {

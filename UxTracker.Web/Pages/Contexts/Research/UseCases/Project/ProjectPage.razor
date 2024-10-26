@@ -1,148 +1,180 @@
 @using ApexCharts
+@using UxTracker.Core
+@using UxTracker.Core.Contexts.Research.Extensions
 
 @page "/project/{ProjectId:guid}"
 @inherits Project
 
 <AuthorizeView Roles="Researcher">
     <Authorized>
-        <MudContainer Fixed="true" Class="pa-20">
-            <div class="d-flex justify-start mb-2">
-                <MudButton Href="/projects/" Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" Class="py-2 px-15">
+        <MudContainer
+            MaxWidth="MaxWidth.Large"
+            Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
+            <div class="w-full d-flex justify-start">
+                <MudButton 
+                    Href="/projects/" 
+                    Variant="Variant.Outlined" 
+                    Class="py-2 px-15 mud-paper-outlined mud-paper">
                     Voltar
                 </MudButton>
             </div>
-            @if(!IsBusy)
+            @if (!IsBusy)
             {
-                @if (!IsEditState)
-                {
-                    <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-                        <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">@Response.Data.Project.Title</MudText>
-                        <MudText Typo="Typo.body1" Align="MudBlazor.Align.Center">@Response.Data.Project.Description</MudText>
+                <MudPaper 
+                    Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper" 
+                    Outlined="true">
+                    @if (!IsEditState)
+                    {
+                        <MudText
+                            Typo="Typo.h4"
+                            Align="MudBlazor.Align.Center"
+                            Class="r-padding-top r-paper-title">
+                            @Response.Data.Project.Title
+                        </MudText>
 
-                        <MudForm Class="pa-5">
-                            <MudGrid Spacing="3">
-                                <MudItem xs="12" sm="3">
-                                    <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" ReadOnly="true" Variant="Variant.Filled" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
-                                                  Value="@evaluationLink" ReadOnly="true" Variant="Variant.Filled" FullWidth="true" 
-                                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" 
-                                                  OnAdornmentClick="CopyTextToClipboard" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudDatePicker Label="Data Final" @bind-Date="_endDate" ReadOnly="true" Variant="Variant.Filled" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
-                                                  FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
-                                                  OnAdornmentClick="DownloadFile" />
-                                </MudItem>
-                            </MudGrid>
-                        </MudForm>
+                        <MudText
+                            Typo="Typo.body1"
+                            Class="r-paper-description">
+                            @Response.Data.Project.Description
+                        </MudText>
+
+                
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12" sm="3">
+                                <MudDatePicker
+                                    Label="Data Inicial"
+                                    Variant="Variant.Filled"
+                                    Date="Response.Data.Project.StartDate"
+                                    ReadOnly="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudDatePicker
+                                    Label="Data Final"
+                                    Date="Response.Data.Project.EndDate"
+                                    ReadOnly="true"
+                                    Variant="Variant.Filled"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudTextField
+                                    ShrinkLabel="true"
+                                    T="string"
+                                    Label="Tipo do Período"
+                                    Value="Response.Data.Project.PeriodType.ToHumanize()"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudNumericField
+                                    ShrinkLabel="true"
+                                    T="int"
+                                    Label="Quantidade de Coleta"
+                                    Value="Response.Data.Project.SurveyCollections"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"
+                                    HideSpinButtons="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudTextField
+                                    ShrinkLabel="true"
+                                    T="string"
+                                    Label="Status"
+                                    Value="Response.Data.Project.Status.ToHumanize()"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudNumericField
+                                    ShrinkLabel="true"
+                                    T="int"
+                                    Label="Última entrega"
+                                    Value="Response.Data.Project.LastSurveyCollection"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"
+                                    HideSpinButtons="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudNumericField
+                                    ShrinkLabel="true"
+                                    T="int"
+                                    Label="Quantidade de Avaliações"
+                                    Value="Response.Data.Project.ReviewsCount"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"
+                                    HideSpinButtons="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudNumericField
+                                    ShrinkLabel="true"
+                                    T="int"
+                                    Label="Quantidade de Participantes"
+                                    Value="Response.Data.Project.ReviewersCount"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    ReadOnly="true"
+                                    HideSpinButtons="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudTextField
+                                    @ref="CopyTextField"
+                                    ShrinkLabel="true"
+                                    T="string"
+                                    Label="Link da Avaliação"
+                                    Value="Response.Data.Project.ResearchUrl"
+                                    ReadOnly="true"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    Adornment="Adornment.End"
+                                    AdornmentIcon="@Icons.Material.Filled.ContentCopy"
+                                    OnAdornmentClick="CopyTextToClipboard"/>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudTextField
+                                    ShrinkLabel="true"
+                                    T="string"
+                                    Label="Termo de Aceite"
+                                    Value="Response.Data.Project.ConsentTermName"
+                                    ReadOnly="true"
+                                    Variant="Variant.Filled"
+                                    FullWidth="true"
+                                    Adornment="Adornment.End"
+                                    AdornmentIcon="@Icons.Material.Filled.Download"
+                                    OnAdornmentClick="DownloadFileAsync"/>
+                            </MudItem>
+                        </MudGrid>
+
                         <div class="d-flex justify-end">
-                            <MudButton EndIcon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="MudBlazor.Color.Info" 
-                                       Class="py-2 px-15" OnClick="ChangeState"> Editar
+                            <MudButton 
+                                EndIcon="@Icons.Material.Filled.Edit" 
+                                Variant="Variant.Filled" 
+                                Color="MudBlazor.Color.Info"
+                                Class="py-2 px-15" 
+                                OnClick="ChangeState"> Editar
+                            </MudButton>
+                            
+                            <MudButton 
+                                EndIcon="@Icons.Material.Filled.Delete" 
+                                Variant="Variant.Filled" 
+                                Color="MudBlazor.Color.Error"
+                                Class="py-2 px-15" 
+                                OnClick="DeleteAsync"> Excluir
                             </MudButton>
                         </div>
-                    </MudPaper>
-                }
-                else
-                {
-                    <MudPaper Class="pa-4 rounded-lg" Outlined="true">
-                        <MudTextField T="string" Label="Título da pesquisa" Variant="Variant.Filled" FullWidth="true" 
-                                      @bind-Value="UpdateRequest.Title" Class="pa-5" />
-                        <MudTextField T="string" Label="Descrição da pesquisa" Variant="Variant.Filled" FullWidth="true" 
-                                      @bind-Value="UpdateRequest.Description" Class="pa-5" />
-
-                        <MudForm Class="pa-5">
-                            <MudGrid Spacing="3">
-                                <MudItem xs="12" sm="3">
-                                    <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" Variant="Variant.Filled" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação"
-                                                  Value="@evaluationLink" Variant="Variant.Filled" FullWidth="true" 
-                                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" 
-                                                  OnAdornmentClick="CopyTextToClipboard" ReadOnly="true" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudDatePicker Label="Data Final" @bind-Date="_endDate" Variant="Variant.Filled" />
-                                </MudItem>
-                                <MudItem xs="12" sm="3">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled"
-                                                  FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download"
-                                                  OnAdornmentClick="DownloadFile" />
-                                </MudItem>
-                            </MudGrid>
-                        </MudForm>
-                        <div class="d-flex justify-center">
-                            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Error" Class="py-2 px-15 mx-2" OnClick="CancelChanges">Cancelar</MudButton>
-                            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15 mx-2" OnClick="ChangeState">Salvar</MudButton>
-                        </div>
-                    </MudPaper>
-                }
-
-                @if (Status == "Em andamento")
-                {
-                    <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatório</MudText>
-    
-                    <MudContainer MaxWidth="MaxWidth.Medium">
-                        <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                            <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot>
-                                <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)"
-                                                   Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)"
-                                                   Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)" />
-                            </ApexChart>
-                        </MudPaper>
-        
-                        <div class="d-flex justify-end mt-3">
-                            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15" OnClick="FinishResearch">
-                                Finalizar Pesquisa
-                            </MudButton>
-                        </div>
-                    </MudContainer>
-                }
-                else if (Status == "Concluído")
-                {
-                    <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText>
-                    <MudContainer MaxWidth="MaxWidth.Medium">
-                        <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                            <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot>
-                                <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)"
-                                                   Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)"
-                                                   Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)" />
-                            </ApexChart>
-                        </MudPaper>
-
-                        <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium">
-                            <MudPaper Class="pa-5 rounded-lg" Outlined="true">
-                                <ApexChart TItem="Cluster" Title="Distribuição de Desconto" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions">
-                                    <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Bruto" SeriesType="SeriesType.Scatter"
-                                                     XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
-                                    <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Tendência"
-                                                     XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e=>e.X" />
-                                </ApexChart>
-                            </MudPaper>
-                        </MudContainer>
-                    </MudContainer>
-                }
-            }
-            else
-            {
-                <MudText>Carregando...</MudText>
+                    }
+                </MudPaper>
             }
         </MudContainer>
     </Authorized>
@@ -151,3 +183,95 @@
         <RedirectToUnauthorizedPage/>
     </NotAuthorized>
 </AuthorizeView>
+
+@* else *@
+@* { *@
+@*     <MudPaper Class="pa-4 rounded-lg" Outlined="true"> *@
+@*         <MudTextField T="string" Label="Título da pesquisa" Variant="Variant.Filled" FullWidth="true" *@
+@*                       @bind-Value="UpdateRequest.Title" Class="pa-5"/> *@
+@*         <MudTextField T="string" Label="Descrição da pesquisa" Variant="Variant.Filled" FullWidth="true" *@
+@*                       @bind-Value="UpdateRequest.Description" Class="pa-5"/> *@
+@* *@
+@*         <MudForm Class="pa-5"> *@
+@*             <MudGrid Spacing="3"> *@
+@*                 <MudItem xs="12" sm="3"> *@
+@*                     <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" Variant="Variant.Filled"/> *@
+@*                 </MudItem> *@
+@*                 <MudItem xs="12" sm="3"> *@
+@*                     <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true"/> *@
+@*                 </MudItem> *@
+@*                 <MudItem xs="12" sm="6"> *@
+@*                     <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação" *@
+@*                                   Value="@evaluationLink" Variant="Variant.Filled" FullWidth="true" *@
+@*                                   Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" *@
+@*                                   OnAdornmentClick="CopyTextToClipboard" ReadOnly="true"/> *@
+@*                 </MudItem> *@
+@*                 <MudItem xs="12" sm="3"> *@
+@*                     <MudDatePicker Label="Data Final" @bind-Date="_endDate" Variant="Variant.Filled"/> *@
+@*                 </MudItem> *@
+@*                 <MudItem xs="12" sm="3"> *@
+@*                     <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true"/> *@
+@*                 </MudItem> *@
+@*                 <MudItem xs="12" sm="6"> *@
+@*                     <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled" *@
+@*                                   FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" *@
+@*                                   OnAdornmentClick="DownloadFile"/> *@
+@*                 </MudItem> *@
+@*             </MudGrid> *@
+@*         </MudForm> *@
+@*         <div class="d-flex justify-center"> *@
+@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Error" Class="py-2 px-15 mx-2" OnClick="CancelChanges">Cancelar</MudButton> *@
+@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15 mx-2" OnClick="ChangeState">Salvar</MudButton> *@
+@*         </div> *@
+@*     </MudPaper> *@
+@* } *@
+@* *@
+@* @if (Status == "Em andamento") *@
+@* { *@
+@*     <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatório</MudText> *@
+@* *@
+@*     <MudContainer MaxWidth="MaxWidth.Medium"> *@
+@*         <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
+@*             <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot> *@
+@*                 <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)" *@
+@*                                    Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)" *@
+@*                                    Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)"/> *@
+@*             </ApexChart> *@
+@*         </MudPaper> *@
+@* *@
+@*         <div class="d-flex justify-end mt-3"> *@
+@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15" OnClick="FinishResearch"> *@
+@*                 Finalizar Pesquisa *@
+@*             </MudButton> *@
+@*         </div> *@
+@*     </MudContainer> *@
+@* } *@
+@* else if (Status == "Concluído") *@
+@* { *@
+@*         <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText> *@
+@*         <MudContainer MaxWidth="MaxWidth.Medium"> *@
+@*             <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
+@*                 <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot> *@
+@*                     <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)" *@
+@*                                        Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)" *@
+@*                                        Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)"/> *@
+@*                 </ApexChart> *@
+@*             </MudPaper> *@
+@* *@
+@*             <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium"> *@
+@*                 <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
+@*                     <ApexChart TItem="Cluster" Title="Distribuição de Desconto" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions"> *@
+@*                         <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Bruto" SeriesType="SeriesType.Scatter" *@
+@*                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e => e.X"/> *@
+@*                         <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Tendência" *@
+@*                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e => e.X"/> *@
+@*                     </ApexChart> *@
+@*                 </MudPaper> *@
+@*             </MudContainer> *@
+@*         </MudContainer> *@
+@*         } *@
+@*     } *@
+@*     else *@
+@*     { *@
+@*     <MudText>Carregando...</MudText> *@
+@*     } *@

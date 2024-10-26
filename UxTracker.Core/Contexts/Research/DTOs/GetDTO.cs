@@ -15,8 +15,9 @@ public class GetDTO
     public int LastSurveyCollection { get; set; }
     public int ReviewsCount { get; set; }
     public int ReviewersCount { get; set; }
-    public string ConsentTermUrl { get; set; } = string.Empty;
     public string ConsentTermName { get; set; } = string.Empty;
+    public string ConsentTermUrl { get; set; } = string.Empty;
+    public string ResearchUrl { get; set; } = string.Empty;
     public List<GetRelatoriesDTO> Relatories { get; set; } = new();
     public List<ReviewsDTO> Reviews { get; set; } = new();
 }

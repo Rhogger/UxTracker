@@ -151,7 +151,7 @@ public static class ResearchContextExtension
                 request.ConsentTermHash = fileHash;
 
                 var result = await handler.Handle(request, new CancellationToken());
-
+                
                 if (!result.IsSuccess)
                 {
                     return Results.Json(result, statusCode: result.StatusCode);
@@ -188,8 +188,7 @@ public static class ResearchContextExtension
 
         app.MapDelete(
             $"api/v1/projects/{{projectId}}",
-            [Authorize(Roles = "Researcher")]
-            async (
+            [Authorize(Roles = "Researcher")] async (
                 HttpContext httpContext,
                 [FromRoute] string projectId,
                 [FromServices] ITransactionalHandler<Delete.Request, Delete.Response> handler
@@ -229,7 +228,8 @@ public static class ResearchContextExtension
                 }
 
                 await handler.CommitAsync();
-                return Results.Ok();
+
+                return Results.Ok(result);
             }
         );
 
@@ -323,6 +323,33 @@ public static class ResearchContextExtension
 
         #endregion
 
+        #region GetConsentTerm
+
+        app.MapGet(
+            $"api/v1/term/{{projectId}}",
+            async ([FromRoute] string projectId) =>
+            {
+                var consentTermFolder = Path.Combine(Configuration.ConsentTerm.Url, projectId);
+
+                if (!Directory.Exists(consentTermFolder))
+                    return Results.NotFound("Termo de Aceite não existe");
+        
+                var files = Directory.GetFiles(consentTermFolder);
+        
+                if (files.Length == 0)
+                    return Results.NotFound("Termo de Aceite não existe");
+
+                var filePath = files[0];
+                var fileName = Path.GetFileName(filePath);
+
+                var fileContent = await File.ReadAllBytesAsync(filePath);
+        
+                return Results.File(fileContent, "application/pdf", fileName);
+            }
+        );
+
+        #endregion
+        
         #region GetForReview
 
         app.MapGet(

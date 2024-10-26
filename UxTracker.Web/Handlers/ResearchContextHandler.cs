@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Research.Handlers;
 using Create = UxTracker.Core.Contexts.Research.UseCases.Create;
+using Delete = UxTracker.Core.Contexts.Research.UseCases.Delete;
 using Get = UxTracker.Core.Contexts.Research.UseCases.Get;
 using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
 using GetForReview = UxTracker.Core.Contexts.Research.UseCases.GetForReview;
@@ -10,8 +12,9 @@ using GetRelatories = UxTracker.Core.Contexts.Research.UseCases.GetRelatories;
 
 namespace UxTracker.Web.Handlers;
 
-public class ResearchContextHandler: IResearchContextHandler
+public class ResearchContextHandler : IResearchContextHandler
 {
+    private readonly IJSRuntime JSRuntime;
     private readonly IRestClient RestClient;
     private readonly ICookieHandler CookieHandler;
 
@@ -20,7 +23,7 @@ public class ResearchContextHandler: IResearchContextHandler
         RestClient = restClient;
         CookieHandler = cookieHandler;
     }
-    
+
     public async Task<RestResponse<Create.Response>?> CreateProjectAsync(Create.Request requestModel, IBrowserFile file)
     {
         var request = new RestRequest("/api/v1/projects/create/", Method.Post);
@@ -29,12 +32,14 @@ public class ResearchContextHandler: IResearchContextHandler
         request.AddParameter("description", requestModel.Description);
         request.AddParameter("periodType", requestModel.PeriodType);
         request.AddParameter("surveyCollections", requestModel.SurveyCollections);
-        if (requestModel.StartDate.HasValue){
-            request.AddParameter("startDate", requestModel.StartDate.Value);
+        if (requestModel.StartDate.HasValue)
+        {
+            request.AddParameter("startDate", requestModel.StartDate.Value.ToString("o"));
         }
+
         if (requestModel.EndDate.HasValue)
         {
-            request.AddParameter("endDate", requestModel.EndDate.Value);
+            request.AddParameter("endDate", requestModel.EndDate.Value.ToString("o"));
         }
 
         if (requestModel.Relatories.Count > 0)
@@ -50,9 +55,9 @@ public class ResearchContextHandler: IResearchContextHandler
         }
 
         request.AddFile("consentTerm", () => file.OpenReadStream(2 * 1024 * 1024), file.Name, file.ContentType);
-        
+
         var token = await CookieHandler.GetAccessToken();
-        
+
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -61,7 +66,7 @@ public class ResearchContextHandler: IResearchContextHandler
         {
             throw new Exception("Token JWT não encontrado.");
         }
-        
+
         try
         {
             var response = await RestClient.ExecuteAsync<Create.Response>(request);
@@ -82,7 +87,7 @@ public class ResearchContextHandler: IResearchContextHandler
             throw new Exception($"{ex.Message}");
         }
     }
-    
+
     public async Task<RestResponse<GetAll.Response>?> GetProjectsAsync()
     {
         try
@@ -98,7 +103,7 @@ public class ResearchContextHandler: IResearchContextHandler
             {
                 throw new Exception("Token JWT não encontrado.");
             }
-        
+
             var response = await RestClient.ExecuteAsync<GetAll.Response>(request);
 
             if (response.Data is not null)
@@ -117,13 +122,13 @@ public class ResearchContextHandler: IResearchContextHandler
             throw new Exception($"{ex.Message}");
         }
     }
-    
+
     public async Task<RestResponse<GetForReview.Response>?> GetProjectForReviewAsync(string projectId)
     {
         try
         {
             var request = new RestRequest($"/api/v1/review/{projectId}");
-            
+
             var token = await CookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
@@ -133,7 +138,7 @@ public class ResearchContextHandler: IResearchContextHandler
             {
                 throw new Exception("Token JWT não encontrado.");
             }
-        
+
             var response = await RestClient.ExecuteAsync<GetForReview.Response>(request);
 
             if (response.Data is not null)
@@ -152,13 +157,13 @@ public class ResearchContextHandler: IResearchContextHandler
             throw new Exception($"{ex.Message}");
         }
     }
-    
+
     public async Task<RestResponse<Get.Response>?> GetProjectAsync(string projectId)
     {
         try
         {
             var request = new RestRequest($"/api/v1/projects/{projectId}");
-            
+
             var token = await CookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
@@ -168,7 +173,7 @@ public class ResearchContextHandler: IResearchContextHandler
             {
                 throw new Exception("Token JWT não encontrado.");
             }
-        
+
             var response = await RestClient.ExecuteAsync<Get.Response>(request);
 
             if (response.Data is not null)
@@ -187,7 +192,7 @@ public class ResearchContextHandler: IResearchContextHandler
             throw new Exception($"{ex.Message}");
         }
     }
-    
+
     public async Task<RestResponse<GetRelatories.Response>?> GetRelatoriesAsync()
     {
         try
@@ -203,8 +208,70 @@ public class ResearchContextHandler: IResearchContextHandler
             {
                 throw new Exception("Token JWT não encontrado.");
             }
-        
+
             var response = await RestClient.ExecuteAsync<GetRelatories.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+
+    public async Task<string> GetConsentTermAsync(string projectId)
+    {
+        var request = new RestRequest($"/api/v1/term/{projectId}");
+
+        try
+        {
+            var response = await RestClient.ExecuteAsync(request);
+
+            if (response.IsSuccessful)
+            {
+                var byteArray = response.RawBytes;
+                if (byteArray != null)
+                {
+                    var base64 = Convert.ToBase64String(byteArray);
+                    var dataUrl = $"data:application/pdf;base64,{base64}";
+                    return dataUrl;
+                }
+            }
+
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<Delete.Response>?> DeleteAsync(string projectId)
+    {
+        try
+        {
+            var request = new RestRequest($"/api/v1/projects/{projectId}", Method.Delete);
+
+            var token = await CookieHandler.GetAccessToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                throw new Exception("Token JWT não encontrado.");
+            }
+
+            var response = await RestClient.ExecuteAsync<Delete.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
