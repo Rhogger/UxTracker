@@ -2,6 +2,7 @@
 @using UxTracker.Core.Contexts.Research.Extensions
 @using UxTracker.Core.Contexts.Research.Validators
 @using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.MudBlazorExtensions
 
 @page "/project/{ProjectId:guid}"
 @inherits Project
@@ -11,11 +12,11 @@
 <MudContainer
     MaxWidth="MaxWidth.Large"
     Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
-<div class="w-full d-flex justify-start">
+<div class="w-full justify-start r-container-item-flex">
     <MudButton 
         OnClick="NavigateToBack"
         Variant="Variant.Outlined" 
-        Class="py-2 px-15 mud-paper-outlined mud-paper">
+        Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
         Voltar
     </MudButton>
 </div>
@@ -24,12 +25,21 @@
     <MudPaper 
         Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper" 
         Outlined="true">
+        <div class="w-full justify-start r-container-item-flex-hidden">
+            <MudButton
+                StartIcon="@Icons.Material.Filled.ArrowBack"
+                OnClick="NavigateToBack"
+                Variant="Variant.Text"
+                Class="r-container-item-flex-hidden justify-start">
+                Voltar
+            </MudButton>
+        </div>
     @if (!IsEditState)
     {
         <MudText
             Typo="Typo.h4"
             Align="Align.Center"
-            Class="r-padding-top r-paper-title">
+            Class="r-paper-title">
             @Response.Data.Project.Title
         </MudText>
 
@@ -43,8 +53,8 @@
         <ValidateForm
             TwoOptions="true"
             Class="d-flex flex-column align-center gap-10"
-            ButtonContainerClass="d-flex justify-space-between w-full"
-            ButtonClass="py-2 r-max-btn w-full"
+            ButtonContainerClass="d-flex justify-space-between w-full r-container-button"
+            ButtonClass="py-2 r-max-btn-icon w-full"
             TextButton="Editar"
             ButtonColor="Color.Info"
             ButtonIcon="@Icons.Material.Filled.Edit"
@@ -55,23 +65,35 @@
             SecondButtonIcon="@Icons.Material.Filled.Autorenew"
             FullWidthButton="false">
             <MudGrid Spacing="6">
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudDatePicker
                         Label="Data Inicial"
                         Variant="Variant.Filled"
                         Date="Response.Data.Project.StartDate"
                         ReadOnly="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudDatePicker
                         Label="Data Final"
                         Date="Response.Data.Project.EndDate"
                         ReadOnly="true"
                         Variant="Variant.Filled"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudTextField
                         ShrinkLabel="true"
                         T="string"
@@ -80,9 +102,13 @@
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudNumericField
                         ShrinkLabel="true"
                         T="int"
@@ -92,9 +118,13 @@
                         FullWidth="true"
                         ReadOnly="true"
                         HideSpinButtons="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudTextField
                         ShrinkLabel="true"
                         T="string"
@@ -103,9 +133,13 @@
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudNumericField
                         ShrinkLabel="true"
                         T="int"
@@ -115,9 +149,13 @@
                         FullWidth="true"
                         ReadOnly="true"
                         HideSpinButtons="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="12" sm="6"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudNumericField
                         ShrinkLabel="true"
                         T="int"
@@ -127,9 +165,13 @@
                         FullWidth="true"
                         ReadOnly="true"
                         HideSpinButtons="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="3">
+                <GridItem
+                    xxs="12"
+                    xs="12" sm="6"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
                     <MudNumericField
                         ShrinkLabel="true"
                         T="int"
@@ -139,9 +181,13 @@
                         FullWidth="true"
                         ReadOnly="true"
                         HideSpinButtons="true"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="6">
+                <GridItem
+                    xxs="12"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
                     <MudTextField
                         @ref="CopyTextField"
                         ShrinkLabel="true"
@@ -154,9 +200,13 @@
                         Adornment="Adornment.End"
                         AdornmentIcon="@Icons.Material.Filled.ContentCopy"
                         OnAdornmentClick="CopyTextToClipboard"/>
-                </MudItem>
+                </GridItem>
 
-                <MudItem xs="12" sm="6">
+                <GridItem
+                    xxs="12"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
                     <MudTextField
                         ShrinkLabel="true"
                         T="string"
@@ -168,7 +218,7 @@
                         Adornment="Adornment.End"
                         AdornmentIcon="@Icons.Material.Filled.Download"
                         OnAdornmentClick="DownloadFileAsync"/>
-                </MudItem>
+                </GridItem>
             </MudGrid>
         </ValidateForm>
     }

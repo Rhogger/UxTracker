@@ -41,15 +41,27 @@
     flex-direction: row;
 }
 
-.r-container-title{
+.r-container-item-block{
     display: block;
 }
 
-.r-container-title-hidden{
+.r-container-item-flex{
+    display: flex;
+}
+
+.r-container-item-block-hidden{
+    display: none;
+}
+
+.r-container-item-flex-hidden{
     display: none;
 }
 
 .r-max-btn{
+    max-width: 200px;
+}
+
+.r-max-btn-icon{
     max-width: 200px;
 }
 
@@ -141,12 +153,20 @@
         padding: 16px 0;
     }
 
-    .r-container-title{
+    .r-container-item-block{
         display: none;
     }
 
-    .r-container-title-hidden{
+    .r-container-item-flex{
+        display: none;
+    }
+
+    .r-container-item-block-hidden{
         display: block;
+    }
+
+    .r-container-item-flex-hidden{
+        display: flex;
     }
 
     .r-paper{
@@ -157,7 +177,7 @@
     }
 
     .r-max-btn{
-        width: 160px !important;
+        width: 180px !important;
     }
     
     .r-padding-top{
@@ -216,9 +236,28 @@
         text-align: justify;
         text-justify: inter-word;
     }
+
+    .r-max-btn-icon{
+        max-width: 180px !important;
+        padding: 4px 2px;
+        span{
+            font-size: 12px;       
+        }
+    }
 }
 
 @media screen and (max-width: 450px){
+    .mud-grid-item-xxs-12{
+        flex-grow: 0;
+        max-width: calc(100% / 12 * 12);
+        flex-basis: calc(100% / 12 * 12);
+    }
+
+    .mud-grid-spacing-xxs-12>.mud-grid-item{
+        padding-left: 20px;
+        padding-top: 20px;
+    }
+    
     .title-2{
         font-size: 36px;
     }
@@ -258,9 +297,22 @@
     .r-max-btn{
         width: 120px !important;
     }
+
+    .r-max-btn-icon{
+        max-width: 160px !important;
+    }
 }
 
 @media screen and (max-width: 390px){
+    .r-container-button{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+    }
+    
     .headless-title{
         font-size: 28px;
     }
@@ -283,5 +335,9 @@
 
     .r-max-btn{
         width: 110px !important;
+    }
+
+    .r-max-btn-icon{
+        max-width: 130px;
     }
 }
