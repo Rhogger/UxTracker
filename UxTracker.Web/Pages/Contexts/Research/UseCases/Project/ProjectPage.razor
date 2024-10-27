@@ -13,7 +13,7 @@
     Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
 <div class="w-full d-flex justify-start">
     <MudButton 
-        Href="/projects/" 
+        OnClick="NavigateToBack"
         Variant="Variant.Outlined" 
         Class="py-2 px-15 mud-paper-outlined mud-paper">
         Voltar
@@ -49,10 +49,10 @@
             ButtonColor="Color.Info"
             ButtonIcon="@Icons.Material.Filled.Edit"
             SubmitFunction="ChangeState"
-            SecondTextButton="Excluir"
-            SecondFunction="DeleteAsync"
-            SecondButtonColor="Color.Error"
-            SecondButtonIcon="@Icons.Material.Filled.Delete"
+            SecondTextButton="@TextChangeStatusButton"
+            SecondFunction="ChangeStatusAsync"
+            SecondButtonColor="@ColorButtonChangeStatus"
+            SecondButtonIcon="@Icons.Material.Filled.Autorenew"
             FullWidthButton="false">
             <MudGrid Spacing="6">
                 <MudItem xs="12" sm="3">
@@ -176,12 +176,15 @@
     {
         <ValidateForm
             TwoOptions="true"
+            ButtonContainerClass="d-flex justify-space-between w-full"
             ButtonClass="py-2 r-max-btn w-full"
             TextButton="Salvar"
             ButtonIcon="@Icons.Material.Filled.Save"
             SubmitFunction="UpdateAsync"
-            SecondTextButton="Voltar"
-            SecondFunction="ChangeState"
+            SecondTextButton="Excluir"
+            SecondButtonColor="Color.Error"
+            SecondButtonIcon="@Icons.Material.Filled.Delete"
+            SecondFunction="DeleteAsync"
             FullWidthButton="false">
             <MudGrid Spacing="6">
                 <MudItem xs="12">

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using MudBlazor;
 using UxTracker.Core.Contexts.Research.DTOs;
+using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Research.ValueObjects;
 using UxTracker.Web.Components.Dialogs;
 using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
 using UpdateUseCase = UxTracker.Core.Contexts.Research.UseCases.Update;
+using UpdateStatusUseCase = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 
 namespace UxTracker.Web.Pages.Contexts.Research.UseCases.Project;
 
@@ -24,6 +26,7 @@ public class Project: ComponentBase
     protected GetUseCase.Response Response { get; set; } = null!;
     protected UpdateUseCase.Response UpdateResponse { get; set; } = null!;
     protected UpdateUseCase.Request UpdateRequest { get; set; } = new();
+    protected UpdateStatusUseCase.Request UpdateStatusRequest { get; set; } = new();
     protected List<GetRelatoriesDTO> Relatories { get; set; }= new();
     protected List<SelectedRelatories> SelectedRelatories { get; set;} = new();
 
@@ -31,6 +34,8 @@ public class Project: ComponentBase
     protected bool IsRelatoriesBusy { get; set; } = true;
     protected bool IsEditState = false;
     protected bool IsValid = true;
+    protected Color ColorButtonChangeStatus { get; set; } = Color.Default;
+    protected string TextChangeStatusButton { get; set; } = string.Empty;
     protected const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
     protected string DragClass = DefaultDragClass;
     protected string FileName = string.Empty;
@@ -51,7 +56,13 @@ public class Project: ComponentBase
                 if (response.IsSuccessful)
                 {
                     Response = response.Data!;
+                    UpdateRequest.ProjectId = ProjectId.ToString();
+                    UpdateStatusRequest.ProjectId = ProjectId.ToString();
                     FileName = Response.Data.Project.ConsentTermName;
+                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
+                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                        ? Color.Success
+                        : Color.Warning;
                 }
                 else
                 {
@@ -144,6 +155,11 @@ public class Project: ComponentBase
                     Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
                     Response.Data.Project.ConsentTermName = FileName;
                     
+                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
+                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                        ? Color.Success
+                        : Color.Warning;
+                    
                     IsEditState = !IsEditState;
                     Snackbar.Add("Projeto atualizado com sucesso", Severity.Success);
                 }
@@ -176,6 +192,62 @@ public class Project: ComponentBase
         await dialog.Result;
     }
     
+    private async Task UpdateStatusAsync()
+    {
+        try
+        {
+            var response = await ResearchContextHandler.UpdateStatusAsync(UpdateStatusRequest);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    Response.Data.Project.StartDate = response.Data.Data.Project.StartDate;
+                    Response.Data.Project.EndDate = response.Data.Data.Project.EndDate;
+                    Response.Data.Project.Status = response.Data.Data.Project.Status;
+                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
+                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                        ? Color.Success
+                        : Color.Warning;
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+            StateHasChanged();
+        }
+    }
+    
+    protected async Task ChangeStatusAsync()
+    {
+        if (Response.Data.Project.Status.Equals(Status.NotStarted))
+            UpdateStatusRequest.StartDate = DateTime.UtcNow;
+        else
+            UpdateStatusRequest.StartDate = Response.Data.Project.StartDate;
+
+        if (Response.Data.Project.Status.Equals(Status.InProgress))
+            UpdateStatusRequest.EndDate = DateTime.UtcNow;
+        else if (Response.Data.Project.Status.Equals(Status.Finished))
+            UpdateStatusRequest.EndDate = null;
+        else
+            UpdateStatusRequest.EndDate = Response.Data.Project.EndDate;
+        
+        await UpdateStatusAsync();
+    }
+    
     protected async void DownloadFileAsync()
     {
         try
@@ -201,29 +273,27 @@ public class Project: ComponentBase
     protected async void ChangeState()
     {
         if (!IsEditState)
-        {
-            UpdateRequest.ProjectId = ProjectId.ToString();
-            UpdateRequest.Title = Response.Data.Project.Title;
-            UpdateRequest.Description = Response.Data.Project.Description;
-            UpdateRequest.StartDate = Response.Data.Project.StartDate;
-            UpdateRequest.EndDate = Response.Data.Project.EndDate;
-            UpdateRequest.PeriodType = Response.Data.Project.PeriodType;
-            UpdateRequest.SurveyCollections = Response.Data.Project.SurveyCollections;
-        }
-        
+            SetUpdateValues();
+            
         IsEditState = !IsEditState;
 
         if (Relatories.Count == 0)
-        {
             await GetRelatoriesAsync();
-            
-            
-        }
     }
 
     protected bool CheckRelatory(string id)
     {
         return Response.Data.Project.Relatories.Any(relatory => relatory.Id.ToString() == id);
+    }
+
+    protected void SetUpdateValues()
+    {
+        UpdateRequest.Title = Response.Data.Project.Title;
+        UpdateRequest.Description = Response.Data.Project.Description;
+        UpdateRequest.StartDate = Response.Data.Project.StartDate;
+        UpdateRequest.EndDate = Response.Data.Project.EndDate;
+        UpdateRequest.PeriodType = Response.Data.Project.PeriodType;
+        UpdateRequest.SurveyCollections = Response.Data.Project.SurveyCollections;
     }
    
 
@@ -241,6 +311,14 @@ public class Project: ComponentBase
         {
             Snackbar.Add($"Arquivo '{file.Name}' não é um PDF.", Severity.Error);
         }
+    }
+
+    protected void NavigateToBack()
+    {
+        if (!IsEditState)
+            Navigation.NavigateTo("/projects/");
+        else
+            ChangeState();
     }
 
     protected void SetDragClass()

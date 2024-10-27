@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using RestSharp;
 using Create = UxTracker.Core.Contexts.Research.UseCases.Create;
 using Update = UxTracker.Core.Contexts.Research.UseCases.Update;
+using UpdateStatus = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 using Delete = UxTracker.Core.Contexts.Research.UseCases.Delete;
 using Get = UxTracker.Core.Contexts.Research.UseCases.Get;
 using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
@@ -23,4 +24,5 @@ public interface IResearchContextHandler
     public Task<RestResponse<GetForReview.Response>?> GetProjectForReviewAsync(string projectId);
     public Task<RestResponse<GetRelatories.Response>?> GetRelatoriesAsync();
     public Task GetConsentTermAsync(string projectId, string fileName, IJSRuntime jsRuntime);
+    public Task<RestResponse<UpdateStatus.Response>?> UpdateStatusAsync(UpdateStatus.Request requestModel);
 }

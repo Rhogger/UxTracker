@@ -6,6 +6,7 @@ using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Research.Handlers;
 using Create = UxTracker.Core.Contexts.Research.UseCases.Create;
 using Update = UxTracker.Core.Contexts.Research.UseCases.Update;
+using UpdateStatus = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 using Delete = UxTracker.Core.Contexts.Research.UseCases.Delete;
 using Get = UxTracker.Core.Contexts.Research.UseCases.Get;
 using GetAll = UxTracker.Core.Contexts.Research.UseCases.GetAll;
@@ -418,6 +419,54 @@ public class ResearchContextHandler : IResearchContextHandler
             }
 
             var response = await RestClient.ExecuteAsync<Delete.Response>(request);
+
+            if (response.Data is not null)
+                if (response.IsSuccessful)
+                    if (response.Data.StatusCode == 200)
+                        return response;
+                    else
+                        throw new Exception(
+                            $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
+                else
+                    return response;
+            throw new Exception($"{response.StatusCode} - {response.Content}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+    
+    public async Task<RestResponse<UpdateStatus.Response>?> UpdateStatusAsync(UpdateStatus.Request requestModel)
+    {
+        try
+        {
+            var request = new RestRequest($"/api/v1/projects/{requestModel.ProjectId}/status", Method.Patch)
+                .AddJsonBody(requestModel);
+
+            var token = await CookieHandler.GetAccessToken();
+            if (!string.IsNullOrEmpty(token?.Value))
+            {
+                request.AddHeader("Authorization", $"Bearer {token.Value}");
+            }
+            else
+            {
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
+            }
+
+            var response = await RestClient.ExecuteAsync<UpdateStatus.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)

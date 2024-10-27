@@ -1,11 +1,11 @@
+using MediatR;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Entities;
-using UxTracker.Core.Contexts.Research.UseCases.Update.Contracts;
-using UxTracker.Core.Contexts.Shared.UseCases;
+using UxTracker.Core.Contexts.Research.UseCases.UpdateStatus.Contracts;
 
-namespace UxTracker.Core.Contexts.Research.UseCases.Update;
+namespace UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 
-public class Handler : ITransactionalHandler<Request, Response>
+public class Handler : IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
 
@@ -14,25 +14,9 @@ public class Handler : ITransactionalHandler<Request, Response>
         _repository = repository;
     }
     
-    public async Task RollbackAsync() => await _repository.RollbackAsync(new CancellationToken());
-    public async Task CommitAsync() => await _repository.CommitAsync(new CancellationToken());
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
-        #region 01. Gerar uma Transaction
-
-        try
-        {
-            await _repository.CreateTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            return new Response("Falha interna do servidor", 500);
-        }
-
-        #endregion
-        
-        #region 02. Validar Requisição
+        #region 01. Validar Requisição
         
         try
         {
@@ -48,10 +32,9 @@ public class Handler : ITransactionalHandler<Request, Response>
         
         #endregion
 
-        #region 03. Reidratração do Objeto
+        #region 02. Reidratração do Objeto
 
         Project? project;
-        var isNewFile = false;
 
         try
         {
@@ -69,45 +52,15 @@ public class Handler : ITransactionalHandler<Request, Response>
         
         #endregion
         
-        #region 04. Atualizar o Objeto
+        #region 03. Atualizar o Objeto
 
         try
         {
-            if(project.IsNewTitle(request.Title))
-                project.UpdateTitle(request.Title);
-            
-            if(project.IsNewDescription(request.Description))
-                project.UpdateDescription(request.Description);
-            
             if(project.IsNewEndDate(request.EndDate))
                 project.UpdateEndDate(request.EndDate, request.StartDate);
             
             if(project.IsNewStartDate(request.StartDate))
                 project.UpdateStartDate(request.StartDate);
-            
-            if(project.IsNewPeriodType(request.PeriodType))
-                project.UpdatePeriodType(request.PeriodType);
-            
-            if(project.IsNewSurveyCollections(request.SurveyCollections))
-                project.UpdateSurveyCollections(request.SurveyCollections);
-
-            if (project.IsNewConsentTerm(request.ConsentTermHash))
-            {
-                project.UpdateConsentTermHash(request.ConsentTermHash);
-                isNewFile = true;
-            }
-
-            if (project.IsNewsRelatories(request.Relatories))
-            {
-                var newRelatories = await _repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
-                
-                if (newRelatories is null || newRelatories.Count == 0)
-                {
-                    return new Response("Nenhum relatório foi encontrado", 404);
-                }
-                
-                project.UpdateRelatories(newRelatories);
-            }
         }
         catch(Exception ex)
         {
@@ -116,7 +69,7 @@ public class Handler : ITransactionalHandler<Request, Response>
 
         #endregion
         
-        #region 05. Atualizar no banco
+        #region 04. Atualizar no banco
 
         try
         {
@@ -126,18 +79,18 @@ public class Handler : ITransactionalHandler<Request, Response>
         }
         catch
         {
-            await _repository.RollbackAsync(cancellationToken);
             return new Response("Falha ao atualizar o projeto", 500);
         }
 
         #endregion
 
-        #region 06. Retornar os dados
+        #region 05. Retornar os dados
 
-        UpdateDTO projectFiltered = new();
+        GetDTO projectFiltered = new();
 
         projectFiltered.Title = project.Title;
         projectFiltered.Description = project.Description;
+        projectFiltered.Status = project.Status;
         projectFiltered.StartDate = project.StartDate;
         projectFiltered.EndDate = project.EndDate;
         projectFiltered.PeriodType = project.PeriodType;
@@ -152,7 +105,7 @@ public class Handler : ITransactionalHandler<Request, Response>
         }
         
         
-        return new Response("Projeto atualizado com sucesso!", new ResponseData(projectFiltered, isNewFile));
+        return new Response("Projeto atualizado com sucesso!", new ResponseData(projectFiltered));
 
         #endregion
     }

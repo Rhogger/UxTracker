@@ -91,12 +91,12 @@ public class Project: Entity
         StartDate = date;
     }
     
-    public void UpdateEndDate(DateTime? date)
+    public void UpdateEndDate(DateTime? endDate, DateTime? startDate)
     {
-        if(date <= StartDate)
+        if(!IsInvalidToUpdateWhenInProgressStatus && endDate <= startDate)
             throw new Exception("Não pode alterar a data final para menor ou igual a data inicial");
-
-        EndDate = date;
+     
+        EndDate = endDate;
     }
     
     public void UpdatePeriodType(PeriodType periodType)
@@ -116,7 +116,7 @@ public class Project: Entity
             throw new Exception("Não pode alterar a quantidade de coleta após o fim da pesquisa");
 
         if (IsInvalidToUpdateWhenInProgressStatus && surveyCollections < LastSurveyCollection)
-            throw new Exception("A quantidade de coleta informada não pode ser inferior a quantidade de avaliações submetidas");
+            throw new Exception("A quantidade de coleta informada não pode ser inferior a quantidade máxima de avaliações submetidas por um participante");
 
         SurveyCollections = surveyCollections;
     }
@@ -124,10 +124,10 @@ public class Project: Entity
     public void UpdateConsentTermHash(string hash)
     {
         if(IsInvalidToUpdateWhenFinishedStatus)
-            throw new Exception("Não pode alterar a quantidade de coleta após o fim da pesquisa");
+            throw new Exception("Não pode alterar o termo após o fim da pesquisa");
         
         if(IsInvalidToUpdateWhenInProgressStatus && IsInvalidToUpdateWhenHaveDeliveries)
-            throw new Exception("Não pode alterar a quantidade de coletas se já iniciaram as avaliações");
+            throw new Exception("Não pode alterar o termo se já iniciaram as avaliações");
         
         ConsentTermHash = hash;
     }
