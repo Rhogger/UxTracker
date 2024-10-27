@@ -1,3 +1,4 @@
+using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.UseCases.Update.Contracts;
 using UxTracker.Core.Contexts.Shared.UseCases;
@@ -50,6 +51,7 @@ public class Handler : ITransactionalHandler<Request, Response>
         #region 03. Reidratração do Objeto
 
         Project? project;
+        var isNewFile = false;
 
         try
         {
@@ -81,16 +83,19 @@ public class Handler : ITransactionalHandler<Request, Response>
                 project.UpdateStartDate(request.StartDate);
             
             if(project.IsNewEndDate(request.EndDate))
-                project.UpdateEndDate();
+                project.UpdateEndDate(request.EndDate);
             
             if(project.IsNewPeriodType(request.PeriodType))
                 project.UpdatePeriodType(request.PeriodType);
             
             if(project.IsNewSurveyCollections(request.SurveyCollections))
                 project.UpdateSurveyCollections(request.SurveyCollections);
-            
-            if(project.IsNewConsentTerm(request.ConsentTermHash))
+
+            if (project.IsNewConsentTerm(request.ConsentTermHash))
+            {
                 project.UpdateConsentTermHash(request.ConsentTermHash);
+                isNewFile = true;
+            }
 
             if (project.IsNewsRelatories(request.Relatories))
             {
@@ -121,14 +126,33 @@ public class Handler : ITransactionalHandler<Request, Response>
         }
         catch
         {
+            await _repository.RollbackAsync(cancellationToken);
             return new Response("Falha ao atualizar o projeto", 500);
         }
 
         #endregion
 
         #region 06. Retornar os dados
+
+        UpdateDTO projectFiltered = new();
+
+        projectFiltered.Title = project.Title;
+        projectFiltered.Description = project.Description;
+        projectFiltered.StartDate = project.StartDate;
+        projectFiltered.EndDate = project.EndDate;
+        projectFiltered.PeriodType = project.PeriodType;
+        projectFiltered.SurveyCollections = project.SurveyCollections;
+        foreach (var relatoriesFiltered in project.Relatories.Select(relatory => new GetRelatoriesDTO
+                 {
+                     Id = relatory.Id,
+                     Title = relatory.Title,
+                 }))
+        {
+            projectFiltered.Relatories.Add(relatoriesFiltered);
+        }
         
-        return new Response("Projeto atualizado com sucesso!", new ResponseData(project, true));
+        
+        return new Response("Projeto atualizado com sucesso!", new ResponseData(projectFiltered, isNewFile));
 
         #endregion
     }

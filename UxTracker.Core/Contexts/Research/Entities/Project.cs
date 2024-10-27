@@ -41,7 +41,7 @@ public class Project: Entity
         private set{}
     }
 
-    public DateTime StartDate {get; private set; }
+    public DateTime? StartDate {get; private set; }
     public DateTime? EndDate {get; private set; }
     public PeriodType PeriodType { get; private set; } = PeriodType.Daily;
     public int SurveyCollections { get; private set; }
@@ -80,7 +80,7 @@ public class Project: Entity
         Description = description;
     }
     
-    public void UpdateStartDate(DateTime date)
+    public void UpdateStartDate(DateTime? date)
     {
         if(IsInvalidToUpdateWhenFinishedStatus )
             throw new Exception("Não pode alterar a data inicial após o fim da pesquisa");
@@ -91,9 +91,12 @@ public class Project: Entity
         StartDate = date;
     }
     
-    public void UpdateEndDate()
+    public void UpdateEndDate(DateTime? date)
     {
-        EndDate = DateTime.UtcNow;
+        if(date <= StartDate)
+            throw new Exception("Não pode alterar a data final para menor ou igual a data inicial");
+
+        EndDate = date;
     }
     
     public void UpdatePeriodType(PeriodType periodType)
@@ -111,12 +114,9 @@ public class Project: Entity
     {
         if(IsInvalidToUpdateWhenFinishedStatus)
             throw new Exception("Não pode alterar a quantidade de coleta após o fim da pesquisa");
-        
-        if(IsInvalidToUpdateWhenInProgressStatus && IsInvalidToUpdateWhenHaveDeliveries)
-            throw new Exception("Não pode alterar a quantidade de coletas se já iniciaram as avaliações");
 
-        if (!IsInvalidToUpdateWhenNotStartedStatus && surveyCollections >= LastSurveyCollection)
-            throw new Exception("A quantidade de coleta informada não pode ser inferior a quantidade de coletas entregas");
+        if (IsInvalidToUpdateWhenInProgressStatus && surveyCollections < LastSurveyCollection)
+            throw new Exception("A quantidade de coleta informada não pode ser inferior a quantidade de avaliações submetidas");
 
         SurveyCollections = surveyCollections;
     }
@@ -145,11 +145,18 @@ public class Project: Entity
 
     public bool IsNewTitle(string title) => !Title.Equals(title);
     public bool IsNewDescription(string description) => !Description.Equals(description);
-    public bool IsNewStartDate(DateTime startDate) => !StartDate.Equals(startDate);
-    public bool IsNewEndDate(DateTime? endDate) => !EndDate.Equals(endDate);
     public bool IsNewPeriodType(PeriodType periodType) => !PeriodType.Equals(periodType);
     public bool IsNewSurveyCollections(int surveyCollections) => !SurveyCollections.Equals(surveyCollections);
-    public bool IsNewConsentTerm(string hash) => !ConsentTermHash.Equals(hash);
+    public bool IsNewStartDate(DateTime? startDate) => !StartDate.Equals(startDate);
+    public bool IsNewEndDate(DateTime? endDate) => !EndDate.Equals(endDate);
+    public bool IsNewConsentTerm(string hash)
+    {
+        if(!string.IsNullOrEmpty(hash))
+            return !ConsentTermHash.Equals(hash);
+        
+        return false;
+    }
+
     public bool IsNewsRelatories(List<string> relatories)
     {
         if (IsValidToUpdateWhenDiffRelatoriesLength(relatories)) return true;

@@ -17,7 +17,6 @@ public class Repository : IRepository
     public async Task<List<Relatory>?> GetRelatoriesByIdAsync(List<string> relatories, CancellationToken cancellationToken) => 
         await _context
             .Relatories
-            .AsNoTracking()
             .Where(x => relatories
                 .Contains(x.Id.ToString()))
             .ToListAsync(cancellationToken);
@@ -26,6 +25,7 @@ public class Repository : IRepository
         .Projects
         .AsNoTracking()
         .Include(x => x.Relatories)
+        .Include(x => x.Reviews)
         .FirstOrDefaultAsync(x => x.Id.ToString() == id, cancellationToken);
 
     public void AttachProject(Project project) => _context.Projects.Attach(project);

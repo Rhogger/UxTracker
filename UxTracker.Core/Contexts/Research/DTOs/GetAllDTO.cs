@@ -7,7 +7,7 @@ public class GetAllDTO
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
-    public DateTime StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public Status Status { get; set; }
     public int ReviewsCount { get; set; }

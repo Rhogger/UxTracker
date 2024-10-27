@@ -105,7 +105,7 @@ public static class ResearchContextExtension
         #region Create
 
         app.MapPost(
-            "api/v1/projects/create",
+            "api/v1/projects",
             [Authorize(Roles = "Researcher")] [Consumes("multipart/form-data")]
             async (
                 HttpContext httpContext,
@@ -435,7 +435,7 @@ public static class ResearchContextExtension
             [Consumes("multipart/form-data")]
             async (
                 HttpContext httpContext,
-                IFormFile consentTerm,
+                IFormFile? consentTerm,
                 [FromForm] Update.Request request,
                 [FromRoute] string projectId,
                 [FromServices] ITransactionalHandler<
@@ -450,31 +450,30 @@ public static class ResearchContextExtension
                     return Results.Unauthorized();
 
                 request.UserId = userId;
+
+                if (consentTerm is { Length: > 0 })
+                {
+                    if (!consentTerm.ContentType.Equals("application/pdf", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return Results.BadRequest("Apenas arquivos PDF são aceitos.");
+                    }
                 
-                if (consentTerm is not { Length: > 0 })
-                {
-                    return Results.BadRequest("Nenhum arquivo foi enviado.");
-                }
+                    if (consentTerm.Length > Configuration.ConsentTerm.MaxSize)
+                    {
+                        return Results.BadRequest("O arquivo deve ter no máximo 2MB.");
+                    }
 
-                if (!consentTerm.ContentType.Equals("application/pdf", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return Results.BadRequest("Apenas arquivos PDF são aceitos.");
+                    string fileHash;
+
+                    using (var sha256 = SHA256.Create())
+                    {
+                        await using var stream = consentTerm.OpenReadStream();
+                        fileHash = BitConverter.ToString(await sha256.ComputeHashAsync(stream)).Replace("-", "").ToLowerInvariant();
+                    }
+
+                    request.ConsentTermHash = fileHash;
                 }
                 
-                if (consentTerm.Length > Configuration.ConsentTerm.MaxSize)
-                {
-                    return Results.BadRequest("O arquivo deve ter no máximo 2MB.");
-                }
-
-                string fileHash;
-
-                using (var sha256 = SHA256.Create())
-                {
-                    await using var stream = consentTerm.OpenReadStream();
-                    fileHash = BitConverter.ToString(await sha256.ComputeHashAsync(stream)).Replace("-", "").ToLowerInvariant();
-                }
-
-                request.ConsentTermHash = fileHash;
                 request.ProjectId = projectId;
 
                 var result = await handler.Handle(request, new CancellationToken());
@@ -485,23 +484,29 @@ public static class ResearchContextExtension
                     return Results.Json(result, statusCode: result.StatusCode);
                 }
 
-                if (projectId.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(projectId))
                 {
                     await handler.RollbackAsync();
                     return Results.Problem("Não foi possível identificar o projeto.");
                 }
 
-                if (!result.Data!.newFile) return Results.Ok();
-                
+                if (!result.Data!.newFile)
+                {
+                    await handler.CommitAsync();
+                    return Results.Ok(result);
+
+                }
+
+                if (consentTerm is { Length: > 0 })
                 {
                     var directory = Path.Combine(Configuration.ConsentTerm.Url, projectId);
-                    
+
                     try
                     {
                         if (!Directory.Exists(directory))
                             throw new Exception("Diretório não encontrado");
 
-                        Directory.Delete(directory, recursive:true);
+                        Directory.Delete(directory, recursive: true);
                         Directory.CreateDirectory(directory);
 
                         var filePath = Path.Combine(directory, $"{consentTerm.FileName}");
@@ -516,7 +521,7 @@ public static class ResearchContextExtension
                 }
 
                 await handler.CommitAsync();
-                return Results.Ok();
+                return Results.Ok(result);
             }
         ).DisableAntiforgery();
         
