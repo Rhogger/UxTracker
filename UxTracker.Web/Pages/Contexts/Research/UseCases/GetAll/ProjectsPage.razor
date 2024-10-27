@@ -78,7 +78,7 @@
                                                 <MudDivider Class="mb-4" FlexItem="true" DividerType="DividerType.FullWidth" Vertical="true"/>
                                                 
                                                 <div class="w-full  d-flex flex-column justify-start gap-5 pa-4">
-                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data início: @project.StartDate.ToString("dd/MM/yyyy")</MudText>
+                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data início: @project.StartDate.Value.ToString("dd/MM/yyyy")</MudText>
                                                     @if (project.EndDate != null)
                                                     {
                                                         <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data fim: @project.EndDate.Value.ToString("dd/MM/yyyy")</MudText>

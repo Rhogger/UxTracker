@@ -48,7 +48,7 @@
     {
         try
         {
-            var response = await ResearchContextHandler.DeleteAsync(ProjectId);
+            var response = await ResearchContextHandler.DeleteProjectAsync(ProjectId);
 
             if (response is not null)
                 if (response.IsSuccessful)

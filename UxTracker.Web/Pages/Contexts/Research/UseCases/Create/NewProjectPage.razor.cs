@@ -86,6 +86,7 @@ public class NewProject: ComponentBase
         finally
         {
             IsBusy = false;
+            StateHasChanged();
         }
     }
     

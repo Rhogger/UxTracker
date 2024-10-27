@@ -2,8 +2,7 @@
     @ref="Form"
     @bind-IsValid="IsValid"
     @bind-Errors="Errors"
-    Class="@Class"
->
+    Class="@Class">
     @ChildContent
     
     @if (!TwoOptions)
@@ -15,8 +14,7 @@
                 Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
-                Disabled="@(!IsValid)"
-            >
+                Disabled="@(!IsValid)">
                 @if (!IsBusy)
                 {
                     @TextButton
@@ -33,21 +31,22 @@
         <div class="@ButtonContainerClass">
             <MudButton
                 Variant="Variant.Filled"
-                Color="Color.Default"
+                Color="@SecondButtonColor"
                 Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SecondFunction"
-            >
+                EndIcon="@SecondButtonIcon">
                 @SecondTextButton
             </MudButton>
                     
             <MudButton
                 Variant="Variant.Filled"
-                Color="Color.Success"
+                Color="@ButtonColor"
                 Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
-                Disabled="@(!IsValid)">
+                Disabled="@(!IsValid)"
+                EndIcon="@ButtonIcon">
                 @if (!IsBusy)
                 {
                     @TextButton
@@ -63,14 +62,18 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public EventCallback SubmitFunction { get; set; }
-    [Parameter] public string TextButton { get; set; } = "Salvar";
-    [Parameter] public string ButtonClass { get; set; } = "py-2 px-15";
-    [Parameter] public string ButtonContainerClass { get; set; } = "w-full d-flex justify-center align-center gap-6";
-    [Parameter] public string Class { get; set; } = "d-flex flex-column gap-7";
     [Parameter] public bool TwoOptions { get; set; }
-    [Parameter] public EventCallback SecondFunction { get; set; }
+    [Parameter] public string Class { get; set; } = "d-flex flex-column gap-7";
+    [Parameter] public string ButtonContainerClass { get; set; } = "w-full d-flex justify-center align-center gap-6";
+    [Parameter] public string ButtonClass { get; set; } = "py-2 px-15";
+    [Parameter] public string TextButton { get; set; } = "Salvar";
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
+    [Parameter] public Color ButtonColor { get; set; } = Color.Success;    
+    [Parameter] public Color SecondButtonColor { get; set; } = Color.Default;    
+    [Parameter] public string? ButtonIcon { get; set; } = null;    
+    [Parameter] public string? SecondButtonIcon { get; set; } = null;    
+    [Parameter] public EventCallback SubmitFunction { get; set; }
+    [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public bool FullWidthButton { get; set; } = true;
     [Parameter] public bool IsBusy { get; set; } = false;
     
