@@ -16,11 +16,13 @@ namespace UxTracker.Web.Handlers;
 
 public class ResearchContextHandler : IResearchContextHandler
 {
+    private readonly IAccountContextHandler AccountContextHandler;
     private readonly IRestClient RestClient;
     private readonly ICookieHandler CookieHandler;
 
-    public ResearchContextHandler(IRestClient restClient, ICookieHandler cookieHandler)
+    public ResearchContextHandler(IAccountContextHandler accountContextHandler, IRestClient restClient, ICookieHandler cookieHandler)
     {
+        AccountContextHandler = accountContextHandler;
         RestClient = restClient;
         CookieHandler = cookieHandler;
     }
@@ -176,7 +178,19 @@ public class ResearchContextHandler : IResearchContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
 
             var response = await RestClient.ExecuteAsync<GetAll.Response>(request);
@@ -211,7 +225,19 @@ public class ResearchContextHandler : IResearchContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
 
             var response = await RestClient.ExecuteAsync<GetForReview.Response>(request);
@@ -246,7 +272,19 @@ public class ResearchContextHandler : IResearchContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
 
             var response = await RestClient.ExecuteAsync<Get.Response>(request);
@@ -281,7 +319,19 @@ public class ResearchContextHandler : IResearchContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
 
             var response = await RestClient.ExecuteAsync<GetRelatories.Response>(request);
@@ -352,7 +402,19 @@ public class ResearchContextHandler : IResearchContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
 
             var response = await RestClient.ExecuteAsync<Delete.Response>(request);

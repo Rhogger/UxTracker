@@ -7,12 +7,14 @@ using Rating = UxTracker.Core.Contexts.Review.UseCases.Rating;
 namespace UxTracker.Web.Handlers;
 
 public class ReviewContextHandler: IReviewContextHandler
-{
+{    
+    private readonly IAccountContextHandler AccountContextHandler;
     private readonly IRestClient RestClient;
     private readonly ICookieHandler CookieHandler;
 
-    public ReviewContextHandler(IRestClient restClient, ICookieHandler cookieHandler)
-    {
+    public ReviewContextHandler(IAccountContextHandler accountContextHandler, IRestClient restClient, ICookieHandler cookieHandler)
+    {        
+        AccountContextHandler = accountContextHandler;
         RestClient = restClient;
         CookieHandler = cookieHandler;
     }
@@ -31,7 +33,19 @@ public class ReviewContextHandler: IReviewContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
         
             var response = await RestClient.ExecuteAsync<AcceptTerm.Response>(request);
@@ -67,7 +81,19 @@ public class ReviewContextHandler: IReviewContextHandler
             }
             else
             {
-                throw new Exception("Token JWT não encontrado.");
+                var refreshToken = await CookieHandler.GetRefreshToken();
+                if (!string.IsNullOrEmpty(refreshToken?.Value))
+                {
+                    await AccountContextHandler.RefreshTokenAsync();
+                    
+                    var newToken = await CookieHandler.GetAccessToken();
+                    
+                    request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+                }
+                else
+                {
+                    throw new Exception("Necessário logar novamente.");
+                }
             }
         
             var response = await RestClient.ExecuteAsync<Rating.Response>(request);

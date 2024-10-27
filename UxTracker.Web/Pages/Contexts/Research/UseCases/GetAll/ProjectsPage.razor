@@ -18,7 +18,7 @@
                     </MudText>
 
                     <MudButton
-                        Class="r-add d-flex gap-2"
+                        Class="r-add d-flex gap-2 py-2"
                         Color="Color.Primary"
                         Variant="Variant.Filled"
                         Href="/projects/new"
@@ -44,49 +44,50 @@
                                     xs="12" sm="12" 
                                     md="6" lg="6" 
                                     xl="4" xxl="4">
-                                    <MudButton
-                                        Class="pa-0 ma-0"
-                                        FullWidth="true"
-                                        OnClick="() => NavigateToProject(project.Id.ToString())">
-                                        <MudCard
-                                            Class="w-full rounded-lg"
-                                            Style="background-color: #313945;"
-                                            Elevation="16"
-                                            Outlined="true">
-                                            <MudCardHeader
-                                                Class="d-flex align-start justify-space-between">
-                                                <MudText
-                                                    Typo="Typo.subtitle1"
-                                                    Align="Align.Start"
-                                                    Class="title-projects">
-                                                    @project.Title
-                                                </MudText>
-                    
-                                                <MudIcon
-                                                    Class="pl-xs"
-                                                    Icon="@Icons.Material.Filled.Circle"
-                                                    Color="@GetStatusColor(project.Status)"/>
-                                            </MudCardHeader>
-                                            <MudDivider DividerType="DividerType.Middle"/>
-                                            <MudCardContent Class="d-flex pa-0">
-                                                <div class="w-full d-flex flex-column justify-start gap-5 pa-4">
-                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Status: @project.Status.ToHumanize()</MudText>
-                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Participantes: @project.ReviewersCount</MudText>
-                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Entregas: @project.ReviewsCount</MudText>
-                                                </div>
+                             
+                                    <MudCard
+                                        Class="w-full rounded-lg h-full relative"
+                                        Style="background-color: #313945;"
+                                        Elevation="16"
+                                        Outlined="true">
+                                        <MudCardHeader
+                                            Class="d-flex align-start justify-space-between">
+                                            <MudText
+                                                Typo="Typo.subtitle1"
+                                                Align="Align.Start"
+                                                Class="title-projects">
+                                                @project.Title
+                                            </MudText>
 
-                                                <MudDivider Class="mb-4" FlexItem="true" DividerType="DividerType.FullWidth" Vertical="true"/>
-                                                
-                                                <div class="w-full  d-flex flex-column justify-start gap-5 pa-4">
-                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data início: @project.StartDate.Value.ToString("dd/MM/yyyy")</MudText>
-                                                    @if (project.EndDate != null)
-                                                    {
-                                                        <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data fim: @project.EndDate.Value.ToString("dd/MM/yyyy")</MudText>
-                                                    }
-                                                </div>
-                                            </MudCardContent>
-                                        </MudCard>
-                                    </MudButton>
+                                            <MudIcon
+                                                Class="pl-xs"
+                                                Icon="@Icons.Material.Filled.Circle"
+                                                Color="@GetStatusColor(project.Status)"/>
+                                        </MudCardHeader>
+                                        <MudDivider DividerType="DividerType.Middle"/>
+                                        <MudCardContent Class="d-flex pa-0">
+                                            <div class="w-full d-flex flex-column justify-start gap-5 pa-4">
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Status: @project.Status.ToHumanize()</MudText>
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Participantes: @project.ReviewersCount</MudText>
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Entregas: @project.ReviewsCount</MudText>
+                                            </div>
+
+                                            <MudDivider Class="mb-4" FlexItem="true" DividerType="DividerType.FullWidth" Vertical="true"/>
+
+                                            <div class="w-full  d-flex flex-column justify-start gap-5 pa-4">
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data início: @project.StartDate.Value.ToString("dd/MM/yyyy")</MudText>
+                                                @if (project.EndDate != null)
+                                                {
+                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data fim: @project.EndDate.Value.ToString("dd/MM/yyyy")</MudText>
+                                                }
+                                            </div>
+                                        </MudCardContent>
+                                        <MudButton
+                                            Class="pa-0 ma-0 h-full absolute"
+                                            Style="top: 0; left: 0;"
+                                            FullWidth="true"
+                                            OnClick="() => NavigateToProject(project.Id.ToString())"/>
+                                    </MudCard>
                                 </MudItem>
                             }
                         </MudGrid>
