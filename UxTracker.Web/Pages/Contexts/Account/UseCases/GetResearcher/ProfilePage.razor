@@ -11,10 +11,29 @@
     <Authorized>
         <MudContainer
             MaxWidth="MaxWidth.ExtraSmall"
-            Class="d-flex flex-column justify-center align-center h-full pt-14 r-container">
+            Class="d-flex flex-column justify-center align-center gap-4 h-full pt-14 r-container">
+            <div class="w-full justify-start r-container-item-flex">
+                <MudButton
+                    OnClick="NavigateToProjects"
+                    Variant="Variant.Outlined"
+                    Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
+                    Voltar
+                </MudButton>
+            </div>
+            
             <MudPaper
-                Class="d-flex flex-column pa-6 rounded-lg gap-10 h-max r-paper r-account"
+                Class="d-flex flex-column pa-6 rounded-lg gap-10 h-max r-paper r-account  w-full"
                 Outlined="true">
+                <div class="w-full justify-start r-container-item-flex-hidden">
+                    <MudButton
+                        StartIcon="@Icons.Material.Filled.ArrowBack"
+                        OnClick="NavigateToProjects"
+                        Variant="Variant.Text"
+                        Class="r-container-item-flex-hidden justify-start">
+                        Voltar
+                    </MudButton>
+                </div>
+                
                 @if (!IsEditState)
                 {
                     @if (!IsBusy)

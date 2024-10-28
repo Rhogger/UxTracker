@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Web.Components.Dialogs;
@@ -13,6 +14,7 @@ public class Profile : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected IDialogService DialogService { get; set; } = null!;
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
 
     protected GetReviewerUseCase.Response Response { get; set; } = null!;
     protected UpdateReviewerUseCase.Request Request { get; set; } = new();
@@ -108,5 +110,11 @@ public class Profile : ComponentBase
     protected void ChangeState()
     {
         IsEditState = !IsEditState;
+    }
+    
+    protected async void NavigateToResearch()
+    {
+        var code = await LocalStorage.GetItemAsync<string>("researchCode");
+        Navigation.NavigateTo($"/reviewers/research/{code}");
     }
 }

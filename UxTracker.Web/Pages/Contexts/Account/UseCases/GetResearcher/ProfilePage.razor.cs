@@ -113,4 +113,9 @@ public class Profile : ComponentBase
     {
         IsEditState = !IsEditState;
     }
+    
+    protected void NavigateToProjects()
+    {
+        Navigation.NavigateTo("/projects/");
+    }
 }
