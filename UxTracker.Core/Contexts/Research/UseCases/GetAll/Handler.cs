@@ -4,15 +4,8 @@ using UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.GetAll;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -33,11 +26,11 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 02. Recuperar projetos do banco
         
-        List<GetAllDTO>? projects;
+        List<GetAllDto>? projects;
 
         try
         {
-            projects = await _repository.GetProjectsByUser(request.UserId, cancellationToken);
+            projects = await repository.GetProjectsByUser(request.UserId, cancellationToken);
 
             if (projects is null)
                 return new Response("Usuário não encontrado", 404);

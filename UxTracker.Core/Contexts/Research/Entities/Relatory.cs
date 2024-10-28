@@ -5,7 +5,7 @@ namespace UxTracker.Core.Contexts.Research.Entities;
 
 public class Relatory: Entity
 {
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
     [JsonIgnore]
-    public List<Project> Projects { get; set; } = new();
+    public List<Project> Projects { get; init; } = [];
 }

@@ -4,15 +4,8 @@ using UxTracker.Core.Contexts.Account.UseCases.UpdatePassword.Contracts;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.UpdatePassword;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição
@@ -37,7 +30,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            user = await repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
@@ -53,7 +46,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            if (!user.Password.ResetCode.IsActive)
+            if (user.Password?.ResetCode != null && user.Password != null && !user.Password.ResetCode.IsActive)
                 return new Response("Esta conta não está autorizada a alterar senha", 400);
         }
         catch
@@ -67,7 +60,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.UpdatePasswordAsync(user, request.Password, cancellationToken);
+            await repository.UpdatePasswordAsync(user, request.Password, cancellationToken);
         }
         catch
         {

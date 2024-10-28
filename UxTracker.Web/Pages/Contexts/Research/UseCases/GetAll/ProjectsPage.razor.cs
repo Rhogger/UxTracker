@@ -12,9 +12,9 @@ public class Projects : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
-    protected GetAllUseCase.Response Response { get; set; } = null!;
+    protected GetAllUseCase.Response Response { get; private set; } = null!;
 
-    protected bool IsBusy { get; set; } = true;
+    protected bool IsBusy { get; private set; } = true;
     
     protected override async Task OnInitializedAsync() => await GetProjectForReviewAsync();
     

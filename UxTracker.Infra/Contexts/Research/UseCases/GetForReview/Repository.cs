@@ -6,20 +6,16 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.GetForReview;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
-
-    public async Task<GetForReviewDTO?> GetProjectsByIdAsync(string userId, string projectId,
+    public async Task<GetForReviewDto?> GetProjectsByIdAsync(string userId, string projectId,
         CancellationToken cancellationToken)
     {
-        var project = await _context
+        var project = await context
             .Projects
             .AsNoTracking()
             .Where(x => x.Id.ToString().Equals(projectId))
-            .Select(x => new GetForReviewDTO
+            .Select(x => new GetForReviewDto
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -28,13 +24,13 @@ public class Repository : IRepository
                 PeriodType = x.PeriodType,
                 SurveyCollections = x.SurveyCollections,
                 Reviews = x.Reviews
-                    .Where(x => x.UserId.ToString().Equals(userId))
+                    .Where(rate => rate.UserId.ToString().Equals(userId))
                     .OrderBy(r => r.RatedAt)
-                    .Select(x => new UserRates
+                    .Select(rate => new UserRates
                     {
-                        Rate = x.Rating,
-                        Comment = x.Comment,
-                        RatedAt = x.RatedAt
+                        Rate = rate.Rating,
+                        Comment = rate.Comment,
+                        RatedAt = rate.RatedAt
                     }).ToList()
             })
             .FirstOrDefaultAsync(cancellationToken);
@@ -53,7 +49,7 @@ public class Repository : IRepository
                 Index = index
             }).ToList();
 
-        return new GetForReviewDTO
+        return new GetForReviewDto
         {
             Id = project.Id,
             Title = project.Title,
@@ -66,7 +62,7 @@ public class Repository : IRepository
     }
 
     public async Task<bool> IsTermAcceptedAsync(string userId, string projectId, CancellationToken cancellationToken) =>
-        await _context
+        await context
             .AcceptedTerms
             .AsNoTracking()
             .AnyAsync(x => x.UserId.ToString() == userId && x.ProjectId.ToString() == projectId, cancellationToken);

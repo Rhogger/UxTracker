@@ -5,17 +5,10 @@ using UxTracker.Core.Contexts.Shared.UseCases;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.Update;
 
-public class Handler : ITransactionalHandler<Request, Response>
+public class Handler(IRepository repository) : ITransactionalHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
-    public async Task RollbackAsync() => await _repository.RollbackAsync(new CancellationToken());
-    public async Task CommitAsync() => await _repository.CommitAsync(new CancellationToken());
+    public async Task RollbackAsync() => await repository.RollbackAsync(new CancellationToken());
+    public async Task CommitAsync() => await repository.CommitAsync(new CancellationToken());
 
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
@@ -23,7 +16,7 @@ public class Handler : ITransactionalHandler<Request, Response>
 
         try
         {
-            await _repository.CreateTransactionAsync(cancellationToken);
+            await repository.CreateTransactionAsync(cancellationToken);
         }
         catch
         {
@@ -55,7 +48,7 @@ public class Handler : ITransactionalHandler<Request, Response>
 
         try
         {
-            project = await _repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
+            project = await repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
 
             if (project is null)
             {
@@ -99,7 +92,7 @@ public class Handler : ITransactionalHandler<Request, Response>
 
             if (project.IsNewsRelatories(request.Relatories))
             {
-                var newRelatories = await _repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
+                var newRelatories = await repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
                 
                 if (newRelatories is null || newRelatories.Count == 0)
                 {
@@ -120,13 +113,13 @@ public class Handler : ITransactionalHandler<Request, Response>
 
         try
         {
-            _repository.AttachProject(project);
-            _repository.AttachRelatories(project.Relatories);
-            await _repository.UpdateProjectAsync(project, cancellationToken);
+            repository.AttachProject(project);
+            repository.AttachRelatories(project.Relatories);
+            await repository.UpdateProjectAsync(project, cancellationToken);
         }
         catch
         {
-            await _repository.RollbackAsync(cancellationToken);
+            await repository.RollbackAsync(cancellationToken);
             return new Response("Falha ao atualizar o projeto", 500);
         }
 
@@ -134,15 +127,18 @@ public class Handler : ITransactionalHandler<Request, Response>
 
         #region 06. Retornar os dados
 
-        UpdateDTO projectFiltered = new();
+        var projectFiltered = new UpdateDto
+        {
+            Title = project.Title,
+            Description = project.Description,
+            StartDate = project.StartDate,
+            EndDate = project.EndDate,
+            PeriodType = project.PeriodType,
+            SurveyCollections = project.SurveyCollections,
+            Status = project.Status
+        };
 
-        projectFiltered.Title = project.Title;
-        projectFiltered.Description = project.Description;
-        projectFiltered.StartDate = project.StartDate;
-        projectFiltered.EndDate = project.EndDate;
-        projectFiltered.PeriodType = project.PeriodType;
-        projectFiltered.SurveyCollections = project.SurveyCollections;
-        foreach (var relatoriesFiltered in project.Relatories.Select(relatory => new GetRelatoriesDTO
+        foreach (var relatoriesFiltered in project.Relatories.Select(relatory => new GetRelatoriesDto
                  {
                      Id = relatory.Id,
                      Title = relatory.Title,

@@ -4,17 +4,10 @@ using UxTracker.Core.Contexts.Shared.UseCases;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.Delete;
 
-public class Handler: ITransactionalHandler<Request, Response>
+public class Handler(IRepository repository) : ITransactionalHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-
-    public async Task RollbackAsync() => await _repository.RollbackAsync(new CancellationToken());
-    public async Task CommitAsync() => await _repository.CommitAsync(new CancellationToken());
+    public async Task RollbackAsync() => await repository.RollbackAsync(new CancellationToken());
+    public async Task CommitAsync() => await repository.CommitAsync(new CancellationToken());
     
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
@@ -22,7 +15,7 @@ public class Handler: ITransactionalHandler<Request, Response>
 
         try
         {
-            await _repository.CreateTransactionAsync(cancellationToken);
+            await repository.CreateTransactionAsync(cancellationToken);
         }
         catch
         {
@@ -53,7 +46,7 @@ public class Handler: ITransactionalHandler<Request, Response>
 
         try
         {
-            project = await _repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
+            project = await repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
 
             if (project is null)
                 return new Response("Projeto não encontrado", 404);
@@ -69,7 +62,7 @@ public class Handler: ITransactionalHandler<Request, Response>
 
         try
         {
-            await _repository.DeleteProjectAsync(project, cancellationToken);
+            await repository.DeleteProjectAsync(project, cancellationToken);
         }
         catch
         {

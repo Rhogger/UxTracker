@@ -8,14 +8,14 @@ public class Response : Shared.UseCases.Response
 {
     protected Response() { }
 
-    public Response(string message, int statusCode, IEnumerable<Notification>? notifications = null)
+    public Response(string? message, int statusCode, IEnumerable<Notification>? notifications = null)
     {
         Message = message;
         StatusCode = statusCode;
         Notifications = notifications;
     }
 
-    public Response(string message, Payload data)
+    public Response(string? message, Payload data)
     {
         Message = message;
         StatusCode = 200;

@@ -11,10 +11,10 @@ public class Register : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-    protected CreateUseCase.Request Request = new();
+    protected readonly CreateUseCase.Request Request = new();
     
     protected string ConfirmPassword = string.Empty;
-    protected bool IsBusy = false;
+    protected bool IsBusy;
 
     protected async Task SignUpAsync()
     {
@@ -27,7 +27,8 @@ public class Register : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     Navigation.NavigateTo("/verify");
                 }
                 else

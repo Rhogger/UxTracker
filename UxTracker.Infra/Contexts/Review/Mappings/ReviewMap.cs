@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Review.Entities;
 
 namespace UxTracker.Infra.Contexts.Review.Mappings;
@@ -15,16 +14,16 @@ public class ReviewMap: IEntityTypeConfiguration<Rate>
         builder.Property(x => x.Rating)
             .HasColumnName("Rating")
             .HasColumnType("DECIMAL(3,1)")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.Comment)
             .HasColumnName("Comment")
             .HasColumnType("VARCHAR(255)")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.RatedAt)
             .HasColumnName("RatedAt")
-            .IsRequired(true);
+            .IsRequired();
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.Reviews)

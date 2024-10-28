@@ -1,20 +1,11 @@
-using System.Security.Claims;
 using MediatR;
 using UxTracker.Core.Contexts.Account.Entities;
 using UxTracker.Core.Contexts.Account.UseCases.GetResearcher.Contracts;
-using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.GetResearcher;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição
@@ -39,7 +30,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            user = await _repository.GetUserByIdAsync(request.Id, cancellationToken);
+            user = await repository.GetUserByIdAsync(request.Id, cancellationToken);
 
             if (user is null)
                 return new Response("Perfil não encontrado", 404);

@@ -3,13 +3,13 @@ using UxTracker.Core.Contexts.Review.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Research.DTOs;
 
-public class GetForReviewDTO
+public class GetForReviewDto
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public Status Status { get; set; }
-    public PeriodType PeriodType { get; set; }
-    public int SurveyCollections { get; set; }
-    public List<UserRates> Reviews { get; set; } = new();
+    public Guid Id { get; init; }
+    public string? Title { get; init; } = string.Empty;
+    public string? Description { get; init; } = string.Empty;
+    public Status Status { get; init; }
+    public PeriodType PeriodType { get; init; }
+    public int SurveyCollections { get; init; }
+    public List<UserRates> Reviews { get; init; } = [];
 }

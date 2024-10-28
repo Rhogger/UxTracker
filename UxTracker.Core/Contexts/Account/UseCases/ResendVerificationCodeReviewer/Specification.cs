@@ -3,7 +3,7 @@ using Flunt.Validations;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
 
-public class Specification
+public static class Specification
 {
     public static Contract<Notification> Ensure(Request request)
         => new Contract<Notification>()

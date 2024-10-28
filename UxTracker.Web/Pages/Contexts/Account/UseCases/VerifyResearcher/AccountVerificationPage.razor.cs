@@ -17,8 +17,8 @@ public class AccountVerification: ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyResearcherUseCase.Request Request = new();
-    protected bool IsBusy { get; set; } = false;
-    protected bool IsBusyResend { get; set; } = false;
+    protected bool IsBusy { get; set; }
+    protected bool IsBusyResend { get; private set; }
 
     protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
@@ -36,15 +36,15 @@ public class AccountVerification: ComponentBase
                 {
                     BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
 
-                    Snackbar.Add(response.Data.Message, Severity.Success);
+                    if (response.Data?.Message != null) Snackbar.Add(response.Data?.Message!, Severity.Success);
                     Navigation.NavigateTo("/projects");
                 }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data?.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
-                    else
+                    else if (response.Data != null)
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
@@ -73,14 +73,14 @@ public class AccountVerification: ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data.Message, Severity.Success);
+                    if (response.Data?.Message != null) Snackbar.Add(response.Data?.Message!, Severity.Success);
                 }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data?.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
-                    else
+                    else if (response.Data != null)
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else

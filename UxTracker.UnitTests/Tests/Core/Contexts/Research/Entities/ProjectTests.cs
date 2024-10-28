@@ -1,4 +1,3 @@
-using System.Reflection;
 using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Review.Entities;
@@ -8,7 +7,7 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Research.Entities;
 [TestClass]
 public class ProjectTests
 {
-    private Project _project;
+    private Project? _project;
         
     [TestInitialize]
     public void SetUp()
@@ -29,10 +28,10 @@ public class ProjectTests
     public void UpdateTitle_Should_Update_Title_If_Status_Not_Finished()
     {
         // Act
-        _project.UpdateTitle("New Title");
+        _project?.UpdateTitle("New Title");
 
         // Assert
-        Assert.AreEqual("New Title", _project.Title);
+        Assert.AreEqual("New Title", _project?.Title);
     }
 
     [TestMethod]
@@ -40,21 +39,21 @@ public class ProjectTests
     public void UpdateTitle_Should_Throw_Exception_If_Status_Is_Finished()
     {
         // Arrange
-        typeof(Project).GetProperty("StartDate").SetValue(_project, DateTime.UtcNow.AddDays(-4));
-        typeof(Project).GetProperty("EndDate").SetValue(_project, DateTime.UtcNow.AddDays(-1));
+        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-4));
+        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
 
         // Act
-        _project.UpdateTitle("New Title");
+        _project?.UpdateTitle("New Title");
     }
 
     [TestMethod]
     public void UpdateDescription_Should_Update_Description_If_Status_Not_Finished()
     {
         // Act
-        _project.UpdateDescription("New Description");
+        _project?.UpdateDescription("New Description");
 
         // Assert
-        Assert.AreEqual("New Description", _project.Description);
+        Assert.AreEqual("New Description", _project?.Description);
     }
 
     [TestMethod]
@@ -62,11 +61,11 @@ public class ProjectTests
     public void UpdateDescription_Should_Throw_Exception_If_Status_Is_Finished()
     {
         // Arrange
-        typeof(Project).GetProperty("StartDate").SetValue(_project, DateTime.UtcNow.AddDays(-4));
-        typeof(Project).GetProperty("EndDate").SetValue(_project, DateTime.UtcNow.AddDays(-1));
+        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-4));
+        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
 
         // Act
-        _project.UpdateDescription("New Description");
+        _project?.UpdateDescription("New Description");
     }
 
     [TestMethod]
@@ -74,10 +73,10 @@ public class ProjectTests
     {
         // Act
         var newDate = DateTime.UtcNow.AddDays(2);
-        _project.UpdateStartDate(newDate);
+        _project?.UpdateStartDate(newDate);
 
         // Assert
-        Assert.AreEqual(newDate, _project.StartDate);
+        Assert.AreEqual(newDate, _project?.StartDate);
     }
 
     [TestMethod]
@@ -85,17 +84,18 @@ public class ProjectTests
     public void UpdateStartDate_Should_Throw_Exception_If_Status_Is_Finished()
     {
         // Arrange
-        typeof(Project).GetProperty("StartDate").SetValue(_project, DateTime.UtcNow.AddDays(-4));
-        typeof(Project).GetProperty("EndDate").SetValue(_project, DateTime.UtcNow.AddDays(-1));
+        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-4));
+        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
 
         // Act
-        _project.UpdateStartDate(DateTime.UtcNow.AddDays(2));
+        _project?.UpdateStartDate(DateTime.UtcNow.AddDays(2));
     }
 
     [TestMethod]
     public void UpdatePeriodType_Should_Update_PeriodType_If_Status_Not_Finished()
     {
         // Act
+        if (_project == null) return;
         _project.UpdatePeriodType(PeriodType.Weekly);
 
         // Assert
@@ -107,21 +107,21 @@ public class ProjectTests
     public void UpdatePeriodType_Should_Throw_Exception_If_Status_Is_Finished()
     {
         // Arrange
-        typeof(Project).GetProperty("StartDate").SetValue(_project, DateTime.UtcNow.AddDays(-4));
-        typeof(Project).GetProperty("EndDate").SetValue(_project, DateTime.UtcNow.AddDays(-1));
+        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-4));
+        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
 
         // Act
-        _project.UpdatePeriodType(PeriodType.Weekly);
+        _project?.UpdatePeriodType(PeriodType.Weekly);
     }
 
     [TestMethod]
     public void UpdateSurveyCollections_Should_Update_SurveyCollections_If_Status_Not_Finished()
     {
         // Act
-        _project.UpdateSurveyCollections(10);
+        _project?.UpdateSurveyCollections(10);
 
         // Assert
-        Assert.AreEqual(10, _project.SurveyCollections);
+        if (_project != null) Assert.AreEqual(10, _project.SurveyCollections);
     }
 
     [TestMethod]
@@ -129,21 +129,21 @@ public class ProjectTests
     public void UpdateSurveyCollections_Should_Throw_Exception_If_Status_Is_Finished()
     {
         // Arrange
-        typeof(Project).GetProperty("StartDate").SetValue(_project, DateTime.UtcNow.AddDays(-4));
-        typeof(Project).GetProperty("EndDate").SetValue(_project, DateTime.UtcNow.AddDays(-1));
+        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-4));
+        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
 
         // Act
-        _project.UpdateSurveyCollections(10);
+        _project?.UpdateSurveyCollections(10);
     }
 
     [TestMethod]
     public void UpdateConsentTermHash_Should_Update_ConsentTermHash()
     {
         // Act
-        _project.UpdateConsentTermHash("newHash");
+        _project?.UpdateConsentTermHash("newHash");
 
         // Assert
-        Assert.AreEqual("newHash", _project.ConsentTermHash);
+        Assert.AreEqual("newHash", _project?.ConsentTermHash);
     }
 
     [TestMethod]
@@ -157,10 +157,10 @@ public class ProjectTests
         };
 
         // Act
-        _project.UpdateRelatories(newRelatories);
+        _project?.UpdateRelatories(newRelatories);
 
         // Assert
-        Assert.AreEqual(2, _project.Relatories.Count);
+        if (_project != null) Assert.AreEqual(2, _project.Relatories.Count);
     }
     
     [TestMethod]
@@ -277,19 +277,22 @@ public class ProjectTests
     public void UpdateStartDate_Should_Throw_Exception_If_Have_Deliveries()
     {
         // Arrange
-        _project.UpdateStartDate(DateTime.UtcNow.AddDays(-4));
-        var review = new Rate(Guid.NewGuid(), _project.Id, 5, "Great Project");
-        _project.Reviews.Add(review);
-        
+        _project?.UpdateStartDate(DateTime.UtcNow.AddDays(-4));
+        if (_project != null)
+        {
+            var review = new Rate(Guid.NewGuid(), _project.Id, 5, "Great Project");
+            _project.Reviews.Add(review);
+        }
+
         // Act
-        _project.UpdateStartDate(DateTime.UtcNow.AddDays(1));
+        _project?.UpdateStartDate(DateTime.UtcNow.AddDays(1));
     }
 
     [TestMethod]
     public void IsNewTitle_Should_Return_True_If_Title_Is_Different()
     {
         // Act
-        var result = _project.IsNewTitle("Different Title");
+        var result = _project != null && _project.IsNewTitle("Different Title");
 
         // Assert
         Assert.IsTrue(result);
@@ -299,7 +302,7 @@ public class ProjectTests
     public void IsNewTitle_Should_Return_False_If_Title_Is_Same()
     {
         // Act
-        var result = _project.IsNewTitle("Test Title");
+        var result = _project != null && _project.IsNewTitle("Test Title");
 
         // Assert
         Assert.IsFalse(result);

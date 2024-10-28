@@ -7,10 +7,10 @@ namespace UxTracker.Web.Handlers;
 
 public class CookieHandler(ICookieService cookieService): ICookieHandler
 {
-    private static readonly string AccessCookieName = Configuration.Cookie.AccessTokenCookieName;
-    private static readonly string RefreshCookieName = Configuration.Cookie.RefreshTokenCookieName;
+    private static readonly string? AccessCookieName = Configuration.Cookie.AccessTokenCookieName;
+    private static readonly string? RefreshCookieName = Configuration.Cookie.RefreshTokenCookieName;
 
-    private static Cookie CreateCookie(string cookieName,string? token)
+    private static Cookie CreateCookie(string? cookieName,string? token)
     {
         if (string.IsNullOrWhiteSpace(token))
             throw new Exception("O token é vazio.");

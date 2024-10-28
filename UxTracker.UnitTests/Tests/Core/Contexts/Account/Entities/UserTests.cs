@@ -6,10 +6,7 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.Entities;
 [TestClass]
 public class UserTests
 {
-    private class TestUser : User
-    {
-        public TestUser(Email email, Password password) : base(email, password) { }
-    }
+    private class TestUser(Email email, Password? password) : User(email, password);
 
     [TestMethod]
     public void User_Constructor_ShouldInitializePropertiesCorrectly()
@@ -55,7 +52,7 @@ public class UserTests
         // Arrange
         var email = new Email("test@example.com");
         var oldPassword = new Password("OldPassword!");
-        var newPassword = "NewPassword123!";
+        const string newPassword = "NewPassword123!";
         var user = new TestUser(email, oldPassword);
 
         // Act
@@ -64,6 +61,6 @@ public class UserTests
         // Assert
         Assert.IsNotNull(user.Password);
         Assert.AreNotEqual(oldPassword.Hash, user.Password?.Hash);
-        Assert.IsTrue(user.Password.IsValid(newPassword)); 
+        Assert.IsTrue(user.Password != null && user.Password.IsValid(newPassword)); 
     }
 }

@@ -23,4 +23,9 @@
       <ProjectReference Include="..\UxTracker.Core\UxTracker.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Tests\Core\Contexts\Account\UseCases\Endpoints\" />
+      <Folder Include="Tests\Core\Contexts\Account\UseCases\Handlers\" />
+    </ItemGroup>
+
 </Project>

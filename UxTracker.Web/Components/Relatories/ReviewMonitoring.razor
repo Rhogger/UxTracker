@@ -8,7 +8,7 @@
     <ApexChart 
         TItem="UserRates"
         @ref="Ref"
-        Options="@Options">
+        Options="@_options">
         <ApexPointSeries
             TItem="UserRates" 
             Items="Rates" 
@@ -27,24 +27,25 @@
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
 
     private ApexChart<UserRates>? Ref { get; set; }
-    private ApexChartOptions<UserRates> Options = null!;
+    private ApexChartOptions<UserRates> _options = null!;
     private int PreviousRatesCount { get; set; }
     
-    protected override async Task OnParametersSetAsync()
+    protected override Task OnParametersSetAsync()
     {
-        if (Rates.Count != PreviousRatesCount)
-        {
-            StateHasChanged();
-            Ref.UpdateSeriesAsync(true);
-            PreviousRatesCount = Rates.Count;
-        }
+        if (Rates.Count == PreviousRatesCount) return Task.CompletedTask;
+        
+        StateHasChanged();
+        Ref?.UpdateSeriesAsync();
+        PreviousRatesCount = Rates.Count;
+
+        return Task.CompletedTask;
     }
 
     protected override void OnInitialized()
     {
         PreviousRatesCount = Rates.Count;
 
-        Options = new ApexChartOptions<UserRates>
+        _options = new ApexChartOptions<UserRates>
         {
             Chart = new Chart
             {
@@ -91,10 +92,7 @@
                 CssClass = "apexcharts-tooltip",
                 Marker = new TooltipMarker
                 {
-                    FillColors = new List<string>
-                    {
-                        "#2DC8B8"
-                    }
+                    FillColors = ["#2DC8B8"]
                 },
                 X = new TooltipX
                 {
@@ -133,10 +131,7 @@
             Stroke = new Stroke
             {
                 Curve = Curve.Smooth, 
-                Colors = new List<string>
-                {
-                    "#2DC8B8"
-                }
+                Colors = ["#2DC8B8"]
             },
             Legend = new Legend
             {
@@ -176,8 +171,8 @@
                     }
                 }
             },
-            Yaxis = new List<YAxis>
-            {
+            Yaxis =
+            [
                 new YAxis
                 {
                     Min = 0,
@@ -204,7 +199,7 @@
                         }
                     }
                 }
-            },
+            ],
         };
     }
 }

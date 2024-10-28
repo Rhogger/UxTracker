@@ -9,7 +9,7 @@ public class RoleTests
     public void Role_Constructor_ShouldInitializeName()
     {
         // Arrange
-        var roleName = "Admin";
+        const string roleName = "Admin";
 
         // Act
         var role = new Role(roleName);

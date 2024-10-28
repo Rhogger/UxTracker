@@ -26,7 +26,7 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects
         {
             // Arrange
             var verification = new Verification();
-            verification.GetType().GetProperty("ExpireAt").SetValue(verification, DateTime.UtcNow.AddMinutes(-1));
+            verification.GetType().GetProperty("ExpireAt")?.SetValue(verification, DateTime.UtcNow.AddMinutes(-1));
 
             // Act
             verification.Verify("ANYCODE");
@@ -63,7 +63,7 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.ValueObjects
             var correctCode = verification.Code;
 
             // Act
-            var result = verification.IsValid(correctCode);
+            var result = correctCode != null && verification.IsValid(correctCode);
 
             // Assert
             Assert.IsTrue(result);

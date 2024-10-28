@@ -6,25 +6,16 @@ using UxTracker.Core.Contexts.Account.UseCases.UpdateReviewer.Contracts;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.UpdateReviewer;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição
 
-        Contract<Notification> req;
-        
         try
         {
-            req = Specification.Ensure(request);
-            
+            Contract<Notification> req = Specification.Ensure(request);
+
             if (!req.IsValid)
                 return new Response("Requisição inválida", 400, req.Notifications);
         }
@@ -41,7 +32,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            user = await _repository.GetUserByIdAsync(request.Id, cancellationToken);
+            user = await repository.GetUserByIdAsync(request.Id, cancellationToken);
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
@@ -70,7 +61,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.UpdateAccountAsync(user, cancellationToken);
+            await repository.UpdateAccountAsync(user, cancellationToken);
         }
         catch
         {

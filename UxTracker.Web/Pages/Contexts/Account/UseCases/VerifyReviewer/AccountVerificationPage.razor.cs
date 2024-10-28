@@ -2,7 +2,6 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
-using UxTracker.Core.Security;
 using VerifyReviewerUseCase = UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
 using ResendVerificationCodeReviewerUseCase = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
 
@@ -10,15 +9,14 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.VerifyReviewer;
 
 public class AccountVerification: ComponentBase
 {
-    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly VerifyReviewerUseCase.Request Request = new();
-    protected bool IsBusy { get; set; } = false;
-    protected bool IsBusyResend { get; set; } = false;
+    protected bool IsBusy { get; set; }
+    protected bool IsBusyResend { get; private set; }
 
     protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
@@ -38,16 +36,16 @@ public class AccountVerification: ComponentBase
                 {
                     Snackbar.Add("Conta verificada com sucesso!", Severity.Success);
 
-                    Navigation.NavigateTo(string.IsNullOrEmpty(response.Data.Data.ResearchCode)
+                    Navigation.NavigateTo(string.IsNullOrEmpty(response.Data?.Data?.ResearchCode)
                         ? "reviewers/login"
                         : $"reviewers/research/{response.Data.Data.ResearchCode}");
                 }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data?.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
-                    else
+                    else if (response.Data != null)
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
@@ -75,13 +73,15 @@ public class AccountVerification: ComponentBase
 
             if (response is not null)
                 if (response.IsSuccessful)
-                    Snackbar.Add(response.Data.Message, Severity.Success);
+                {
+                    if (response.Data?.Message != null) Snackbar.Add(response.Data?.Message!, Severity.Success);
+                }
                 else
                 {
-                    if (response.Data.Notifications is not null)
+                    if (response.Data?.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
-                    else
+                    else if (response.Data != null)
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
@@ -96,4 +96,6 @@ public class AccountVerification: ComponentBase
             IsBusyResend = false;
         }
     }
+    
+    protected void NavigateToLogin() => Navigation.NavigateTo("/reviewers/login");
 }

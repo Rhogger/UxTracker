@@ -13,7 +13,8 @@ public static class Configuration
 
     public class SecretsConfiguration
     {
-        public string ApiKey { get; set; } = string.Empty;
+        //TODO: Analisar utilidade 
+        // public string ApiKey { get; set; } = string.Empty;
         public string JwtPrivateKey { get; set; } = string.Empty;
         public string PasswordSaltKey { get; set; } = string.Empty;
     }
@@ -47,8 +48,8 @@ public static class Configuration
     
     public class CookieConfiguration
     {
-        public string AccessTokenCookieName { get; set; } = "AccessToken";
-        public string RefreshTokenCookieName { get; set; } = "RefreshToken";
+        public string? AccessTokenCookieName { get; set; } = "AccessToken";
+        public string? RefreshTokenCookieName { get; set; } = "RefreshToken";
     }
 
     public class ConsentTermConfiguration

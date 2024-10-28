@@ -6,42 +6,39 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.Update;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
     private IDbContextTransaction? _transaction;
-
-    public Repository(AppDbContext context) => _context = context;
 
 
     public async Task<List<Relatory>?> GetRelatoriesByIdAsync(List<string> relatories, CancellationToken cancellationToken) => 
-        await _context
+        await context
             .Relatories
             .Where(x => relatories
                 .Contains(x.Id.ToString()))
             .ToListAsync(cancellationToken);
 
-    public async Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => await _context
+    public async Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => await context
         .Projects
         .AsNoTracking()
         .Include(x => x.Relatories)
         .Include(x => x.Reviews)
         .FirstOrDefaultAsync(x => x.Id.ToString() == id, cancellationToken);
 
-    public void AttachProject(Project project) => _context.Projects.Attach(project);
-    public void AttachRelatories(List<Relatory> relatories) => _context.Relatories.AttachRange(relatories);
+    public void AttachProject(Project project) => context.Projects.Attach(project);
+    public void AttachRelatories(List<Relatory> relatories) => context.Relatories.AttachRange(relatories);
 
     public async Task UpdateProjectAsync(Project project, CancellationToken cancellationToken)
     {
-        _context
+        context
             .Projects
             .Update(project);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
     
     public async Task CreateTransactionAsync(CancellationToken cancellationToken) =>
-        _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
     public async Task RollbackAsync(CancellationToken cancellationToken)
     {

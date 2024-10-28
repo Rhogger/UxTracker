@@ -15,9 +15,9 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
         [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
         [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
-        protected AuthenticateReviewerUseCase.Request Request = new();
-        protected bool IsBusy { get; set; } = false;
-        protected bool IsRequired { get; set; } = false;
+        protected readonly AuthenticateReviewerUseCase.Request Request = new();
+        protected bool IsBusy { get; set; }
+        protected bool IsRequired { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -40,7 +40,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                     if (response.IsSuccessful)
                     {
                         BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
-                        Navigation.NavigateTo($"/reviewers/research/{response.Data.Data.ResearchCode}");
+                        Navigation.NavigateTo($"/reviewers/research/{response.Data?.Data?.ResearchCode}");
                     }
                     else
                     {
@@ -57,7 +57,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                                     {
                                         config.Action = "Verificar";
                                         config.ActionColor = Color.Warning;
-                                        config.Onclick = snackbar =>
+                                        config.Onclick = _ =>
                                         {
                                             Navigation.NavigateTo("/reviewers/verify");
                                             return Task.CompletedTask;
@@ -65,7 +65,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.AuthenticateReviewer
                                     });
                             else
                             {
-                                if (response.Data.Message.Equals("Usuário não cadastrado"))
+                                if (response.Data.Message is "Usuário não cadastrado")
                                     Navigation.NavigateTo("/reviewers/register");
 
                                 Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}",

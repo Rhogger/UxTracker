@@ -1,5 +1,4 @@
 @using UxTracker.Core.Contexts.Research.Handlers
-@using UxTracker.Web.Handlers
 
 <MudDialog Class="pa-4">
     <TitleContent>
@@ -53,7 +52,8 @@
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     Navigation.NavigateTo("/projects");
                 }
                 else

@@ -16,7 +16,7 @@ public class RoleMap: IEntityTypeConfiguration<Role>
             .HasColumnName("Name")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(20)
-            .IsRequired(true);
+            .IsRequired();
         
         /*===================Seeding===================*/
 

@@ -6,7 +6,7 @@
 
 @inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="CustomTheme.Theme" />
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="CustomTheme.Theme" />
 <MudDialogProvider />
 <MudPopoverProvider />
 <MudSnackbarProvider />
@@ -43,7 +43,7 @@
 
                     <div class="d-flex gap-3">
                         <MudIconButton
-                            Icon="@Icon"
+                            Icon="@_icon"
                             Color="Color.Inherit"
                             OnClick="ChangeMode"/>
 
@@ -106,13 +106,13 @@ else
 
 @code
 {
-    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; }
-    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; }
-    [Inject] protected NavigationManager Navigation { get; set; }
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     
-    private bool IsDarkMode = true;
-    private string Icon = Icons.Material.Filled.WbSunny;
+    private bool _isDarkMode = true;
+    private string _icon = Icons.Material.Filled.WbSunny;
 
     private ClaimsPrincipal User { get; set; } = null!;
     private bool IsBusy { get; set; } = true;
@@ -139,8 +139,8 @@ else
     
     private void ChangeMode()
     {
-        IsDarkMode = !IsDarkMode;
-        Icon = IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny;
+        _isDarkMode = !_isDarkMode;
+        _icon = _isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny;
     }
 
     private async void SignOutAsync()

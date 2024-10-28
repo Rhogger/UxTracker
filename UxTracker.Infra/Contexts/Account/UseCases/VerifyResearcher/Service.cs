@@ -9,12 +9,12 @@ public class Service : IService
 {
     private readonly JwtService _jwtService = new();
 
-    public string GenerateAccessToken(Researcher user, CancellationToken cancellationToken)
+    public string? GenerateAccessToken(Researcher user, CancellationToken cancellationToken)
     {
         var payload = new Payload
         {
             Id = user.Id.ToString(), 
-            Roles = user.Roles.Select(x => x.Name).ToArray()
+            Roles = user.Roles.Select(x => x?.Name).ToArray()
 
         };
 

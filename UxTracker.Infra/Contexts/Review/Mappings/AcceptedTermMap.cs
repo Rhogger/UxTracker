@@ -15,15 +15,15 @@ public class AcceptedTermMap: IEntityTypeConfiguration<UserAcceptedTcle>
         builder.Property(x => x.UserId)
             .HasColumnName("UserId")
             .HasColumnType("uniqueidentifier")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.ProjectId)
             .HasColumnName("ProjectId")
             .HasColumnType("uniqueidentifier")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.AcceptedAt)
             .HasColumnName("AcceptedAt")
-            .IsRequired(true);
+            .IsRequired();
     }
 }

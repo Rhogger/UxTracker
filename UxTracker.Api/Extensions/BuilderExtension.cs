@@ -18,9 +18,10 @@ public static class BuilderExtensions
         Configuration.Database.ConnectionString =
             builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
-        Configuration.Secrets.ApiKey =
-            builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") 
-            ?? string.Empty;
+        //TODO: Analisar utilidade
+        // Configuration.Secrets.ApiKey =
+        //     builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") 
+        //     ?? string.Empty;
         Configuration.Secrets.JwtPrivateKey =
             builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey")
             ?? string.Empty;

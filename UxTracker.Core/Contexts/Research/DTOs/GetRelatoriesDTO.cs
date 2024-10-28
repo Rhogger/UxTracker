@@ -1,7 +1,7 @@
 namespace UxTracker.Core.Contexts.Research.DTOs;
 
-public class GetRelatoriesDTO
+public class GetRelatoriesDto
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; } = string.Empty;
+    public Guid Id { get; init; }
+    public string Title { get; init; } = string.Empty;
 }

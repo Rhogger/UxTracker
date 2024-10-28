@@ -10,7 +10,7 @@ public class ResearcherTests
     public void Researcher_Constructor_ShouldInitializePropertiesCorrectly()
     {
         // Arrange
-        var name = "John Doe";
+        const string? name = "John Doe";
         var email = new Email("researcher@example.com");
         var password = new Password("Password123!");
 
@@ -29,7 +29,7 @@ public class ResearcherTests
     {
         // Arrange
         var researcher = new Researcher("John Doe", new Email("researcher@example.com"), null);
-        var newName = "Jane Smith";
+        const string? newName = "Jane Smith";
 
         // Act
         researcher.UpdateName(newName);
@@ -41,7 +41,7 @@ public class ResearcherTests
     [TestMethod]
     [DataRow("John Doe", "Jane Smith", true)]
     [DataRow("John Doe", "John Doe", false)]
-    public void Researcher_IsNewName_ShouldReturnCorrectly(string currentName, string newName, bool expectedResult)
+    public void Researcher_IsNewName_ShouldReturnCorrectly(string? currentName, string? newName, bool expectedResult)
     {
         // Arrange
         var researcher = new Researcher(currentName, new Email("researcher@example.com"), null);

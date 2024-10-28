@@ -4,15 +4,11 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Review.UseCases.AcceptTerm;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
-
     public async Task AcceptTermAsync(UserAcceptedTcle tcle, CancellationToken cancellationToken)
     {
-        await _context.AcceptedTerms.AddAsync(tcle, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.AcceptedTerms.AddAsync(tcle, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

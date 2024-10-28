@@ -5,14 +5,10 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.RefreshToken;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
-    
     public async Task<User?> GetUserByIdAsync(string id, CancellationToken cancellationToken) 
-        => await _context
+        => await context
             .Users
             .AsNoTracking()
             .Include(x => x.Roles)

@@ -4,5 +4,5 @@ namespace UxTracker.Core.Contexts.Research.UseCases.GetRelatories.Contracts;
 
 public interface IRepository
 {
-    Task<List<GetRelatoriesDTO>?> GetRelatoriesAsync(CancellationToken cancellationToken);
+    Task<List<GetRelatoriesDto>?> GetRelatoriesAsync(CancellationToken cancellationToken);
 }

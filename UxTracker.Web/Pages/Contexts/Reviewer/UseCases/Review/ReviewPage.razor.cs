@@ -24,13 +24,13 @@ public class Review: ComponentBase
     protected RatingUseCase.Request RatingRequest { get; set; } = new();
     protected GetForReviewUseCase.Response Response { get; set; } = null!;
 
-    protected bool IsBusy { get; set; } = true;
-    protected bool IsBusyRate { get; set; } = false;
+    protected bool IsBusy { get; private set; } = true;
+    protected bool IsBusyRate { get; set; }
     protected bool IsDisabled { get; set; } = true;
-    protected bool IsDisabledCountdown { get; set; } = true;
-    private System.Timers.Timer Timer = new(1000);
+    protected bool IsDisabledCountdown { get; private set; } = true;
+    private readonly System.Timers.Timer _timer = new(1000);
     protected int Days, Hours, Minutes, Seconds;
-    private DateTime ComingSoonDate;
+    private DateTime? _comingSoonDate;
 
     protected override async Task OnInitializedAsync() => await GetProjectForReviewAsync();
     
@@ -45,23 +45,23 @@ public class Review: ComponentBase
                 {
                     Response = response.Data!;
 
-                    if (Response.Data.Project.Status.Equals(Status.NotStarted))
+                    if (Response.Data != null && Response.Data.Project!.Status.Equals(Status.NotStarted))
                     {
                         Snackbar.Add("A Pesquisa ainda não iniciou", Severity.Error);
                         await AccountContextHandler.SignOutAsync();
                     }
                     
-                    if (!Response.Data.Accepted)
+                    if (Response.Data is { Accepted: false })
                         await OpenDialogAsync();
 
-                    if (Response.Data.Project.Reviews.Count > 0)
+                    if (Response.Data?.Project is { Reviews.Count: > 0 })
                     {
                         if (Response.Data.Project.Reviews.Count < Response.Data.Project.SurveyCollections)
                         {
                             IsDisabled = false;
                         }
 
-                        if (!Response.Data.Project.Reviews.Last().ValidToRate(
+                        if (!UserRates.ValidToRate(
                                 Response.Data.Project.PeriodType,
                                 Response.Data.Project.Reviews.Last().RatedAt))
                         {
@@ -111,14 +111,17 @@ public class Review: ComponentBase
                     
                     Snackbar.Add("Avaliação enviada", Severity.Success);
 
-                    UserRates rate = new(); 
-                    
-                    rate.Index = response.Data.Data.Rate.Index;
-                    rate.Rate = response.Data.Data.Rate.Rate;
-                    rate.Comment = response.Data.Data.Rate.Comment;
-                    rate.RatedAt = response.Data.Data.Rate.RatedAt;
-                    
-                    Response.Data.Project.Reviews.Add(rate);
+                    UserRates rate = new();
+
+                    if (response.Data?.Data != null)
+                    {
+                        rate.Index = response.Data.Data.Rate.Index;
+                        rate.Rate = response.Data.Data.Rate.Rate;
+                        rate.Comment = response.Data.Data.Rate.Comment;
+                        rate.RatedAt = response.Data.Data.Rate.RatedAt;
+                    }
+
+                    Response.Data?.Project?.Reviews.Add(rate);
 
                     StartCountDown();
                     
@@ -159,7 +162,7 @@ public class Review: ComponentBase
         
         var parameters = new DialogParameters
         {
-            { nameof(ShowAcceptTerm.TermUrl), Response.Data.TermUrl },
+            { nameof(ShowAcceptTerm.TermUrl), Response.Data?.TermUrl },
             { nameof(ShowAcceptTerm.ProjectId), ProjectId }
         };
         
@@ -168,11 +171,15 @@ public class Review: ComponentBase
 
     private void CountDown()
     {
-        var distance = ComingSoonDate - DateTime.Now;
-        Days = distance.Days;
-        Hours = distance.Hours;
-        Minutes = distance.Minutes;
-        Seconds = distance.Seconds;
+        var distance = _comingSoonDate - DateTime.Now;
+        
+        if (distance != null)
+        {
+            Days = distance.Value.Days;
+            Hours = distance.Value.Hours;
+            Minutes = distance.Value.Minutes;
+            Seconds = distance.Value.Seconds;
+        }
 
         if (Days <= 0 && Hours <= 0 && Minutes <= 0 && Seconds <= 0)
         {
@@ -180,23 +187,20 @@ public class Review: ComponentBase
             Hours = 0;
             Minutes = 0;
             Seconds = 0;
-            Timer.Stop();
+            _timer.Stop();
         }
 
-        // Use InvokeAsync to update UI components on the main thread
-        InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+        InvokeAsync(StateHasChanged);
     }
 
     private void StartCountDown()
     {
         IsDisabledCountdown = false;
-        ComingSoonDate = Response.Data.Project.Reviews.Last().GetComingSoonDate(
-            Response.Data.Project.PeriodType,
-            Response.Data.Project.Reviews.Last().RatedAt);
-        Timer.Elapsed += (sender, EventArgs) => CountDown();
-        Timer.Start();
+        if (Response.Data != null)
+            _comingSoonDate = UserRates.GetComingSoonDate(
+                Response.Data?.Project?.PeriodType,
+                Response.Data?.Project!.Reviews.Last().RatedAt);
+        _timer.Elapsed += (_, _) => CountDown();
+        _timer.Start();
     }
 }

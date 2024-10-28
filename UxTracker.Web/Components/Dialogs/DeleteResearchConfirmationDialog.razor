@@ -17,7 +17,7 @@
 
         <MudForm
             @bind-IsValid="IsValid"
-            @bind-Errors="Errors"
+            @bind-Errors="_errors"
         >
             <PasswordTextField @bind-Password="Password" ValidatorType="ValidatorTypes.None" Class="pb-6"/>
         </MudForm>
@@ -50,8 +50,8 @@
 
     [Parameter] public string Password { get; set; } = string.Empty;
 
-    private string[] Errors = [];
-    private bool IsValid { get; set; } = false;
+    private string[] _errors = [];
+    private bool IsValid { get; set; }
 
     protected DeleteUseCase.Request Request = new();
 
@@ -70,7 +70,8 @@
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     await AccountContextHandler.SignOutAsync();
                     Navigation.NavigateTo("/register");
                 }

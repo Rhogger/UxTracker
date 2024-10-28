@@ -2,9 +2,9 @@ using UxTracker.Core.Contexts.Research.Enums;
 
 namespace UxTracker.Core.Contexts.Review.DTO;
 
-public class ProjectValidInfoDTO
+public class ProjectValidInfoDto
 {
-    public Status Status { get; set; }
-    public PeriodType PeriodType { get; set; }
-    public int SurveyCollections { get; set; }
+    public Status Status { get; init; }
+    public PeriodType PeriodType { get; init; }
+    public int SurveyCollections { get; init; }
 }

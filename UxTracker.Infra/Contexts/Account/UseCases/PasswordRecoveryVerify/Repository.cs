@@ -5,26 +5,22 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.PasswordRecoveryVerify;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-    
-    public Repository(AppDbContext context) => _context = context;
-
     public async Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
-        => await _context
+        => await context
             .Researchers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
     public async Task ValidateResetCodeAsync(Researcher user, CancellationToken cancellationToken)
     {
-        user.Password.ResetCode?.Verify(user.Password.ResetCode.Code);
+        user.Password?.ResetCode?.Verify(user.Password.ResetCode.Code);
 
-        _context
+        context
             .Researchers
             .Update(user);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

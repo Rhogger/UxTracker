@@ -7,15 +7,8 @@ using UxTracker.Core.Contexts.Review.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Review.UseCases.Rating;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -36,11 +29,11 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 02. Recuperar informações do projeto
 
-        ProjectValidInfoDTO? infos;
+        ProjectValidInfoDto? infos;
         
         try
         {
-            infos = await _repository.GetInfosFromProjectAsync(request.ProjectId, cancellationToken);
+            infos = await repository.GetInfosFromProjectAsync(request.ProjectId, cancellationToken);
         }
         catch
         {
@@ -55,7 +48,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         try
         {
-            rates = await _repository.GetReviewsByUserAsync(request.UserId, request.ProjectId, cancellationToken);
+            rates = await repository.GetReviewsByUserAsync(request.UserId, request.ProjectId, cancellationToken);
         }
         catch
         {
@@ -68,14 +61,14 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            if(!infos.Status.Equals(Status.InProgress))
+            if(infos != null && infos.Status.Equals(Status.NotStarted))
                 return new Response("Não é possível avaliar se a pesquisa não iniciou.", 400);        
             
-            if(rates.Count >= infos.SurveyCollections)
+            if(infos != null && rates != null && rates.Count >= infos.SurveyCollections)
                 return new Response("Você já finalizou as avaliações.", 400);
             
-            if (rates.Count > 0)
-                if (!rates.Last().ValidToRate(infos.PeriodType, rates.Last().RatedAt))
+            if (rates is { Count: > 0 })
+                if (!Rate.ValidToRate(infos?.PeriodType, rates.Last().RatedAt))
                     return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
         }
         catch
@@ -104,7 +97,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.RatingAsync(rate, cancellationToken);
+            await repository.RatingAsync(rate, cancellationToken);
         }
         catch
         {
@@ -115,9 +108,11 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 06. Retornar os dados
 
+        if (rates == null) return new Response("Erro ao avaliar", 400);
+        
         var userRate = new UserRates
         {
-            Index = rates!.Count,
+            Index = rates.Count,
             Rate = rate.Rating,
             Comment = rate.Comment,
             RatedAt = rate.RatedAt

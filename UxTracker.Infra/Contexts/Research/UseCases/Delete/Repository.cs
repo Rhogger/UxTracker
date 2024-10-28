@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using UxTracker.Core.Contexts.Research.Entities;
@@ -7,32 +6,26 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.Delete;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public Repository(AppDbContext context)
-    {
-        _context = context;
-    } 
-
-    public async Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => await _context
+    public async Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => await context
         .Projects
         .AsNoTracking()
         .FirstOrDefaultAsync(x => x.Id.ToString() == id, cancellationToken);
 
     public async Task DeleteProjectAsync(Project project, CancellationToken cancellationToken)
     {
-        _context
+        context
             .Projects
             .Remove(project);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CreateTransactionAsync(CancellationToken cancellationToken) =>
-        _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
     public async Task RollbackAsync(CancellationToken cancellationToken)
     {

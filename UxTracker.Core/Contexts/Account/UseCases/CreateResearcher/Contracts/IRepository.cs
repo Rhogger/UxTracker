@@ -6,6 +6,6 @@ public interface IRepository
 {
     Task<bool> AnyAsync(string email, CancellationToken cancellationToken);
     public Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken);
-    public void AttachRole(Role role);
+    public void AttachRole(Role? role);
     Task SaveAsync(Researcher user, CancellationToken cancellationToken);
 }

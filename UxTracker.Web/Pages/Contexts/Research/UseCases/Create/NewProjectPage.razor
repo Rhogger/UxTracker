@@ -47,6 +47,7 @@
                         Class="mb-4"
                         Spacing="6">
                         <MudItem xs="12">
+                            @* ReSharper disable once CSharpWarnings::CS8974 *@
                             <MudTextField
                                 ShrinkLabel="true"
                                 T="string"
@@ -62,6 +63,7 @@
                         </MudItem>
 
                         <MudItem xs="12">
+                            @* ReSharper disable once CSharpWarnings::CS8974 *@
                             <MudTextField
                                 ShrinkLabel="true"
                                 T="string"
@@ -133,14 +135,14 @@
                                     AppendMultipleFiles="false"
                                     Required="true"
                                     RequiredError="Envie um Termo de Consentimento Livre e Esclarecido"
-                                    AcceptedFileTypes="application/pdf"
+                                    acceptedFileTypes="application/pdf"
                                     @ondrop="ClearDragClass"
                                     @ondragenter="SetDragClass"
                                     @ondragleave="ClearDragClass"
                                     @ondragend="ClearDragClass"
                                     @onfocus="SetDragClass"
                                     @onfocusin="SetDragClass"
-                                    @onfocusout="() => ClearDragClass()">
+                                    @onfocusout="ClearDragClass">
                                     <ActivatorContent>
                                         <MudPaper
                                             Height="300px"

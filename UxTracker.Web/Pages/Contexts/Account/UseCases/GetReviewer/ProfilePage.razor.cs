@@ -20,11 +20,11 @@ public class Profile : ComponentBase
     protected UpdateReviewerUseCase.Request Request { get; set; } = new();
     
     protected bool IsBusy = true;
-    protected bool IsEditState = false;
+    protected bool IsEditState;
 
     protected string Link = string.Empty;
-    private string ImageSize = "288";
-    
+    private const string ImageSize = "288";
+
     protected override async Task OnInitializedAsync() => await GetUserAsync();
 
     private async Task GetUserAsync()
@@ -37,10 +37,10 @@ public class Profile : ComponentBase
                 if (response.IsSuccessful)
                 {
                     Response = response.Data!;
-                    Request.Id = Response.Data.Id;
-                    Request.Country = Response.Data.Country;
-                    Request.State = Response.Data.State;
-                    Request.City = Response.Data.City;
+                    Request.Id = Response.Data?.Id;
+                    Request.Country = Response.Data?.Country;
+                    Request.State = Response.Data?.State;
+                    Request.City = Response.Data?.City;
                     Link = $"https://gravatar.com/avatar/{Response.Data!.Hash}?s={ImageSize}";
                 }
                 else
@@ -74,7 +74,8 @@ public class Profile : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     await GetUserAsync();
                     ChangeState();
                 }

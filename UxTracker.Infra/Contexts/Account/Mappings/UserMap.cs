@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UxTracker.Core.Contexts.Account.Entities;
+#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+#pragma warning disable CS8621
+#pragma warning disable CS8622
 
 namespace UxTracker.Infra.Contexts.Account.Mappings;
 
@@ -19,7 +22,7 @@ public class UserMap : IEntityTypeConfiguration<User>
                     .HasColumnName("Email")
                     .HasColumnType("VARCHAR")
                     .HasMaxLength(255)
-                    .IsRequired(true);
+                    .IsRequired();
 
                 email.OwnsOne(x => x.Verification, verification =>
                 {
@@ -27,7 +30,7 @@ public class UserMap : IEntityTypeConfiguration<User>
                         .HasColumnName("EmailVerificationCode")
                         .HasColumnType("NVARCHAR")
                         .HasMaxLength(6)
-                        .IsRequired(true);
+                        .IsRequired();
                     
                     verification.Property(x => x.ExpireAt)
                         .HasColumnName("EmailVerificationExpireAt")
@@ -81,18 +84,18 @@ public class UserMap : IEntityTypeConfiguration<User>
             .Property(x => x.IsActive)
             .HasColumnName("IsActivate")
             .HasColumnType("BIT")
-            .IsRequired(true);
+            .IsRequired();
 
         builder
             .HasMany(x => x.Roles)
-            .WithMany(x => x.Users)
+            .WithMany(x => x!.Users)
             .UsingEntity<Dictionary<string, object>>(
                 "UserRole",
                 role => role
                     .HasOne<Role>()
                     .WithMany()
                     .HasForeignKey("RoleId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Cascade)!
                 ,
                 user => user
                     .HasOne<User>()

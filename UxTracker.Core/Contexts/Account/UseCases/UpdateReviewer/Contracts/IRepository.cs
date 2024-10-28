@@ -4,6 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.UpdateReviewer.Contracts;
 
 public interface IRepository
 {
-    Task<Reviewer?> GetUserByIdAsync(string id, CancellationToken cancellationToken);
+    Task<Reviewer?> GetUserByIdAsync(string? id, CancellationToken cancellationToken);
     Task UpdateAccountAsync(Reviewer user, CancellationToken cancellationToken);
 }

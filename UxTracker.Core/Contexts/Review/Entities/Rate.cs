@@ -31,13 +31,14 @@ public class Rate: Entity
     public Guid UserId { get; private set; }
     public Guid ProjectId { get; private set; }
     public decimal Rating { get; private set; }
-    public string Comment { get; private set; }
+    public string Comment { get; private set; } = null!;
     public DateTime RatedAt { get; private set; }
-    public Reviewer User { get; private set; }
-    [JsonIgnore]
-    public Project Project { get; private set; }
+    public Reviewer User { get; } = null!;
 
-    public bool ValidToRate(PeriodType? periodType, DateTime lastRate)
+    [JsonIgnore]
+    public Project Project { get; } = null!;
+
+    public static bool ValidToRate(PeriodType? periodType, DateTime lastRate)
     {
         var limitDate = lastRate;
 

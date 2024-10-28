@@ -15,22 +15,22 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnName("Title")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.Description)
             .HasColumnName("Description")
             .HasColumnType("VARCHAR(MAX)")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.Status)
             .HasColumnName("Status")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(15)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.StartDate)
             .HasColumnName("StartDate")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.EndDate)
             .HasColumnName("EndDate")
@@ -39,17 +39,17 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
         builder.Property(x => x.PeriodType)
             .HasColumnName("PeriodType")
             .HasColumnType("NVARCHAR(10)")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.SurveyCollections)
             .HasColumnName("SurveyCollections")
             .HasColumnType("INTEGER")
-            .IsRequired(true);
+            .IsRequired();
 
         builder.Property(x => x.ConsentTermHash)
             .HasColumnName("ConsentTermHash")
             .HasColumnType("NVARCHAR(64)")
-            .IsRequired(true);
+            .IsRequired();
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.Projects)

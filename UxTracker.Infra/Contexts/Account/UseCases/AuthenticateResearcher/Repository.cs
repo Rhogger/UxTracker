@@ -5,13 +5,10 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.AuthenticateResearcher;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
     public async Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken) 
-        => await _context
+        => await context
             .Researchers
             .Include(x => x.Roles)
             .AsNoTracking()

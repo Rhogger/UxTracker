@@ -70,7 +70,7 @@ public class BlazorAuthenticationStateProvider(
 
             if (tokenResponse is null || !tokenResponse.IsSuccessful) return Save(UnauthorizedState);
                 
-            var principal = claimsService.BuildClaimsPrincipal(tokenResponse.Data.Data.AccessToken);
+            var principal = claimsService.BuildClaimsPrincipal(tokenResponse.Data?.Data?.AccessToken);
 
             return Save(new AuthenticationState(principal));
 

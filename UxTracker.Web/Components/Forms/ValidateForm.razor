@@ -1,7 +1,7 @@
 <MudForm
-    @ref="Form"
+    @ref="_form"
     @bind-IsValid="IsValid"
-    @bind-Errors="Errors"
+    @bind-Errors="_errors"
     Class="@Class">
     @ChildContent
     
@@ -71,22 +71,22 @@
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
     [Parameter] public Color ButtonColor { get; set; } = Color.Primary;    
     [Parameter] public Color SecondButtonColor { get; set; } = Color.Default;    
-    [Parameter] public string? ButtonIcon { get; set; } = null;    
-    [Parameter] public string? SecondButtonIcon { get; set; } = null;    
+    [Parameter] public string? ButtonIcon { get; set; }
+    [Parameter] public string? SecondButtonIcon { get; set; } 
     [Parameter] public EventCallback SubmitFunction { get; set; }
     [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public bool FullWidthButton { get; set; } = true;
-    [Parameter] public bool IsBusy { get; set; } = false;
+    [Parameter] public bool IsBusy { get; set; }
     
-    private MudForm Form = null!;
-    private string[] Errors = [];
-    private bool IsValid;
+    private MudForm _form = null!;
+    private string[] _errors = [];
+    public bool IsValid;
     
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            await Form.Validate();
+            await _form.Validate();
 
             if (IsValid)
             {

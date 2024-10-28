@@ -5,23 +5,16 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.Get;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context)
-    {
-        _context = context;
-    } 
-
-    public async Task<GetDTO?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => 
-        await _context
+    public async Task<GetDto?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => 
+        await context
             .Projects
             .AsNoTracking()
             .Include(x => x.Relatories)
             .Include(x => x.Reviews)
             .Where(x => x.Id.ToString().Equals(id))
-            .Select(x => new GetDTO
+            .Select(x => new GetDto
             {
                 Title = x.Title,
                 Description = x.Description,
@@ -32,28 +25,28 @@ public class Repository : IRepository
                 SurveyCollections = x.SurveyCollections,
                 LastSurveyCollection = x.Reviews.Count > 0 
                     ? x.Reviews
-                        .GroupBy(x => x.UserId)
-                        .Select(x => x.Count())
+                        .GroupBy(rate => rate.UserId)
+                        .Select(rates => rates.Count())
                         .Max()
                     : 0,
                 ReviewsCount = x.Reviews.Count,
                 ReviewersCount = x.Reviews.Count > 0 
                     ? x.Reviews
-                        .GroupBy(x => x.UserId)
-                        .Select(x => x.Count())
+                        .GroupBy(rate => rate.UserId)
+                        .Select(rates => rates.Count())
                         .FirstOrDefault()
                     : 0,
-                Relatories = x.Relatories.Select(x => new GetRelatoriesDTO
+                Relatories = x.Relatories.Select(relatory => new GetRelatoriesDto
                 {
-                    Id = x.Id,
-                    Title = x.Title,
+                    Id = relatory.Id,
+                    Title = relatory.Title,
                 }).ToList(),
-                Reviews = x.Reviews.Select(x => new ReviewsDTO
+                Reviews = x.Reviews.Select(rate => new ReviewsDto
                 {
-                    UserId = x.UserId,
-                    Email = x.User.Email,
-                    Rate = x.Rating,
-                    Comment = x.Comment,
+                    UserId = rate.UserId,
+                    Email = rate.User.Email,
+                    Rate = rate.Rating,
+                    Comment = rate.Comment,
                 }).ToList(),
             }).FirstOrDefaultAsync(cancellationToken);
 }

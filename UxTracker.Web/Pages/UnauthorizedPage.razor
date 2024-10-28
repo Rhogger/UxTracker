@@ -75,9 +75,9 @@
 
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
 
-    protected string ResearchCode { get; set; } = string.Empty;
-    protected string Link { get; set; } = "/reviewers/login";
-    protected string UserType { get; set; } = string.Empty;
+    private string ResearchCode { get; set; } = string.Empty;
+    private string Link { get; set; } = "/reviewers/login";
+    private string UserType { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {

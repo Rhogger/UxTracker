@@ -1,5 +1,4 @@
 using MediatR;
-using UxTracker.Core.Contexts.Research.Enums;
 
 namespace UxTracker.Core.Contexts.Review.UseCases.Rating;
 

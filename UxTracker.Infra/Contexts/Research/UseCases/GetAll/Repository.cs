@@ -6,18 +6,14 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.GetAll;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
-
-    public async Task<List<GetAllDTO>?> GetProjectsByUser(string userId, CancellationToken cancellationToken) => 
-        await _context
+    public async Task<List<GetAllDto>?> GetProjectsByUser(string userId, CancellationToken cancellationToken) => 
+        await context
             .Projects
             .AsNoTracking()
             .Where(x => x.UserId.ToString() == userId)
-            .Select(x => new GetAllDTO
+            .Select(x => new GetAllDto
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -27,8 +23,8 @@ public class Repository : IRepository
                 ReviewsCount = x.Reviews.Count,
                 ReviewersCount = x.Reviews.Count > 0 
                     ? x.Reviews
-                        .GroupBy(x => x.UserId)
-                        .Select(x => x.Count())
+                        .GroupBy(rate => rate.UserId)
+                        .Select(rates => rates.Count())
                         .FirstOrDefault()
                     : 0,
             })

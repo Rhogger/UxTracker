@@ -15,7 +15,7 @@ public class ResearcherMap : IEntityTypeConfiguration<Researcher>
             .HasColumnName("Name")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
      
         builder
             .HasOne<User>()

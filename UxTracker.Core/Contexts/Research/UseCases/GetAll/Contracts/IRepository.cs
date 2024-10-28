@@ -4,5 +4,5 @@ namespace UxTracker.Core.Contexts.Research.UseCases.GetAll.Contracts;
 
 public interface IRepository
 {
-    Task<List<GetAllDTO>?> GetProjectsByUser(string userId, CancellationToken cancellationToken);
+    Task<List<GetAllDto>?> GetProjectsByUser(string userId, CancellationToken cancellationToken);
 }

@@ -6,19 +6,12 @@ using Rating = UxTracker.Core.Contexts.Review.UseCases.Rating;
 
 namespace UxTracker.Web.Handlers;
 
-public class ReviewContextHandler: IReviewContextHandler
-{    
-    private readonly IAccountContextHandler AccountContextHandler;
-    private readonly IRestClient RestClient;
-    private readonly ICookieHandler CookieHandler;
-
-    public ReviewContextHandler(IAccountContextHandler accountContextHandler, IRestClient restClient, ICookieHandler cookieHandler)
-    {        
-        AccountContextHandler = accountContextHandler;
-        RestClient = restClient;
-        CookieHandler = cookieHandler;
-    }
-    
+public class ReviewContextHandler(
+    IAccountContextHandler accountContextHandler,
+    IRestClient restClient,
+    ICookieHandler cookieHandler)
+    : IReviewContextHandler
+{
     public async Task<RestResponse<AcceptTerm.Response>?> AcceptTermAsync(AcceptTerm.Request requestModel)
     {
         try
@@ -26,19 +19,19 @@ public class ReviewContextHandler: IReviewContextHandler
             var request = new RestRequest("/api/v1/review/accept-term/", Method.Post)
                 .AddJsonBody(requestModel);
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -48,7 +41,7 @@ public class ReviewContextHandler: IReviewContextHandler
                 }
             }
         
-            var response = await RestClient.ExecuteAsync<AcceptTerm.Response>(request);
+            var response = await restClient.ExecuteAsync<AcceptTerm.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -74,19 +67,19 @@ public class ReviewContextHandler: IReviewContextHandler
             var request = new RestRequest($"/api/v1/review/{requestModel.ProjectId}", Method.Post)
                 .AddJsonBody(requestModel);
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -96,7 +89,7 @@ public class ReviewContextHandler: IReviewContextHandler
                 }
             }
         
-            var response = await RestClient.ExecuteAsync<Rating.Response>(request);
+            var response = await restClient.ExecuteAsync<Rating.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)

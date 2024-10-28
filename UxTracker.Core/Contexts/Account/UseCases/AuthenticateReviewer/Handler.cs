@@ -92,7 +92,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         #region 05. Gerar os tokens JWT
 
-        string accessToken;
+        string? accessToken;
         string refreshToken;
         
         try

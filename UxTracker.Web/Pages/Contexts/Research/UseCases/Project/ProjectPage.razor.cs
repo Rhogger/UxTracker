@@ -11,12 +11,13 @@ using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
 using UpdateUseCase = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateStatusUseCase = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 
+
 namespace UxTracker.Web.Pages.Contexts.Research.UseCases.Project;
 
 public class Project: ComponentBase
 {
     [Inject] protected IDialogService DialogService { get; set; } = null!;
-    [Inject] private IJSRuntime JsRuntime { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [Inject] protected IResearchContextHandler ResearchContextHandler { get; set; } = null!;
@@ -24,22 +25,22 @@ public class Project: ComponentBase
     [Parameter] public Guid ProjectId { get; set; }
 
     protected GetUseCase.Response Response { get; set; } = null!;
-    protected UpdateUseCase.Response UpdateResponse { get; set; } = null!;
+    private UpdateUseCase.Response? UpdateResponse { get; set; }
     protected UpdateUseCase.Request UpdateRequest { get; set; } = new();
-    protected UpdateStatusUseCase.Request UpdateStatusRequest { get; set; } = new();
-    protected List<GetRelatoriesDTO> Relatories { get; set; }= new();
+    private UpdateStatusUseCase.Request UpdateStatusRequest { get; set; } = new();
+    private List<GetRelatoriesDto>? Relatories { get; set; }= new();
     protected List<SelectedRelatories> SelectedRelatories { get; set;} = new();
 
-    protected bool IsBusy { get; set; } = true;
-    protected bool IsRelatoriesBusy { get; set; } = true;
-    protected bool IsEditState = false;
-    protected bool IsValid = true;
-    protected Color ColorButtonChangeStatus { get; set; } = Color.Default;
-    protected string TextChangeStatusButton { get; set; } = string.Empty;
-    protected const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
+    protected bool IsBusy { get; private set; } = true;
+    protected bool IsRelatoriesBusy { get; private set; } = true;
+    protected bool IsEditState;
+    protected readonly bool IsValid = true;
+    protected Color ColorButtonChangeStatus { get; private set; } = Color.Default;
+    protected string TextChangeStatusButton { get; private set; } = string.Empty;
+    private const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
     protected string DragClass = DefaultDragClass;
-    protected string FileName = string.Empty;
-    protected IBrowserFile? ConsentTerm = null;
+    protected string? FileName = string.Empty;
+    private IBrowserFile? _consentTerm;
     protected byte[]? ConsentTermBytes { get; set; } = null!;
     protected MudTextField<string> CopyTextField = null!;
 
@@ -58,9 +59,9 @@ public class Project: ComponentBase
                     Response = response.Data!;
                     UpdateRequest.ProjectId = ProjectId.ToString();
                     UpdateStatusRequest.ProjectId = ProjectId.ToString();
-                    FileName = Response.Data.Project.ConsentTermName;
-                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
-                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                    FileName = Response.Data?.Project.ConsentTermName;
+                    TextChangeStatusButton = Response.Data is { Project.Status: Status.InProgress } ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
+                    ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
                         ? Color.Success
                         : Color.Warning;
                 }
@@ -73,7 +74,7 @@ public class Project: ComponentBase
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
-                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
@@ -95,17 +96,19 @@ public class Project: ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Relatories.AddRange(response.Data.Data.Relatories);
+                    if (response.Data?.Data?.Relatories != null) 
+                        Relatories?.AddRange(response.Data?.Data?.Relatories!);
 
-                    foreach (var selected in Relatories.Select(relatory => new SelectedRelatories
-                             {
-                                 Id = relatory.Id,
-                                 Title = relatory.Title,
-                                 IsChecked = CheckRelatory(relatory.Id.ToString()),
-                             }))
-                    {
-                        SelectedRelatories.Add(selected);
-                    }
+                    if (Relatories != null)
+                        foreach (var selected in Relatories.Select(relatory => new SelectedRelatories
+                                 {
+                                     Id = relatory.Id,
+                                     Title = relatory.Title,
+                                     IsChecked = CheckRelatory(relatory.Id.ToString()),
+                                 }))
+                        {
+                            SelectedRelatories.Add(selected);
+                        }
                 }
                 else
                 {
@@ -116,7 +119,7 @@ public class Project: ComponentBase
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
-                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
@@ -138,28 +141,37 @@ public class Project: ComponentBase
                 UpdateRequest.Relatories.Add(selected.Id.ToString());
             }
             
-            var response = await ResearchContextHandler.UpdateProjectAsync(UpdateRequest,ConsentTerm);
+            var response = await ResearchContextHandler.UpdateProjectAsync(UpdateRequest,_consentTerm);
 
             if (response is not null)
                 if (response.IsSuccessful)
                 {
                     UpdateResponse = response.Data;
-                    
-                    Response.Data.Project.Title = UpdateResponse.Data.Project.Title;
-                    Response.Data.Project.Description = UpdateResponse.Data.Project.Description;
-                    Response.Data.Project.StartDate = UpdateResponse.Data.Project.StartDate;
-                    Response.Data.Project.EndDate = UpdateResponse.Data.Project.EndDate;
-                    Response.Data.Project.PeriodType = UpdateResponse.Data.Project.PeriodType;
-                    Response.Data.Project.SurveyCollections = UpdateResponse.Data.Project.SurveyCollections;
-                    Response.Data.Project.Status = UpdateResponse.Data.Project.Status;
-                    Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
-                    Response.Data.Project.ConsentTermName = FileName;
-                    
-                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
-                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
-                        ? Color.Success
-                        : Color.Warning;
-                    
+
+                    if (Response.Data != null)
+                    {
+                        Response.Data.Project.Title = UpdateResponse?.Data?.Project.Title;
+                        Response.Data.Project.Description = UpdateResponse?.Data?.Project.Description;
+                        Response.Data.Project.StartDate = UpdateResponse?.Data?.Project.StartDate;
+                        Response.Data.Project.EndDate = UpdateResponse?.Data?.Project.EndDate;
+                        if (UpdateResponse is { Data: not null })
+                        {
+                            Response.Data.Project.PeriodType = UpdateResponse.Data.Project.PeriodType;
+                            Response.Data.Project.SurveyCollections = UpdateResponse.Data.Project.SurveyCollections;
+                            Response.Data.Project.Status = UpdateResponse.Data.Project.Status;
+                            Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
+                        }
+
+                        Response.Data.Project.ConsentTermName = FileName;
+
+                        TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress)
+                            ? "Finalizar Pesquisa"
+                            : "Iniciar Pesquisa";
+                        ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                            ? Color.Success
+                            : Color.Warning;
+                    }
+
                     IsEditState = !IsEditState;
                     Snackbar.Add("Projeto atualizado com sucesso", Severity.Success);
                 }
@@ -172,7 +184,7 @@ public class Project: ComponentBase
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
-                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
@@ -201,13 +213,19 @@ public class Project: ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Response.Data.Project.StartDate = response.Data.Data.Project.StartDate;
-                    Response.Data.Project.EndDate = response.Data.Data.Project.EndDate;
-                    Response.Data.Project.Status = response.Data.Data.Project.Status;
-                    TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress) ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
-                    ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
-                        ? Color.Success
-                        : Color.Warning;
+                    if (Response.Data != null)
+                    {
+                        Response.Data.Project.StartDate = response.Data?.Data?.Project.StartDate;
+                        Response.Data.Project.EndDate = response.Data?.Data?.Project.EndDate;
+                        if (response.Data?.Data != null)
+                            Response.Data.Project.Status = response.Data.Data.Project.Status;
+                        TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress)
+                            ? "Finalizar Pesquisa"
+                            : "Iniciar Pesquisa";
+                        ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
+                            ? Color.Success
+                            : Color.Warning;
+                    }
                 }
                 else
                 {
@@ -218,7 +236,7 @@ public class Project: ComponentBase
                         Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
                 }
             else
-                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
         }
         catch (Exception ex)
         {
@@ -233,18 +251,15 @@ public class Project: ComponentBase
     
     protected async Task ChangeStatusAsync()
     {
-        if (Response.Data.Project.Status.Equals(Status.NotStarted))
-            UpdateStatusRequest.StartDate = DateTime.UtcNow;
-        else
-            UpdateStatusRequest.StartDate = Response.Data.Project.StartDate;
+        UpdateStatusRequest.StartDate = Response.Data is { Project.Status: Status.NotStarted } ? DateTime.UtcNow : Response.Data?.Project.StartDate;
 
-        if (Response.Data.Project.Status.Equals(Status.InProgress))
-            UpdateStatusRequest.EndDate = DateTime.UtcNow;
-        else if (Response.Data.Project.Status.Equals(Status.Finished))
-            UpdateStatusRequest.EndDate = null;
-        else
-            UpdateStatusRequest.EndDate = Response.Data.Project.EndDate;
-        
+        UpdateStatusRequest.EndDate = Response.Data switch
+        {
+            { Project.Status: Status.InProgress } => DateTime.UtcNow,
+            { Project.Status: Status.Finished } => null,
+            _ => Response.Data?.Project.EndDate
+        };
+
         await UpdateStatusAsync();
     }
     
@@ -272,26 +287,44 @@ public class Project: ComponentBase
     
     protected async void ChangeState()
     {
+        SetUpdateValues();
+
         if (!IsEditState)
-            SetUpdateValues();
+        {
+            FileName = Response.Data?.Project.ConsentTermName;
+            _consentTerm = null;
+            SelectedRelatories = [];
+            if (Relatories != null)
+                foreach (var selected in Relatories.Select(relatory => new SelectedRelatories
+                         {
+                             Id = relatory.Id,
+                             Title = relatory.Title,
+                             IsChecked = CheckRelatory(relatory.Id.ToString()),
+                         }))
+                {
+                    SelectedRelatories.Add(selected);
+                }
+        }
             
         IsEditState = !IsEditState;
 
-        if (Relatories.Count == 0)
+        if (Relatories is { Count: 0 })
             await GetRelatoriesAsync();
     }
 
-    protected bool CheckRelatory(string id)
-    {
-        return Response.Data.Project.Relatories.Any(relatory => relatory.Id.ToString() == id);
-    }
+    private bool CheckRelatory(string id) => 
+        Response.Data?.Project.Relatories != null &&
+        Response.Data != null && 
+        Response.Data.Project.Relatories
+            .Any(relatory => relatory.Id.ToString() == id);
 
-    protected void SetUpdateValues()
+    private void SetUpdateValues()
     {
-        UpdateRequest.Title = Response.Data.Project.Title;
-        UpdateRequest.Description = Response.Data.Project.Description;
-        UpdateRequest.StartDate = Response.Data.Project.StartDate;
-        UpdateRequest.EndDate = Response.Data.Project.EndDate;
+        UpdateRequest.Title = Response.Data?.Project.Title;
+        UpdateRequest.Description = Response.Data?.Project.Description;
+        UpdateRequest.StartDate = Response.Data?.Project.StartDate;
+        UpdateRequest.EndDate = Response.Data?.Project.EndDate;
+        if (Response.Data == null) return;
         UpdateRequest.PeriodType = Response.Data.Project.PeriodType;
         UpdateRequest.SurveyCollections = Response.Data.Project.SurveyCollections;
     }
@@ -305,7 +338,7 @@ public class Project: ComponentBase
         if (file.ContentType == "application/pdf")
         {
             FileName = file.Name;
-            ConsentTerm = file;
+            _consentTerm = file;
         }
         else
         {

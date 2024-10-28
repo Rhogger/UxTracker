@@ -21,12 +21,12 @@ public class Profile : ComponentBase
     protected string ConfirmPassword { get; set; } = string.Empty;
     
     protected bool IsBusy = true;
-    protected bool IsBusyUpdate = false;
-    protected bool IsEditState = false;
+    protected bool IsBusyUpdate;
+    protected bool IsEditState;
 
     protected string Link = string.Empty;
-    private string ImageSize = "288";
-    
+    private const string ImageSize = "288";
+
     protected override async Task OnInitializedAsync() => await GetUserAsync();
 
     private async Task GetUserAsync()
@@ -39,8 +39,8 @@ public class Profile : ComponentBase
                 if (response.IsSuccessful)
                 {
                     Response = response.Data!;
-                    Request.Id = Response.Data.Id;
-                    Request.Name = Response.Data.Name;
+                    Request.Id = Response.Data?.Id;
+                    Request.Name = Response.Data?.Name;
                     Link = $"https://gravatar.com/avatar/{Response.Data!.Hash}?s={ImageSize}";
                 }
                 else
@@ -76,7 +76,8 @@ public class Profile : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     await GetUserAsync();
                     ChangeState();
                 }

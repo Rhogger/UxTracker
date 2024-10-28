@@ -23,18 +23,6 @@
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
 
     <script>
-      window.downloadFile = function(dataUrl) {
-        const link = document.createElement('a');
-        console.log("Opa, caiu aqui"); // Verifique se esta mensagem aparece
-        link.href = dataUrl;
-        link.download = 'TermoDeConsentimento.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    </script>
-
-    <script>
       function downloadFile(dataUrl, fileName) {
         const link = document.createElement('a');
         link.href = dataUrl;

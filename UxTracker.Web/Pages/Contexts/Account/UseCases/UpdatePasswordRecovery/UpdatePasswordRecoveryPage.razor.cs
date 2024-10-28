@@ -6,15 +6,15 @@ using UpdatePasswordUseCase = UxTracker.Core.Contexts.Account.UseCases.UpdatePas
 
 namespace UxTracker.Web.Pages.Contexts.Account.UseCases.UpdatePasswordRecovery;
 
-public partial class UpdatePasswordRecovery : ComponentBase
+public class UpdatePasswordRecovery : ComponentBase
 {
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
-    protected UpdatePasswordUseCase.Request Request = new();
-    protected bool IsBusy { get; set; } = false;
+    protected readonly UpdatePasswordUseCase.Request Request = new();
+    protected bool IsBusy { get; set; }
     
     protected override async  Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
     
@@ -29,7 +29,8 @@ public partial class UpdatePasswordRecovery : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     Navigation.NavigateTo("/login");
                 }
                 else

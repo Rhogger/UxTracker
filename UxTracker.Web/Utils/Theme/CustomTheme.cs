@@ -4,7 +4,7 @@ namespace UxTracker.Web.Utils.Theme;
 
 public class CustomTheme
 {
-    public static MudTheme Theme = new()
+    public static readonly MudTheme Theme = new()
     {
         PaletteDark = new PaletteDark()
         {
@@ -32,7 +32,7 @@ public class CustomTheme
             },
             Button = new Button()
             {
-                TextTransform = null,
+                TextTransform = string.Empty,
                 FontWeight = 700,
             },
         }

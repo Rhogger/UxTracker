@@ -15,7 +15,7 @@ public class RelatoryMap: IEntityTypeConfiguration<Relatory>
             .HasColumnName("Title")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
         
         /*===================Seeding===================*/
 

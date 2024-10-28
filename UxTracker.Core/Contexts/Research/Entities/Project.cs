@@ -4,13 +4,15 @@ using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Review.Entities;
 using UxTracker.Core.Contexts.Shared.Entities;
 
+#pragma warning disable CS0414
+
 namespace UxTracker.Core.Contexts.Research.Entities;
 
 public class Project: Entity
 {
     protected Project() { }
 
-    public Project(Guid userId, string title, string description, DateTime? startDate, DateTime? endDate, PeriodType periodType,int surveyCollections, string consentTermHash, List<Relatory> relatories)
+    public Project(Guid userId, string? title, string? description, DateTime? startDate, DateTime? endDate, PeriodType periodType,int surveyCollections, string consentTermHash, List<Relatory> relatories)
     {
         UserId = userId;
         Title = title;
@@ -24,8 +26,9 @@ public class Project: Entity
     }
     
     public Guid UserId { get; private set; }
-    public string Title { get; private set; } = string.Empty;
-    public string Description {get; private set; }  = string.Empty;
+    public string? Title { get; private set; } = string.Empty;
+    public string? Description {get; private set; }  = string.Empty;
+
     public Status Status
     {
         get
@@ -34,11 +37,11 @@ public class Project: Entity
             {
                 return Status.NotStarted;
             }
-                
+
             return EndDate <= DateTime.UtcNow ? Status.Finished : Status.InProgress;
         }
-
-        private set{}
+        // ReSharper disable once ValueParameterNotUsed
+        private set {}
     }
 
     public DateTime? StartDate {get; private set; }
@@ -58,13 +61,15 @@ public class Project: Entity
                 ;
         }
     }
-    public string ConsentTermHash { get; private set; }
+    public string ConsentTermHash { get; private set; } = null!;
+
     [JsonIgnore]
-    public Researcher User { get; private set; }
-    public List<Relatory> Relatories { get; private set; } = new();
-    public List<Rate> Reviews { get; private set; } = new();
+    public Researcher User { get; } = null!;
+
+    public List<Relatory> Relatories { get; private set; } = [];
+    public List<Rate> Reviews { get; } = [];
     
-    public void UpdateTitle(string title)
+    public void UpdateTitle(string? title)
     {
         if(IsInvalidToUpdateWhenFinishedStatus)
             throw new Exception("Não pode alterar o título após o fim da pesquisa");
@@ -72,7 +77,7 @@ public class Project: Entity
         Title = title;
     }
     
-    public void UpdateDescription(string description)
+    public void UpdateDescription(string? description)
     {
         if(IsInvalidToUpdateWhenFinishedStatus)
             throw new Exception("Não pode alterar a descrição após o fim da pesquisa");
@@ -137,14 +142,13 @@ public class Project: Entity
         Relatories = relatories;
     }
 
-    private bool IsInvalidToUpdateWhenNotStartedStatus => Status == Status.NotStarted;
     private bool IsInvalidToUpdateWhenInProgressStatus => Status == Status.InProgress;
     private bool IsInvalidToUpdateWhenFinishedStatus => Status == Status.Finished;
     private bool IsInvalidToUpdateWhenHaveDeliveries => LastSurveyCollection > 0;
     private bool IsValidToUpdateWhenDiffRelatoriesLength(List<string> relatories) => !Relatories.Count.Equals(relatories.Count);
 
-    public bool IsNewTitle(string title) => !Title.Equals(title);
-    public bool IsNewDescription(string description) => !Description.Equals(description);
+    public bool IsNewTitle(string? title) => Title != null && !Title.Equals(title);
+    public bool IsNewDescription(string? description) => Description != null && !Description.Equals(description);
     public bool IsNewPeriodType(PeriodType periodType) => !PeriodType.Equals(periodType);
     public bool IsNewSurveyCollections(int surveyCollections) => !SurveyCollections.Equals(surveyCollections);
     public bool IsNewStartDate(DateTime? startDate) => !StartDate.Equals(startDate);

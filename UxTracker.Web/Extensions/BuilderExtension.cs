@@ -20,7 +20,7 @@ public static class BuilderExtension
 {
     public static void AddServices(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddScoped<IRestClient>(sp =>
+        builder.Services.AddScoped<IRestClient>(_ =>
         {
             var client = new RestClient(Configuration.ApplicationUrl.BackendUrl, configureSerialization: s => s.UseNewtonsoftJson());
             client.AddDefaultHeader("Accept", "application/json");

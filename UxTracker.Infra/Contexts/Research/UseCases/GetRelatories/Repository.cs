@@ -5,20 +5,13 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.GetRelatories;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context)
-    {
-        _context = context;
-    } 
-
-    public async Task<List<GetRelatoriesDTO>?> GetRelatoriesAsync(CancellationToken cancellationToken) =>
-        await _context
+    public async Task<List<GetRelatoriesDto>?> GetRelatoriesAsync(CancellationToken cancellationToken) =>
+        await context
             .Relatories
             .AsNoTracking()
-            .Select(x => new GetRelatoriesDTO
+            .Select(x => new GetRelatoriesDto
             {
                 Id = x.Id,
                 Title = x.Title,

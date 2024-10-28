@@ -5,25 +5,21 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Research.UseCases.Create;
 
-public class Repository : IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
-
     public async Task<List<Relatory>?> GetRelatoriesByIdAsync(List<string> relatories, CancellationToken cancellationToken) => 
-        await _context
+        await context
             .Relatories
             .AsNoTracking()
             .Where(x => relatories
                 .Contains(x.Id.ToString()))
             .ToListAsync(cancellationToken);
     
-    public void AttachRelatories(List<Relatory> relatories) => _context.Relatories.AttachRange(relatories);
+    public void AttachRelatories(List<Relatory> relatories) => context.Relatories.AttachRange(relatories);
 
     public async Task SaveAsync(Project project, CancellationToken cancellationToken)
     {
-        await _context.Projects.AddAsync(project, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.Projects.AddAsync(project, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

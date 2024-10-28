@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using UxTracker.Core.Contexts.Research.DTOs;
-using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Research.Validators;
 using CreateUseCase = UxTracker.Core.Contexts.Research.UseCases.Create;
@@ -15,14 +14,14 @@ public class NewProject: ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
-    protected List<GetRelatoriesDTO> Relatories = new();
-    protected CreateUseCase.Request Request = new();
+    protected readonly List<GetRelatoriesDto> Relatories = [];
+    protected readonly CreateUseCase.Request Request = new();
 
-    protected bool IsBusy { get; set; } = true;
+    protected bool IsBusy { get; private set; } = true;
     protected MudFileUpload<IBrowserFile>? FileUpload;
-    protected IBrowserFile AcceptTerm = null!;
+    private IBrowserFile _acceptTerm = null!;
     protected string? FileName;
-    protected const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
+    private const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
     protected string DragClass = DefaultDragClass;
     protected bool IsValid = true;
 
@@ -32,13 +31,14 @@ public class NewProject: ComponentBase
     {
         try
         {
-            var response = await ResearchContextHandler.CreateProjectAsync(Request, AcceptTerm);
+            var response = await ResearchContextHandler.CreateProjectAsync(Request, _acceptTerm);
 
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
-                    Navigation.NavigateTo($"/project/{response.Data.Data.Id}");
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
+                    Navigation.NavigateTo($"/project/{response.Data.Data?.Id}");
                 }
                 else
                 {
@@ -55,9 +55,9 @@ public class NewProject: ComponentBase
         {
             Snackbar.Add(ex.Message, Severity.Error);
         }
-    } 
-    
-    protected async Task GetRelatoriesAsync()
+    }
+
+    private async Task GetRelatoriesAsync()
     {
         try
         {
@@ -66,7 +66,7 @@ public class NewProject: ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Relatories.AddRange(response.Data.Data.Relatories);
+                    if (response.Data?.Data?.Relatories != null) Relatories.AddRange(response.Data?.Data.Relatories!);
                 }
                 else
                 {
@@ -110,7 +110,7 @@ public class NewProject: ComponentBase
         if (file.ContentType == "application/pdf")
         {
             FileName = file.Name;
-            AcceptTerm = file;
+            _acceptTerm = file;
         }
         else
         {
@@ -137,14 +137,7 @@ public class NewProject: ComponentBase
                 Request.Relatories.Remove(relatoryId);
         }
 
-        if (RelatoriesValidator.Validate(Request.Relatories) is not null)
-        {       
-            IsValid = false;
-        }
-        else
-        {
-            IsValid = true;   
-        }
+        IsValid = RelatoriesValidator.Validate(Request.Relatories) is null;
         
         StateHasChanged();
     }

@@ -7,7 +7,7 @@ namespace UxTracker.UnitTests.Tests.Core.Contexts.Account.Entities;
 [TestClass]
 public class ReviewerTests
 {
-    private Reviewer _reviewer;
+    private Reviewer? _reviewer;
 
     [TestInitialize]
     public void Setup()
@@ -31,29 +31,29 @@ public class ReviewerTests
     public void UpdateCountry_Should_Change_Country()
     {
         // Act
-        _reviewer.UpdateCountry("New Country");
+        _reviewer?.UpdateCountry("New Country");
 
         // Assert
-        Assert.AreEqual("New Country", _reviewer.Country);
+        Assert.AreEqual("New Country", _reviewer?.Country);
     }
 
     [TestMethod]
     public void UpdateState_Should_Change_State()
     {
         // Act
-        _reviewer.UpdateState("New State");
+        _reviewer?.UpdateState("New State");
 
         // Assert
-        Assert.AreEqual("New State", _reviewer.State);
+        Assert.AreEqual("New State", _reviewer?.State);
     }
 
     [TestMethod]
     public void UpdateCity_Should_Change_City()
     {
         // Act
-        _reviewer.UpdateCity("New City");
+        _reviewer?.UpdateCity("New City");
 
         // Assert
-        Assert.AreEqual("New City", _reviewer.City);
+        Assert.AreEqual("New City", _reviewer?.City);
     }
 }

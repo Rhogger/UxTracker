@@ -5,23 +5,20 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
     public async Task<Reviewer?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
-        => await _context
+        => await context
             .Reviewers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
     public async Task UpdateVerificationCodeAsync(Reviewer user, CancellationToken cancellationToken)
     {
-        _context
+        context
             .Reviewers
             .Update(user);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

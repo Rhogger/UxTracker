@@ -17,7 +17,7 @@ public class Login : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly AuthenticateUseCase.Request Request = new();
-    protected bool IsBusy { get; set; } = false;
+    protected bool IsBusy { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,7 +55,7 @@ public class Login : ComponentBase
                                 {
                                     config.Action = "Verificar";
                                     config.ActionColor = Color.Warning;
-                                    config.Onclick = snackbar =>
+                                    config.Onclick = _ =>
                                     {
                                         Navigation.NavigateTo("/verify");
                                         return Task.CompletedTask;
@@ -92,7 +92,8 @@ public class Login : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     Navigation.NavigateTo("/recover");
                 }
                 else

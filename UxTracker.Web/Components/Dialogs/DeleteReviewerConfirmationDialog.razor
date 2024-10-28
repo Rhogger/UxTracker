@@ -53,7 +53,8 @@
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     await AccountContextHandler.SignOutAsync();
                     Navigation.NavigateTo("reviewers/login");
                 }

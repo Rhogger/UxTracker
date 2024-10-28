@@ -1,7 +1,7 @@
 @using UxTracker.Core.Contexts.Review.Handlers
 @using AcceptTerm = UxTracker.Core.Contexts.Review.UseCases.AcceptTerm
 
-<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="false">
+<MudDialog fullWidth="false">
     <TitleContent>
         Termo de Consentimento Livre e Esclarecido
     </TitleContent>
@@ -10,7 +10,6 @@
         <iframe 
             src="@(TermUrl)" 
             style="width: 100%; height: 700px;"
-            frameborder="0"
             allowfullscreen></iframe>
     </DialogContent>
     
@@ -33,7 +32,7 @@
     [Parameter] public string? TermUrl { get; set; }
     [Parameter] public Guid ProjectId { get; set; }
 
-    private AcceptTerm.Request Request = new();
+    private readonly AcceptTerm.Request _request = new();
     
     private void Submit() => MudDialog.Close(DialogResult.Ok(AcceptTermAsync()));
 
@@ -41,9 +40,9 @@
     {
         try
         {
-            Request.ProjectId = ProjectId.ToString();
+            _request.ProjectId = ProjectId.ToString();
 
-            var response = await ReviewContextHandler.AcceptTermAsync(Request);
+            var response = await ReviewContextHandler.AcceptTermAsync(_request);
 
             if (response is not null)
             {

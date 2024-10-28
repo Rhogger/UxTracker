@@ -14,29 +14,29 @@ public class ReviewerMap : IEntityTypeConfiguration<Reviewer>
             .HasColumnName("Sex")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(20)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.BirthDate)
             .HasColumnName("BirthDate")
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.City)
             .HasColumnName("City")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.State)
             .HasColumnName("State")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.Property(x => x.Country)
             .HasColumnName("Country")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
-            .IsRequired(true);
+            .IsRequired();
         
         builder.HasOne<User>()
             .WithOne()

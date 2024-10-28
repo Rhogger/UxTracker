@@ -4,6 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher.Contra
 
 public interface IService
 {
-    string GenerateAccessToken(Researcher user, CancellationToken cancellationToken);
+    string? GenerateAccessToken(Researcher user, CancellationToken cancellationToken);
     string GenerateRefreshToken(Researcher user, CancellationToken cancellationToken);
 }

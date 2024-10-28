@@ -5,17 +5,8 @@ using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.CreateResearcher;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository, IService service) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    private readonly IService _service;
-
-    public Handler(IRepository repository, IService service)
-    {
-        _repository = repository;
-        _service = service;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -35,24 +26,21 @@ public class Handler : IRequestHandler<Request, Response>
         #endregion
 
         #region 02. Gerar os Objetos
-        
-        Email email;
-        Password? password;
+
         Researcher user;
-        Role role;
 
         try
         {
-            email = new Email(request.Email);
-            password = new Password(request.Password);
+            var email = new Email(request.Email);
+            var password = new Password(request.Password);
             user = new Researcher(request.Name, email, password);
 
-            role = await _repository.GetRoleByNameAsync("Researcher", cancellationToken);
+            var role = await repository.GetRoleByNameAsync("Researcher", cancellationToken);
 
             if (role is null)
                 return new Response("Role não encontrada", 404);
             
-            _repository.AttachRole(role);
+            repository.AttachRole(role);
             
             user.Roles.Add(role);
         }
@@ -67,7 +55,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         try
         {
-            var exists = await _repository.AnyAsync(request.Email, cancellationToken);
+            var exists = await repository.AnyAsync(request.Email, cancellationToken);
 
             if (exists)
                 return new Response("Este E-mail já está cadastrado", 400);
@@ -83,7 +71,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         try
         {
-            await _repository.SaveAsync(user, cancellationToken);
+            await repository.SaveAsync(user, cancellationToken);
         }
         catch
         {
@@ -96,7 +84,7 @@ public class Handler : IRequestHandler<Request, Response>
         
         try
         {
-            await _service.SendVerificationEmailAsync(user, cancellationToken);
+            await service.SendVerificationEmailAsync(user, cancellationToken);
         }
         catch
         {

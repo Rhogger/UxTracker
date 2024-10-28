@@ -15,24 +15,17 @@ using GetRelatories = UxTracker.Core.Contexts.Research.UseCases.GetRelatories;
 
 namespace UxTracker.Web.Handlers;
 
-public class ResearchContextHandler : IResearchContextHandler
+public class ResearchContextHandler(
+    IAccountContextHandler accountContextHandler,
+    IRestClient restClient,
+    ICookieHandler cookieHandler)
+    : IResearchContextHandler
 {
-    private readonly IAccountContextHandler AccountContextHandler;
-    private readonly IRestClient RestClient;
-    private readonly ICookieHandler CookieHandler;
-
-    public ResearchContextHandler(IAccountContextHandler accountContextHandler, IRestClient restClient, ICookieHandler cookieHandler)
-    {
-        AccountContextHandler = accountContextHandler;
-        RestClient = restClient;
-        CookieHandler = cookieHandler;
-    }
-
     public async Task<RestResponse<Create.Response>?> CreateProjectAsync(Create.Request requestModel, IBrowserFile file)
     {
         var request = new RestRequest("/api/v1/projects/", Method.Post);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
 
         if (!string.IsNullOrEmpty(token?.Value))
         {
@@ -73,7 +66,7 @@ public class ResearchContextHandler : IResearchContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<Create.Response>(request);
+            var response = await restClient.ExecuteAsync<Create.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -96,7 +89,7 @@ public class ResearchContextHandler : IResearchContextHandler
     {
         var request = new RestRequest($"/api/v1/projects/{requestModel.ProjectId}", Method.Patch);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
 
         if (!string.IsNullOrEmpty(token?.Value))
         {
@@ -147,7 +140,7 @@ public class ResearchContextHandler : IResearchContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<Update.Response>(request);
+            var response = await restClient.ExecuteAsync<Update.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -172,19 +165,19 @@ public class ResearchContextHandler : IResearchContextHandler
         {
             var request = new RestRequest("/api/v1/projects/");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -194,7 +187,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<GetAll.Response>(request);
+            var response = await restClient.ExecuteAsync<GetAll.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -219,19 +212,19 @@ public class ResearchContextHandler : IResearchContextHandler
         {
             var request = new RestRequest($"/api/v1/review/{projectId}");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -241,7 +234,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<GetForReview.Response>(request);
+            var response = await restClient.ExecuteAsync<GetForReview.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -266,19 +259,19 @@ public class ResearchContextHandler : IResearchContextHandler
         {
             var request = new RestRequest($"/api/v1/projects/{projectId}");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -288,7 +281,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<Get.Response>(request);
+            var response = await restClient.ExecuteAsync<Get.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -313,19 +306,19 @@ public class ResearchContextHandler : IResearchContextHandler
         {
             var request = new RestRequest("/api/v1/relatories/");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -335,7 +328,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<GetRelatories.Response>(request);
+            var response = await restClient.ExecuteAsync<GetRelatories.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -354,13 +347,13 @@ public class ResearchContextHandler : IResearchContextHandler
         }
     }
 
-    public async Task GetConsentTermAsync(string projectId, string fileName, IJSRuntime jsRuntime)
+    public async Task GetConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
     {
         var request = new RestRequest($"/api/v1/term/{projectId}");
 
         try
         {
-            var response = await RestClient.ExecuteAsync(request);
+            var response = await restClient.ExecuteAsync(request);
 
             if (response.IsSuccessful)
             {
@@ -396,19 +389,19 @@ public class ResearchContextHandler : IResearchContextHandler
         {
             var request = new RestRequest($"/api/v1/projects/{projectId}", Method.Delete);
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -418,7 +411,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<Delete.Response>(request);
+            var response = await restClient.ExecuteAsync<Delete.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -444,19 +437,19 @@ public class ResearchContextHandler : IResearchContextHandler
             var request = new RestRequest($"/api/v1/projects/{requestModel.ProjectId}/status", Method.Patch)
                 .AddJsonBody(requestModel);
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
-                    await AccountContextHandler.RefreshTokenAsync();
+                    await accountContextHandler.RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -466,7 +459,7 @@ public class ResearchContextHandler : IResearchContextHandler
                 }
             }
 
-            var response = await RestClient.ExecuteAsync<UpdateStatus.Response>(request);
+            var response = await restClient.ExecuteAsync<UpdateStatus.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)

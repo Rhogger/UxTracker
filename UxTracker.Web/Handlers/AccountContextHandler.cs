@@ -23,21 +23,12 @@ using VerifyReviewer = UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
 
 namespace UxTracker.Web.Handlers;
 
-public class AccountContextHandler: IAccountContextHandler
+public class AccountContextHandler(
+    IRestClient restClient,
+    ICookieHandler cookieHandler,
+    ILocalStorageService localStorage)
+    : IAccountContextHandler
 {
-    private readonly IRestClient RestClient;
-    private readonly ICookieHandler CookieHandler;
-    private readonly ILocalStorageService LocalStorage;
-
-
-    public AccountContextHandler(IRestClient restClient,
-        ICookieHandler cookieHandler, ILocalStorageService localStorage)
-    {
-        RestClient = restClient;
-        CookieHandler = cookieHandler;
-        LocalStorage = localStorage;
-    }
-    
     public async Task<RestResponse<AuthenticateResearcher.Response>?> SignInResearcherAsync(AuthenticateResearcher.Request requestModel)
     {
         var request = new RestRequest("/api/v1/users/researchers/authenticate", Method.Post)
@@ -45,16 +36,16 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<AuthenticateResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<AuthenticateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
-                        await CookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
-                        await CookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
+                        await cookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
+                        await cookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
 
                         return response;
                     }
@@ -78,18 +69,18 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<AuthenticateReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<AuthenticateReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
                         
-                        await LocalStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
+                        await localStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
 
-                        await CookieHandler.SaveAccessToken(response.Data.Data!.Payload.AccessToken);
-                        await CookieHandler.SaveRefreshToken(response.Data.Data!.Payload.RefreshToken);
+                        await cookieHandler.SaveAccessToken(response.Data.Data!.Payload?.AccessToken);
+                        await cookieHandler.SaveRefreshToken(response.Data.Data!.Payload?.RefreshToken);
 
                         return response;
                     }
@@ -98,9 +89,9 @@ public class AccountContextHandler: IAccountContextHandler
                             $"Status Code {response.Data.StatusCode} - Mensagem: {response.Data.Message}");
                 else
                 {
-                    await LocalStorage.SetItemAsync("email", requestModel.Email);
+                    await localStorage.SetItemAsync("email", requestModel.Email);
                         
-                    await LocalStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
+                    await localStorage.SetItemAsync("researchCode", requestModel.ResearchCode);
                     
                     return response;
                 }
@@ -119,19 +110,19 @@ public class AccountContextHandler: IAccountContextHandler
         {
             var request = new RestRequest("/api/v1/users/researchers/account/");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
                     await RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -141,7 +132,7 @@ public class AccountContextHandler: IAccountContextHandler
                 }
             }
         
-            var response = await RestClient.ExecuteAsync<GetResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<GetResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -166,19 +157,19 @@ public class AccountContextHandler: IAccountContextHandler
         {
             var request = new RestRequest("/api/v1/users/reviewers/account/");
 
-            var token = await CookieHandler.GetAccessToken();
+            var token = await cookieHandler.GetAccessToken();
             if (!string.IsNullOrEmpty(token?.Value))
             {
                 request.AddHeader("Authorization", $"Bearer {token.Value}");
             }
             else
             {
-                var refreshToken = await CookieHandler.GetRefreshToken();
+                var refreshToken = await cookieHandler.GetRefreshToken();
                 if (!string.IsNullOrEmpty(refreshToken?.Value))
                 {
                     await RefreshTokenAsync();
                     
-                    var newToken = await CookieHandler.GetAccessToken();
+                    var newToken = await cookieHandler.GetAccessToken();
                     
                     request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
                 }
@@ -188,7 +179,7 @@ public class AccountContextHandler: IAccountContextHandler
                 }
             }
         
-            var response = await RestClient.ExecuteAsync<GetReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<GetReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -214,13 +205,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<CreateResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<CreateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 201)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -244,13 +235,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<CreateReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<CreateReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 201)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -269,8 +260,8 @@ public class AccountContextHandler: IAccountContextHandler
 
     public async Task SignOutAsync()
     {
-        await CookieHandler.RemoveAccessTokenAsync();
-        await CookieHandler.RemoveRefreshTokenAsync();
+        await cookieHandler.RemoveAccessTokenAsync();
+        await cookieHandler.RemoveRefreshTokenAsync();
     } 
 
     public async Task<RestResponse<VerifyResearcher.Response>?> VerifyResearcherAsync(VerifyResearcher.Request requestModel)
@@ -280,14 +271,14 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<VerifyResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<VerifyResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await CookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
-                        await CookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
+                        await cookieHandler.SaveAccessToken(response.Data.Data!.AccessToken);
+                        await cookieHandler.SaveRefreshToken(response.Data.Data!.RefreshToken);
    
                         return response;
                     }
@@ -312,14 +303,14 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<VerifyReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<VerifyReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await CookieHandler.SaveAccessToken(response.Data.Data!.Payload.AccessToken);
-                        await CookieHandler.SaveRefreshToken(response.Data.Data!.Payload.RefreshToken);
+                        await cookieHandler.SaveAccessToken(response.Data.Data!.Payload.AccessToken);
+                        await cookieHandler.SaveRefreshToken(response.Data.Data!.Payload.RefreshToken);
                         
                         return response;
                     }
@@ -344,13 +335,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<ResendVerificationCodeResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<ResendVerificationCodeResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -374,13 +365,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<ResendVerificationCodeReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<ResendVerificationCodeReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -404,13 +395,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<PasswordRecovery.Response>(request);
+            var response = await restClient.ExecuteAsync<PasswordRecovery.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -434,7 +425,7 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<ResendResetCode.Response>(request);
+            var response = await restClient.ExecuteAsync<ResendResetCode.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -462,13 +453,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<PasswordRecoveryVerify.Response>(request);
+            var response = await restClient.ExecuteAsync<PasswordRecoveryVerify.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
 
                         return response;
                     }
@@ -492,13 +483,13 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<UpdatePassword.Response>(request);
+            var response = await restClient.ExecuteAsync<UpdatePassword.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        await LocalStorage.SetItemAsync("email", requestModel.Email);
+                        await localStorage.SetItemAsync("email", requestModel.Email);
    
                         return response;
                     }
@@ -520,7 +511,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/researchers/account", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -532,7 +523,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<UpdateResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<UpdateResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -556,7 +547,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/reviewers/account", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -568,7 +559,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<UpdateReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<UpdateReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -592,7 +583,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/researchers/account/inactivate", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -604,7 +595,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<DeleteResearcher.Response>(request);
+            var response = await restClient.ExecuteAsync<DeleteResearcher.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -628,7 +619,7 @@ public class AccountContextHandler: IAccountContextHandler
         var request = new RestRequest("/api/v1/users/reviewers/account/inactivate", Method.Patch)
             .AddJsonBody(requestModel);
 
-        var token = await CookieHandler.GetAccessToken();
+        var token = await cookieHandler.GetAccessToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -640,7 +631,7 @@ public class AccountContextHandler: IAccountContextHandler
         
         try
         {
-            var response = await RestClient.ExecuteAsync<DeleteReviewer.Response>(request);
+            var response = await restClient.ExecuteAsync<DeleteReviewer.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
@@ -663,7 +654,7 @@ public class AccountContextHandler: IAccountContextHandler
     {
         var request = new RestRequest("/api/v1/refresh", Method.Post);
         
-        var token = await CookieHandler.GetRefreshToken();
+        var token = await cookieHandler.GetRefreshToken();
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
@@ -675,14 +666,14 @@ public class AccountContextHandler: IAccountContextHandler
 
         try
         {
-            var response = await RestClient.ExecuteAsync<RefreshToken.Response>(request);
+            var response = await restClient.ExecuteAsync<RefreshToken.Response>(request);
 
             if (response.Data is not null)
                 if (response.IsSuccessful)
                     if (response.Data.StatusCode == 200)
                     {
-                        CookieHandler.SaveAccessToken(response.Data.Data.AccessToken);
-                        CookieHandler.SaveRefreshToken(response.Data.Data.RefreshToken);
+                        await cookieHandler.SaveAccessToken(response.Data.Data?.AccessToken);
+                        await cookieHandler.SaveRefreshToken(response.Data.Data?.RefreshToken);
                         return response;
                     }
                     else

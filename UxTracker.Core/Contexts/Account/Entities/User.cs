@@ -8,7 +8,7 @@ public abstract class User : Entity
 {
     protected User() { }
 
-    protected User(Email email, Password password)
+    protected User(Email email, Password? password)
     {
         Email = email;
         Password = password;
@@ -19,7 +19,7 @@ public abstract class User : Entity
     public Password? Password { get; private set; }
     public bool IsActive { get; private set; }
     [JsonIgnore]
-    public List<Role> Roles { get; init; } = new();
+    public List<Role?> Roles { get; init; } = [];
 
 
     public void UpdateStatusAccount() => IsActive = !IsActive;

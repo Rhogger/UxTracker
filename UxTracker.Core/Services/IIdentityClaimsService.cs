@@ -4,5 +4,5 @@ namespace UxTracker.Core.Services;
 
 public interface IIdentityClaimsService
 {
-    public ClaimsPrincipal BuildClaimsPrincipal(string accessToken);
+    public ClaimsPrincipal BuildClaimsPrincipal(string? accessToken);
 }

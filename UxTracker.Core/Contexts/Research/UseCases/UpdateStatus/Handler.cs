@@ -5,15 +5,8 @@ using UxTracker.Core.Contexts.Research.UseCases.UpdateStatus.Contracts;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -38,7 +31,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            project = await _repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
+            project = await repository.GetProjectByIdAsync(request.ProjectId, cancellationToken);
 
             if (project is null)
             {
@@ -73,9 +66,9 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            _repository.AttachProject(project);
-            _repository.AttachRelatories(project.Relatories);
-            await _repository.UpdateProjectAsync(project, cancellationToken);
+            repository.AttachProject(project);
+            repository.AttachRelatories(project.Relatories);
+            await repository.UpdateProjectAsync(project, cancellationToken);
         }
         catch
         {
@@ -86,16 +79,18 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 05. Retornar os dados
 
-        GetDTO projectFiltered = new();
+        var  projectFiltered = new GetDto
+        {
+            Title = project.Title,
+            Description = project.Description,
+            Status = project.Status,
+            StartDate = project.StartDate,
+            EndDate = project.EndDate,
+            PeriodType = project.PeriodType,
+            SurveyCollections = project.SurveyCollections
+        };
 
-        projectFiltered.Title = project.Title;
-        projectFiltered.Description = project.Description;
-        projectFiltered.Status = project.Status;
-        projectFiltered.StartDate = project.StartDate;
-        projectFiltered.EndDate = project.EndDate;
-        projectFiltered.PeriodType = project.PeriodType;
-        projectFiltered.SurveyCollections = project.SurveyCollections;
-        foreach (var relatoriesFiltered in project.Relatories.Select(relatory => new GetRelatoriesDTO
+        foreach (var relatoriesFiltered in project.Relatories.Select(relatory => new GetRelatoriesDto
                  {
                      Id = relatory.Id,
                      Title = relatory.Title,

@@ -25,28 +25,28 @@
     <MudPaper 
         Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper" 
         Outlined="true">
-        <div class="w-full justify-start r-container-item-flex-hidden">
-            <MudButton
-                StartIcon="@Icons.Material.Filled.ArrowBack"
-                OnClick="NavigateToBack"
-                Variant="Variant.Text"
-                Class="r-container-item-flex-hidden justify-start">
-                Voltar
-            </MudButton>
-        </div>
+    <div class="w-full justify-start r-container-item-flex-hidden">
+        <MudButton
+            StartIcon="@Icons.Material.Filled.ArrowBack"
+            OnClick="NavigateToBack"
+            Variant="Variant.Text"
+            Class="r-container-item-flex-hidden justify-start">
+            Voltar
+        </MudButton>
+    </div>
     @if (!IsEditState)
     {
         <MudText
             Typo="Typo.h4"
             Align="Align.Center"
             Class="r-paper-title">
-            @Response.Data.Project.Title
+            @Response.Data!.Project.Title
         </MudText>
 
         <MudText
             Typo="Typo.body1"
             Class="r-paper-description">
-            @Response.Data.Project.Description
+            @Response.Data!.Project.Description
         </MudText>
 
                 
@@ -66,31 +66,31 @@
             FullWidthButton="false">
             <MudGrid Spacing="6">
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
                     <MudDatePicker
                         Label="Data Inicial"
                         Variant="Variant.Filled"
-                        Date="Response.Data.Project.StartDate"
+                        Date="Response.Data?.Project.StartDate"
                         ReadOnly="true"/>
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
                     <MudDatePicker
                         Label="Data Final"
-                        Date="Response.Data.Project.EndDate"
+                        Date="Response.Data?.Project.EndDate"
                         ReadOnly="true"
                         Variant="Variant.Filled"/>
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
@@ -98,14 +98,14 @@
                         ShrinkLabel="true"
                         T="string"
                         Label="Tipo do Período"
-                        Value="Response.Data.Project.PeriodType.ToHumanize()"
+                        Value="Response.Data?.Project.PeriodType.ToHumanize()"
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"/>
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
@@ -113,7 +113,7 @@
                         ShrinkLabel="true"
                         T="int"
                         Label="Quantidade de Coleta"
-                        Value="Response.Data.Project.SurveyCollections"
+                        Value="Response.Data!.Project.SurveyCollections"
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"
@@ -121,7 +121,7 @@
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
@@ -129,14 +129,14 @@
                         ShrinkLabel="true"
                         T="string"
                         Label="Status"
-                        Value="Response.Data.Project.Status.ToHumanize()"
+                        Value="Response.Data?.Project.Status.ToHumanize()"
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"/>
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="6" sm="4"
                     md="3" lg="3"
                     xl="3" xxl="3">
@@ -144,7 +144,7 @@
                         ShrinkLabel="true"
                         T="int"
                         Label="Última entrega"
-                        Value="Response.Data.Project.LastSurveyCollection"
+                        Value="Response.Data!.Project.LastSurveyCollection"
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"
@@ -152,7 +152,7 @@
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="12" sm="6"
                     md="3" lg="3"
                     xl="3" xxl="3">
@@ -160,7 +160,7 @@
                         ShrinkLabel="true"
                         T="int"
                         Label="Quantidade de Avaliações"
-                        Value="Response.Data.Project.ReviewsCount"
+                        Value="Response.Data!.Project.ReviewsCount"
                         Variant="Variant.Filled"
                         FullWidth="true"
                         ReadOnly="true"
@@ -168,23 +168,26 @@
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="12" sm="6"
                     md="3" lg="3"
                     xl="3" xxl="3">
-                    <MudNumericField
-                        ShrinkLabel="true"
-                        T="int"
-                        Label="Quantidade de Participantes"
-                        Value="Response.Data.Project.ReviewersCount"
-                        Variant="Variant.Filled"
-                        FullWidth="true"
-                        ReadOnly="true"
-                        HideSpinButtons="true"/>
+                    @if (Response.Data != null)
+                    {
+                        <MudNumericField
+                            ShrinkLabel="true"
+                            T="int"
+                            Label="Quantidade de Participantes"
+                            Value="Response.Data.Project.ReviewersCount"
+                            Variant="Variant.Filled"
+                            FullWidth="true"
+                            ReadOnly="true"
+                            HideSpinButtons="true"/>
+                    }
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="12" sm="6"
                     md="6" lg="6"
                     xl="6" xxl="6">
@@ -193,7 +196,7 @@
                         ShrinkLabel="true"
                         T="string"
                         Label="Link da Avaliação"
-                        Value="Response.Data.Project.ResearchUrl"
+                        Value="Response.Data?.Project.ResearchUrl"
                         ReadOnly="true"
                         Variant="Variant.Filled"
                         FullWidth="true"
@@ -203,7 +206,7 @@
                 </GridItem>
 
                 <GridItem
-                    xxs="12"
+                    Xxs="12"
                     xs="12" sm="6"
                     md="6" lg="6"
                     xl="6" xxl="6">
@@ -211,7 +214,7 @@
                         ShrinkLabel="true"
                         T="string"
                         Label="Termo de Aceite"
-                        Value="Response.Data.Project.ConsentTermName"
+                        Value="Response.Data?.Project.ConsentTermName"
                         ReadOnly="true"
                         Variant="Variant.Filled"
                         FullWidth="true"
@@ -230,6 +233,7 @@
             ButtonClass="py-2 r-max-btn w-full"
             TextButton="Salvar"
             ButtonIcon="@Icons.Material.Filled.Save"
+            ButtonColor="Color.Success"
             SubmitFunction="UpdateAsync"
             SecondTextButton="Excluir"
             SecondButtonColor="Color.Error"
@@ -300,7 +304,6 @@
 
                 <MudItem xs="12" sm="6">
                     <MudDatePicker
-                        T="DateTime"
                         Label="Data Inicial"
                         @bind-Date="UpdateRequest.StartDate"
                         Variant="Variant.Filled"/>
@@ -322,7 +325,7 @@
                             InputClass="absolute w-full h-full overflow-hidden z-10"
                             InputStyle="opacity:0"
                             AppendMultipleFiles="false"
-                            AcceptedFileTypes="application/pdf"
+                            acceptedFileTypes="application/pdf"
                             @ondrop="ClearDragClass"
                             @ondragenter="SetDragClass"
                             @ondragleave="ClearDragClass"

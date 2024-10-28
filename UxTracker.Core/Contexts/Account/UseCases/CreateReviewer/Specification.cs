@@ -9,7 +9,7 @@ public static class Specification
         => new Contract<Notification>()
             .Requires()
             .IsEmail(request.Email, "Email", "E-mail inválido")
-            .IsLowerOrEqualsThan((DateTime)request.BirthDate, DateTime.UtcNow.AddYears(-12), "BirthDate", "Deve se ter pelo menos 12 anos")
+            .IsLowerOrEqualsThan(request.BirthDate!.Value, DateTime.UtcNow.AddYears(-12), "BirthDate", "Deve se ter pelo menos 12 anos")
             .IsNotNullOrEmpty(request.Sex, "Sex", "Sexo inválido")
             .IsNotNullOrEmpty(request.Country, "Country", "Pais inválido")
             .IsNotNullOrEmpty(request.State, "State", "Estado inválido")

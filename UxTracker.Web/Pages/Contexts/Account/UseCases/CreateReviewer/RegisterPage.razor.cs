@@ -2,7 +2,6 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
-using UxTracker.Web.Handlers;
 using CreateUseCase = UxTracker.Core.Contexts.Account.UseCases.CreateReviewer;
 
 namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
@@ -15,7 +14,7 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
         [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
         protected CreateUseCase.Request Request { get; set; } = new();
-        protected bool IsBusy { get; set; } = false;
+        protected bool IsBusy { get; set; }
         
         protected override async Task OnInitializedAsync() => Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
 
@@ -30,7 +29,8 @@ namespace UxTracker.Web.Pages.Contexts.Account.UseCases.CreateReviewer
                 if (response is not null)
                     if (response.IsSuccessful)
                     {
-                        Snackbar.Add(response.Data!.Message, Severity.Success);
+                        var message = response.Data!.Message;
+                        if (message != null) Snackbar.Add(message, Severity.Success);
                         Navigation.NavigateTo("reviewers/verify");
                     }
                     else

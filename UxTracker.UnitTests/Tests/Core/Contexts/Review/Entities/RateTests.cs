@@ -12,8 +12,8 @@ public class RateTests
         // Arrange
         var userId = Guid.NewGuid();
         var projectId = Guid.NewGuid();
-        var rating = 5;
-        var comment = "Excellent project";
+        const int rating = 5;
+        const string comment = "Excellent project";
         var ratedAt = DateTime.UtcNow;
 
         // Act
@@ -35,13 +35,10 @@ public class RateTests
     public void ValidToRate_ShouldReturnFalseIfNotEnoughTimePassed(PeriodType periodType, int daysToAdd)
     {
         // Arrange
-        var userId = Guid.NewGuid();
-        var projectId = Guid.NewGuid();
         var lastRate = DateTime.UtcNow.AddDays(-daysToAdd + 1);
-        var rate = new Rate(userId, projectId, 5, "Great project", lastRate);
 
         // Act
-        var result = rate.ValidToRate(periodType, lastRate);
+        var result = Rate.ValidToRate(periodType, lastRate);
 
         // Assert
         Assert.IsFalse(result, $"Rating should not be valid before {daysToAdd} days for {periodType}.");
@@ -54,13 +51,10 @@ public class RateTests
     public void ValidToRate_ShouldReturnTrueIfEnoughTimePassed_Daily(PeriodType periodType, int daysToAdd)
     {
         // Arrange
-        var userId = Guid.NewGuid();
-        var projectId = Guid.NewGuid();
         var lastRate = DateTime.UtcNow.AddDays(-daysToAdd);
-        var rate = new Rate(userId, projectId, 5, "Great project", lastRate);
 
         // Act
-        var result = rate.ValidToRate(periodType, lastRate);
+        var result = Rate.ValidToRate(periodType, lastRate);
 
         // Assert
         Assert.IsTrue(result, $"Rating should be valid after {daysToAdd} day(s) for {periodType}.");
@@ -71,13 +65,10 @@ public class RateTests
     public void ValidToRate_ShouldReturnTrueIfEnoughTimePassed_Monthly(PeriodType periodType, int monthsToAdd)
     {
         // Arrange
-        var userId = Guid.NewGuid();
-        var projectId = Guid.NewGuid();
         var lastRate = DateTime.UtcNow.AddMonths(-monthsToAdd);
-        var rate = new Rate(userId, projectId, 5, "Great project", lastRate);
 
         // Act
-        var result = rate.ValidToRate(periodType, lastRate);
+        var result = Rate.ValidToRate(periodType, lastRate);
 
         // Assert
         Assert.IsTrue(result, $"Rating should be valid after {monthsToAdd} month(s) for {periodType}.");
@@ -88,13 +79,10 @@ public class RateTests
     public void ValidToRate_ShouldReturnTrueIfEnoughTimePassed_Yearly(PeriodType periodType, int yearsToAdd)
     {
         // Arrange
-        var userId = Guid.NewGuid();
-        var projectId = Guid.NewGuid();
         var lastRate = DateTime.UtcNow.AddYears(-yearsToAdd);
-        var rate = new Rate(userId, projectId, 5, "Great project", lastRate);
 
         // Act
-        var result = rate.ValidToRate(periodType, lastRate);
+        var result = Rate.ValidToRate(periodType, lastRate);
 
         // Assert
         Assert.IsTrue(result, $"Rating should be valid after {yearsToAdd} year(s) for {periodType}.");

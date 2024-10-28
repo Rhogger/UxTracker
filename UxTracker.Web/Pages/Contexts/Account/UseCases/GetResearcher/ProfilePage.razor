@@ -67,7 +67,7 @@
                                     Align="Align.Center"
                                     Typo="Typo.h5"
                                     Style="font-weight: bold">
-                                    @Response.Data!.Name
+                                    @Response?.Data!.Name
                                 </MudText>
                             </div>
 
@@ -76,7 +76,7 @@
                                 T="string"
                                 Label="E-mail"
                                 Variant="Variant.Filled"
-                                Value="@Response.Data!.Email"
+                                Value="@Response?.Data!.Email"
                                 ReadOnly="true"
                                 FullWidth="true"/>
                         </div>
@@ -87,7 +87,7 @@
                                 Variant="Variant.Filled"
                                 Color="Color.Error"
                                 Class="py-2 r-max-btn w-full"
-                                OnClick="@(e => DeleteAccountAsync(DeleteRequest))">
+                                OnClick="@(_ => DeleteAccountAsync(DeleteRequest))">
                                 Excluir
                             </MudButton>
 
@@ -112,6 +112,8 @@
                         Class="d-flex flex-column align-center gap-10 max-account-container add-py"
                         SubmitFunction="UpdateAccountAsync"
                         TwoOptions="true"
+                        ButtonColor="Color.Success"
+                        ButtonIcon="@Icons.Material.Filled.Save"
                         SecondTextButton="Cancelar"
                         SecondFunction="ChangeState"
                         IsBusy="IsBusyUpdate">
@@ -136,6 +138,7 @@
                             </div>
                         </div>
 
+                        @* ReSharper disable once CSharpWarnings::CS8974 *@
                         <MudTextField
                             ShrinkLabel="true"
                             T="string"
@@ -155,7 +158,7 @@
                             T="string"
                             Label="E-mail"
                             Variant="Variant.Filled"
-                            Value="Response.Data.Email"
+                            Value="Response?.Data?.Email"
                             ReadOnly="true"
                             FullWidth="true"/>
 

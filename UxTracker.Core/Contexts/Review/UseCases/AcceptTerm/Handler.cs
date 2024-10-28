@@ -4,15 +4,8 @@ using UxTracker.Core.Contexts.Review.UseCases.AcceptTerm.Contracts;
 
 namespace UxTracker.Core.Contexts.Review.UseCases.AcceptTerm;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -50,7 +43,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.AcceptTermAsync(tcle, cancellationToken);
+            await repository.AcceptTermAsync(tcle, cancellationToken);
         }
         catch
         {

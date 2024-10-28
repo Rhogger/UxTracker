@@ -4,6 +4,6 @@ namespace UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer.Contract
 
 public interface IService
 {
-    string GenerateAccessToken(Reviewer user, CancellationToken cancellationToken);
+    string? GenerateAccessToken(Reviewer user, CancellationToken cancellationToken);
     string GenerateRefreshToken(Reviewer user, CancellationToken cancellationToken);
 }

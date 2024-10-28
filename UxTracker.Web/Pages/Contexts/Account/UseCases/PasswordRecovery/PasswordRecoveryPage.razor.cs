@@ -15,8 +15,8 @@ public class PasswordRecovery : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     protected readonly PasswordRecoveryVerifyUseCase.Request Request = new();
-    protected bool IsBusy { get; set; } = false;
-    protected bool IsBusyResend { get; set; } = false;
+    protected bool IsBusy { get; set; }
+    protected bool IsBusyResend { get; private set; }
 
     protected override async Task OnInitializedAsync() =>
         Request.Email = await LocalStorage.GetItemAsync<string>("email") ?? string.Empty;
@@ -31,7 +31,8 @@ public class PasswordRecovery : ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
                     Navigation.NavigateTo("/recover/reset-password");
                 }
                 else
@@ -67,7 +68,10 @@ public class PasswordRecovery : ComponentBase
 
             if (response is not null)
                 if (response.IsSuccessful)
-                    Snackbar.Add(response.Data!.Message, Severity.Success);
+                {
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
+                }
                 else
                 {
                     if (response.Data!.Notifications is not null)

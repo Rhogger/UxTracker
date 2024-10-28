@@ -1,20 +1,11 @@
-using Flunt.Notifications;
-using Flunt.Validations;
 using MediatR;
 using UxTracker.Core.Contexts.Research.Entities;
 using UxTracker.Core.Contexts.Research.UseCases.Create.Contracts;
 
 namespace UxTracker.Core.Contexts.Research.UseCases.Create;
 
-public class Handler : IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar Requisição
@@ -47,7 +38,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            var relatories = await _repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
+            var relatories = await repository.GetRelatoriesByIdAsync(request.Relatories, cancellationToken);
 
             if (relatories is null || relatories.Count == 0)
             {
@@ -67,8 +58,8 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            _repository.AttachRelatories(project.Relatories);
-            await _repository.SaveAsync(project, cancellationToken);
+            repository.AttachRelatories(project.Relatories);
+            await repository.SaveAsync(project, cancellationToken);
         }
         catch
         {

@@ -9,7 +9,7 @@ public class PasswordTests
     public void Password_Constructor_ShouldCreateNullHash_WhenPasswordIsNull()
     {
         // Arrange & Act
-        var password = new Password(null);
+        var password = new Password();
 
         // Assert
         Assert.IsNull(password.Hash);
@@ -69,7 +69,7 @@ public class PasswordTests
 
         // Assert
         Assert.IsNotNull(password.ResetCode);
-        Assert.AreEqual(8, password.ResetCode.Code.Length);
+        if (password.ResetCode.Code != null) Assert.AreEqual(8, password.ResetCode.Code.Length);
     }
 
     [TestMethod]
@@ -78,10 +78,10 @@ public class PasswordTests
         // Arrange
         var password = new Password("Password123!");
         password.GenerateResetCode();
-        var validResetCode = password.ResetCode.Code;
+        var validResetCode = password.ResetCode?.Code;
 
         // Act
-        var result = password.IsValidResetCode(validResetCode);
+        var result = validResetCode != null && password.IsValidResetCode(validResetCode);
 
         // Assert
         Assert.IsTrue(result);

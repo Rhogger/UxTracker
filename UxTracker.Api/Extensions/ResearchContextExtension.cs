@@ -180,6 +180,7 @@ public static class ResearchContextExtension
                     return Results.Problem("Não foi possível identificar o projeto.");
                 }
 
+                if (projectId != null)
                 {
                     var directory = Path.Combine(Configuration.ConsentTerm.Url, projectId);
 
@@ -506,7 +507,7 @@ public static class ResearchContextExtension
                     return Results.Problem("Não foi possível identificar o projeto.");
                 }
 
-                if (!result.Data!.newFile)
+                if (!result.Data!.NewFile)
                 {
                     await handler.CommitAsync();
                     return Results.Ok(result);

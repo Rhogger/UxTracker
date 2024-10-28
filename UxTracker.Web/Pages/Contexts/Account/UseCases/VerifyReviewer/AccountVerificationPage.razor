@@ -9,7 +9,7 @@
 
 <MudContainer 
     MaxWidth="MaxWidth.Small" 
-    Class="d-flex flex-column justify-center align-content-center gap-9 h-full py-14">
+    Class="d-flex flex-column justify-center align-center gap-9 h-full py-14">
     <MudText
         Typo="Typo.h4"
         Align="Align.Center"
@@ -29,6 +29,7 @@
                 IsBusy="IsBusy">
                 <EmailTextField @bind-Email="Request.Email"/>
 
+                @* ReSharper disable once CSharpWarnings::CS8974 *@
                 <MudTextField
                     MaxLength="6"
                     ShrinkLabel="true"
@@ -81,4 +82,11 @@
             }
         </MudPaper>
     </MudContainer>
+
+    <MudButton
+        Variant="Variant.Text"
+        OnClick="NavigateToLogin"
+        Class="w-fit">
+        Voltar para Login
+    </MudButton>
 </MudContainer>

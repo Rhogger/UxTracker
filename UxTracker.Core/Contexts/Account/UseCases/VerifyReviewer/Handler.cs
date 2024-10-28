@@ -5,17 +5,8 @@ using UxTracker.Core.Contexts.Account.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository, IService service) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    private readonly IService _service;
-
-    public Handler(IRepository repository, IService service)
-    {
-        _repository = repository;
-        _service = service;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição
@@ -40,15 +31,12 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            user = await repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
             
-            _repository.AttachRoles(user.Roles);
-            
-            if (user.Roles is null)
-                return new Response("Roles não encontrada", 404);
+            repository.AttachRoles(user.Roles);
         }
         catch
         {
@@ -85,7 +73,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.ValidateVerificationCodeAsync(user, cancellationToken);
+            await repository.ValidateVerificationCodeAsync(user, cancellationToken);
         }
         catch
         {
@@ -102,20 +90,20 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 07. Checar validade do código da pesquisa
         
-        if (!await _repository.AnyProjectAsync(request.ResearchCode, cancellationToken))
+        if (!await repository.AnyProjectAsync(request.ResearchCode, cancellationToken))
             return new Response("Pesquisa não encontrada", 404);
 
         #endregion
         
         #region 08. Gerar os tokens JWT
 
-        string accessToken;
+        string? accessToken;
         string refreshToken;
         
         try
         {
-            accessToken = _service.GenerateAccessToken(user, cancellationToken);
-            refreshToken = _service.GenerateRefreshToken(user, cancellationToken);
+            accessToken = service.GenerateAccessToken(user, cancellationToken);
+            refreshToken = service.GenerateRefreshToken(user, cancellationToken);
         }
         catch
         {

@@ -8,19 +8,16 @@ using UxTracker.Infra.Contexts.Review.Mappings;
 
 namespace UxTracker.Infra.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options) { }
-
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Researcher> Researchers { get; set; } = null!;
-    public DbSet<Reviewer> Reviewers { get; set; } = null!;
-    public DbSet<Role> Roles { get; set; } = null!;
-    public DbSet<Project> Projects { get; set; } = null!;
-    public DbSet<Relatory> Relatories { get; set; } = null!;    
-    public DbSet<UserAcceptedTcle> AcceptedTerms { get; set; } = null!;
-    public DbSet<Rate> Reviews { get; set; } = null!;
+    public DbSet<User> Users { get; init; } = null!;
+    public DbSet<Researcher> Researchers { get; init; } = null!;
+    public DbSet<Reviewer> Reviewers { get; init; } = null!;
+    public DbSet<Role> Roles { get; init; } = null!;
+    public DbSet<Project> Projects { get; init; } = null!;
+    public DbSet<Relatory> Relatories { get; init; } = null!;    
+    public DbSet<UserAcceptedTcle> AcceptedTerms { get; init; } = null!;
+    public DbSet<Rate> Reviews { get; init; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

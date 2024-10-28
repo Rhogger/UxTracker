@@ -5,24 +5,20 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.VerifyReviewer;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-    
-    public Repository(AppDbContext context) => _context = context;
-
     public async Task<Reviewer?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
-        => await _context
+        => await context
             .Reviewers
             .Include(x => x.Roles)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
     
-    public void AttachRoles(List<Role> roles)
+    public void AttachRoles(List<Role?> roles)
     {
-        foreach (var role in roles)
+        foreach (var role in roles.OfType<Role>())
         {
-            _context.Roles.Attach(role);
+            context.Roles.Attach(role);
         }
     }
 
@@ -30,15 +26,15 @@ public class Repository: IRepository
     {
         user.Email.Verification.Verify(user.Email.Verification.Code);
         
-        _context
+        context
             .Reviewers
             .Update(user);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
     
     public async Task<bool> AnyProjectAsync(string id, CancellationToken cancellationToken) =>
-        await _context
+        await context
             .Projects
             .AsNoTracking()
             .AnyAsync(x => x.Id.ToString() == id,cancellationToken: cancellationToken);
