@@ -9,29 +9,40 @@
     <Authorized>
         <MudContainer 
             MaxWidth="MaxWidth.Medium" 
-            Class="d-flex flex-column align-center gap-10 pt-14 r-container">
-            <MudText
-                Typo="Typo.h4"
-                Align="Align.Center"
-                Class="r-container-item-block">
-                Nova pesquisa
-            </MudText>
-
+            Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
+            <div class="w-full justify-start r-container-item-flex">
+                <MudButton
+                    OnClick="NavigateToProjects"
+                    Variant="Variant.Outlined"
+                    Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
+                    Voltar
+                </MudButton>
+            </div>
+            
             <MudPaper
-                Class="pa-8 rounded-lg w-full r-paper"
+                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
                 Outlined="true">
+                <div class="w-full justify-start r-container-item-flex-hidden">
+                    <MudButton
+                        StartIcon="@Icons.Material.Filled.ArrowBack"
+                        OnClick="NavigateToProjects"
+                        Variant="Variant.Text"
+                        Class="r-container-item-flex-hidden justify-start">
+                        Voltar
+                    </MudButton>
+                </div>
+                
                 <MudText
                     Typo="Typo.h4"
-                    Align="Align.Center"
-                    Class="pb-12 r-container-item-block-hidden">
+                    Align="Align.Center">
                     Nova pesquisa
                 </MudText>
-                
+
                 <ValidateForm
-                    TwoOptions="true"
                     SubmitFunction="CreateProjectAsync"
-                    SecondFunction="NavigateToProjects"
-                    SecondTextButton="Voltar">
+                    ButtonIcon="@Icons.Material.Filled.Save"
+                    ButtonColor="Color.Success"
+                    ButtonClass="py-2 r-max-btn-icon w-full">
                     <MudGrid
                         Class="mb-4"
                         Spacing="6">

@@ -8,8 +8,8 @@ public static class StatusExtension
         status switch
         {
             Status.NotStarted => "Não iniciado",
-            Status.InProgress => "Em progresso",
-            Status.Finished => "Finalizado",
+            Status.InProgress => "Em andamento",
+            Status.Finished => "Concluído",
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
 }

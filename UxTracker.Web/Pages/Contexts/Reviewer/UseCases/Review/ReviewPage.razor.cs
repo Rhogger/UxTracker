@@ -45,7 +45,7 @@ public class Review: ComponentBase
                 {
                     Response = response.Data!;
 
-                    if (!Response.Data.Project.Status.Equals(Status.InProgress))
+                    if (Response.Data.Project.Status.Equals(Status.NotStarted))
                     {
                         Snackbar.Add("A Pesquisa ainda não iniciou", Severity.Error);
                         await AccountContextHandler.SignOutAsync();

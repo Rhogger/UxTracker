@@ -10,11 +10,12 @@
         <div class="d-flex justify-center">
             <MudButton
                 Variant="Variant.Filled"
-                Color="Color.Primary"
+                Color="@ButtonColor"
                 Class="@ButtonClass"
                 FullWidth="@FullWidthButton"
                 OnClick="SubmitFunction"
-                Disabled="@(!IsValid)">
+                Disabled="@(!IsValid)"
+                EndIcon="@ButtonIcon">
                 @if (!IsBusy)
                 {
                     @TextButton
@@ -68,7 +69,7 @@
     [Parameter] public string ButtonClass { get; set; } = "py-2 px-15";
     [Parameter] public string TextButton { get; set; } = "Salvar";
     [Parameter] public string SecondTextButton { get; set; } = "Cancelar";
-    [Parameter] public Color ButtonColor { get; set; } = Color.Success;    
+    [Parameter] public Color ButtonColor { get; set; } = Color.Primary;    
     [Parameter] public Color SecondButtonColor { get; set; } = Color.Default;    
     [Parameter] public string? ButtonIcon { get; set; } = null;    
     [Parameter] public string? SecondButtonIcon { get; set; } = null;    
