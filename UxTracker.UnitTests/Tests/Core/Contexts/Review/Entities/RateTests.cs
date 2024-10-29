@@ -14,17 +14,15 @@ public class RateTests
         var projectId = Guid.NewGuid();
         const int rating = 5;
         const string comment = "Excellent project";
-        var ratedAt = DateTime.UtcNow;
 
         // Act
-        var rate = new Rate(userId, projectId, rating, comment, ratedAt);
+        var rate = new Rate(userId, projectId,0, rating, comment);
 
         // Assert
         Assert.AreEqual(userId, rate.UserId);
         Assert.AreEqual(projectId, rate.ProjectId);
         Assert.AreEqual(rating, rate.Rating);
         Assert.AreEqual(comment, rate.Comment);
-        Assert.AreEqual(ratedAt, rate.RatedAt);
     }
 
     [DataTestMethod]
