@@ -1,0 +1,77 @@
+@using UxTracker.Core.Contexts.Account.Handlers
+@using DeleteUseCase = UxTracker.Core.Contexts.Account.UseCases.DeleteReviewer;
+
+<MudDialog Class="pa-4">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1"/>
+            Deseja deletar a conta?
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Class="pb-8">
+            Deseja mesmo excluir a conta? Após exclusão não será possível recuperar a conta.
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton
+            Variant="Variant.Filled"
+            OnClick="Cancel"
+        >
+            Cancelar
+        </MudButton>
+        
+        <MudButton
+            Color="Color.Error"
+            Variant="Variant.Filled"
+            OnClick="DeleteAccount"
+        >
+            Excluir conta
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+
+    protected DeleteUseCase.Request Request = new();
+    
+    private void Cancel() => MudDialog.Cancel();
+
+    private void DeleteAccount() => MudDialog.Close(DialogResult.Ok(DeleteAccountAsync()));
+
+    private async Task DeleteAccountAsync()
+    {
+        try
+        {
+            var response = await AccountContextHandler.DeleteReviewerAsync(Request);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
+                    await AccountContextHandler.SignOutAsync();
+                    Navigation.NavigateTo("reviewers/login");
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+    }
+}

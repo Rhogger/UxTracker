@@ -10,7 +10,7 @@ namespace UxTracker.Infra.Services;
 
 public class JwtService: IJwtService
 {
-    public string Generate(Payload data)
+    public string? Generate(Payload data)
     {
         var handler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey);
@@ -55,7 +55,8 @@ public class JwtService: IJwtService
         var claims = new ClaimsIdentity();
         claims.AddClaim(new Claim("id", user.Id));
         foreach (var role in user.Roles)
-            claims.AddClaim(new Claim(ClaimTypes.Role, role));
+            if (role != null)
+                claims.AddClaim(new Claim(ClaimTypes.Role, role));
 
         return claims;
     }

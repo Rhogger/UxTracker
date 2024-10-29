@@ -20,5 +20,7 @@ public static class ApplicationExtension
     {
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseAntiforgery();
     }
 }

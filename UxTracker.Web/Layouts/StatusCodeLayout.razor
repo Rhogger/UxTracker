@@ -1,0 +1,10 @@
+﻿@using UxTracker.Web.Utils.Theme
+@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="true" Theme="CustomTheme.Theme"/>
+
+<MudLayout Style="height: 100vh">
+    <MudMainContent Class="mud-height-full pa-0">
+        @Body
+    </MudMainContent>
+</MudLayout>

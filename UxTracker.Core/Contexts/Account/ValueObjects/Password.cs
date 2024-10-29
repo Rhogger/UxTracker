@@ -7,15 +7,15 @@ public class Password : ValueObject
 {
     protected Password() { }
     
-    public Password(string password)
+    public Password(string? password = null)
     {
         if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
-            throw new Exception("A senha não pode ser nula");
-
-        Hash = Hashing(password);
+            Hash = null;
+        else
+            Hash = Hashing(password);
     }
 
-    public string Hash { get; } = string.Empty;
+    public string? Hash { get; } = string.Empty;
     public Verification? ResetCode { get; private set; }
 
     private static string Hashing(
@@ -45,7 +45,7 @@ public class Password : ValueObject
     }
 
     private static bool VerifyPassword(
-        string hash,
+        string? hash,
         string password,
         short keySize = 32,
         int iterations = 10000,
@@ -54,6 +54,8 @@ public class Password : ValueObject
     {
         password += Configuration.Secrets.PasswordSaltKey;
 
+        if (hash == null) return false;
+        
         var parts = hash.Split(splitChar, 3);
         if (parts.Length != 3)
             return false;
@@ -75,13 +77,14 @@ public class Password : ValueObject
         var keyToCheck = algorithm.GetBytes(keySize);
 
         return keyToCheck.SequenceEqual(key);
+
     }
 
     public bool IsValid(string plainTextPassword)
         => VerifyPassword(Hash, plainTextPassword);
     
     public bool IsValidResetCode(string verificationCode) 
-        => string.Equals(verificationCode.Trim(), ResetCode?.Code.Trim(), StringComparison.CurrentCultureIgnoreCase);
+        => string.Equals(verificationCode.Trim(), ResetCode?.Code?.Trim(), StringComparison.CurrentCultureIgnoreCase);
 
     public void GenerateResetCode()
     {

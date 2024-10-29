@@ -1,0 +1,162 @@
+@using UxTracker.Core.Contexts.Review.Validators
+@using UxTracker.Web.Components.Skeletons
+@using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.Relatories
+
+@page "/reviewers/research/{ProjectId:guid}"
+@inherits Review
+
+<AuthorizeView Roles="Reviewer">
+    <Authorized>
+        <MudContainer
+            MaxWidth="MaxWidth.Medium"
+            Class="d-flex flex-column justify-center align-center gap-10 pt-14 h-full r-container">
+            <MudPaper
+                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+                Outlined="true">
+                @if (!IsBusy)
+                {
+                    <MudText
+                        Typo="Typo.h4"
+                        Align="Align.Center"
+                        Class="r-padding-top r-paper-title">
+                        @Response.Data?.Project?.Title
+                    </MudText>
+               
+                    <MudText 
+                        Typo="Typo.body1"
+                        Class="r-paper-description">
+                        @Response.Data?.Project?.Description
+                    </MudText>
+                    
+                    <MudDivider Class="ma-0 w-full" DividerType="DividerType.Inset"/>
+                    
+                    <div class="break-review w-full">
+                        <MudText
+                            Typo="Typo.h5"
+                            Align="Align.Center"
+                            Class="r-paper-subtitle r-no-graphics">
+                            Acompanhamento da Avaliação
+                        </MudText>
+
+                        @if (Response.Data is not null)
+                        {
+                            if (Response.Data.Project != null)
+                            {
+                                <ReviewMonitoring
+                                    ContainerClass="w-full r-no-graphics"
+                                    Event="RatingAsync"
+                                    Rates="Response.Data?.Project?.Reviews"
+                                    SurveyCollections="(int)Response.Data?.Project!.SurveyCollections!"
+                                    PeriodType="Response.Data.Project!.PeriodType"/>
+                            }
+                        }
+
+                        <MudText
+                            Align="Align.Center"
+                            Typo="Typo.body2"
+                            Class="d-none r-graphics-warning pb-3"
+                            Color="Color.Inherit">
+                            O acompanhamento das suas avaliações só está disponível em telas maiores
+                        </MudText>
+
+                        <MudDivider
+                            Class="d-none r-graphics-warning"
+                            DividerType="DividerType.FullWidth"/>
+
+                        <MudText
+                            Typo="Typo.h5"
+                            Align="Align.Center"
+                            Class="r-paper-subtitle r-no-graphics d-none r-graphics-warning">
+                            Avaliação
+                        </MudText>
+                        
+                        <ValidateForm
+                            Class="d-flex r-direction gap-3 w-full"
+                            SubmitFunction="RatingAsync"
+                            TextButton="Enviar"
+                            ButtonClass="h-full px-8 r-fit-btn h-btn-review"
+                            IsBusy="IsBusyRate">
+                            <MudGrid
+                                Spacing="3"
+                                Class="w-full">
+                                <MudItem
+                                    xs="12" sm="2"
+                                    md="2" lg="2"
+                                    xl="2" xxl="2">
+                                    @* ReSharper disable once CSharpWarnings::CS8974 *@
+                                    <MudNumericField
+                                        T="decimal"
+                                        Label="Nota"
+                                        Variant="Variant.Filled"
+                                        HelperText="Notas de 0 a 10"
+                                        Min="0"
+                                        Max="10"
+                                        Step=".1M"
+                                        Format="F1"
+                                        @bind-Value="RatingRequest.Rating"
+                                        Required="true"
+                                        RequiredError="Informe a nota"
+                                        Disabled="IsDisabled"
+                                        Validation="RateValidator.Validate"/>
+                                </MudItem>
+
+                                <MudItem
+                                    xs="12" sm="10"
+                                    md="10" lg="10"
+                                    xl="10" xxl="10">
+                                    @* ReSharper disable once CSharpWarnings::CS8974 *@
+                                    <MudTextField
+                                        T="string"
+                                        Label="Comentário"
+                                        Variant="Variant.Filled"
+                                        FullWidth="true"
+                                        @bind-Value="RatingRequest.Comment"
+                                        Required="true"
+                                        RequiredError="Dê a sua justificativa"
+                                        Disabled="IsDisabled"
+                                        Validation="CommentValidator.Validate"/>
+                                </MudItem>
+                            </MudGrid>
+                        </ValidateForm>
+
+                        @if (!IsDisabledCountdown)
+                        {
+                            <MudText
+                                Align="Align.Center"
+                                Typo="Typo.caption"
+                                Class="r-countdown">
+                                <span>Tempo até a próxima avaliação:</span> @Days.ToString("D2") Dias, @Hours.ToString("D2"):@Minutes.ToString("D2"):@Seconds.ToString("D2")
+                            </MudText>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <ResearchTitleSkeleton/>
+                    <ResearchDescriptionSkeleton/>
+                    <MudDivider
+                        Light="true"
+                        Class="no-flex"
+                        DividerType="DividerType.FullWidth"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-paper-subtitle r-no-graphics"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
+                    <MudDivider
+                        Class="ma-0 w-full d-none r-graphics-warning no-flex"
+                        DividerType="DividerType.FullWidth"/>
+                    <ResearchTitleSkeleton SkeletonClass="r-container-title d-none r-graphics-warning"/>
+                    <ResearchReviewChartSkeleton SkeletonClass="w-full r-no-graphics"/>
+                    <ResearchFormSkeleton/>
+                    @if (!IsDisabledCountdown)
+                    {
+                        <ResearchCountdownSkeleton/>
+                    }
+                }
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
+</AuthorizeView>

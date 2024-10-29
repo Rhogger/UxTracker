@@ -1,0 +1,10 @@
+<MudSkeleton
+    Animation="Animation.Wave"
+    Width="50%" Height="42px"
+    Class="@SkeletonClass"
+    Style="transform: none"/>
+    
+    @code
+    {
+        [Parameter] public string SkeletonClass { get; set; } = string.Empty;
+    }

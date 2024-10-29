@@ -1,0 +1,205 @@
+@using ApexCharts
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Review.ValueObjects
+@using ChartType = ApexCharts.ChartType
+
+<div class="@ContainerClass">
+    <ApexChart 
+        TItem="UserRates"
+        @ref="Ref"
+        Options="@_options">
+        <ApexPointSeries
+            TItem="UserRates" 
+            Items="Rates" 
+            Name="Nota" 
+            SeriesType="SeriesType.Line"
+            XValue="@(e => e.Index + 1)"
+            YValue="@(e => e.Rate)"/>
+    </ApexChart>
+</div>
+
+@code{
+    [Parameter] public PeriodType PeriodType { get; set; }
+    [Parameter] public int SurveyCollections { get; set; }
+    [Parameter] public List<UserRates> Rates { get; set; } = new();
+    [Parameter] public EventCallback Event { get; set; }
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
+
+    private ApexChart<UserRates>? Ref { get; set; }
+    private ApexChartOptions<UserRates> _options = null!;
+    private int PreviousRatesCount { get; set; }
+    
+    protected override Task OnParametersSetAsync()
+    {
+        if (Rates.Count == PreviousRatesCount) return Task.CompletedTask;
+        
+        StateHasChanged();
+        Ref?.UpdateSeriesAsync();
+        PreviousRatesCount = Rates.Count;
+
+        return Task.CompletedTask;
+    }
+
+    protected override void OnInitialized()
+    {
+        PreviousRatesCount = Rates.Count;
+
+        _options = new ApexChartOptions<UserRates>
+        {
+            Chart = new Chart
+            {
+                Background = "transparent",
+                Width = "100%",
+                FontFamily = "Inter",
+                Toolbar = new Toolbar
+                {
+                    Show = false
+                },
+                DropShadow = new DropShadow
+                {
+                    Enabled = true,
+                    Top = 18,
+                    Left = 7,
+                    Blur = 10,
+                    Opacity = 0.2d
+                },
+                Selection = new Selection
+                {
+                    Enabled = false
+                },
+                Sparkline = new ChartSparkline
+                {
+                    Enabled = false
+                },
+                Type = ChartType.Line,
+                Brush = new Brush
+                {
+                    Enabled = false,
+                },
+                Zoom = new Zoom
+                {
+                    Enabled = false,
+                },
+            },
+            Tooltip = new Tooltip
+            {
+                Style  = new TooltipStyle
+                {
+                    FontFamily = "Inter",
+                    FontSize = "12px",
+                },
+                CssClass = "apexcharts-tooltip",
+                Marker = new TooltipMarker
+                {
+                    FillColors = ["#2DC8B8"]
+                },
+                X = new TooltipX
+                {
+                    Show = false,
+                }
+            },
+            DataLabels = new DataLabels
+            {
+                OffsetY = -6d,
+            },
+            Grid = new Grid
+            {
+                BorderColor = "#e7e7e7",
+                Yaxis = new GridYAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    }
+                },
+                Xaxis = new GridXAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    },
+                },
+            },
+            Markers = new Markers 
+            { 
+                Shape = ShapeEnum.Circle,
+                Size = 5, 
+                FillOpacity = new Opacity(0.8d),
+                Colors = new List<string> { "#2DC8B8", "#fff" },
+            },
+            Stroke = new Stroke
+            {
+                Curve = Curve.Smooth, 
+                Colors = ["#2DC8B8"]
+            },
+            Legend = new Legend
+            {
+                FontFamily = "Inter",
+                FontSize = "14px",
+                FontWeight = "500",
+                Position = LegendPosition.Top,
+                HorizontalAlign = ApexCharts.Align.Right,
+                Floating = true,
+                OffsetX = -5,
+                OffsetY = -25,
+            },
+            
+            Xaxis = new XAxis
+            {
+                Min = 1,
+                Max = SurveyCollections,
+                Title = new AxisTitle
+                {
+                    Text = PeriodType.GetPeriod(),
+                    Style = new AxisTitleStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Color = "#fff"
+                    }
+                },
+                Labels = new XAxisLabels
+                {
+                    Style = new AxisLabelStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Colors = "#fff"
+                    }
+                }
+            },
+            Yaxis =
+            [
+                new YAxis
+                {
+                    Min = 0,
+                    Max = 10,
+                    Title = new AxisTitle
+                    {
+                        Text = "Notas",
+                        Style = new AxisTitleStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Color = "#fff"
+                        }
+                    },
+                    Labels = new YAxisLabels
+                    {
+                        Style = new AxisLabelStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Colors = "#fff"
+                        }
+                    }
+                }
+            ],
+        };
+    }
+}

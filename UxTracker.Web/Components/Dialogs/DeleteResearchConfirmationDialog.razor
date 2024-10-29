@@ -1,0 +1,94 @@
+@using UxTracker.Core.Contexts.Account.Enums
+@using UxTracker.Core.Contexts.Account.Handlers
+@using UxTracker.Web.Components.TextFields
+@using DeleteUseCase = UxTracker.Core.Contexts.Account.UseCases.DeleteResearcher;
+
+<MudDialog Class="pa-4">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1"/>
+            Deseja deletar a conta?
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Class="pb-8">
+            Deseja mesmo excluir a conta? Após exclusão não será possível recuperar a conta.
+        </MudText>
+
+        <MudForm
+            @bind-IsValid="IsValid"
+            @bind-Errors="_errors"
+        >
+            <PasswordTextField @bind-Password="Password" ValidatorType="ValidatorTypes.None" Class="pb-6"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton
+            Variant="Variant.Filled"
+            OnClick="Cancel"
+        >
+            Cancelar
+        </MudButton>
+        
+        <MudButton
+            Color="Color.Error"
+            Variant="Variant.Filled"
+            OnClick="DeleteAccount"
+            Disabled="@(!IsValid)"
+        >
+            Excluir conta
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+
+    [Parameter] public string Password { get; set; } = string.Empty;
+
+    private string[] _errors = [];
+    private bool IsValid { get; set; }
+
+    protected DeleteUseCase.Request Request = new();
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void DeleteAccount() => MudDialog.Close(DialogResult.Ok(DeleteAccountAsync()));
+
+    private async Task DeleteAccountAsync()
+    {
+        try
+        {
+            Request.Password = Password;
+            
+            var response = await AccountContextHandler.DeleteResearcherAsync(Request);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    var message = response.Data!.Message;
+                    if (message != null) Snackbar.Add(message, Severity.Success);
+                    await AccountContextHandler.SignOutAsync();
+                    Navigation.NavigateTo("/register");
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+    }
+}

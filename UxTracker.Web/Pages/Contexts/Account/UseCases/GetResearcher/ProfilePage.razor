@@ -1,0 +1,184 @@
+@using UxTracker.Core.Contexts.Account.Enums
+@using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Web.Components.TextFields
+@using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.Skeletons
+
+@page "/account"
+@inherits Profile
+
+<AuthorizeView Roles="Researcher">
+    <Authorized>
+        <MudContainer
+            MaxWidth="MaxWidth.ExtraSmall"
+            Class="d-flex flex-column justify-center align-center gap-4 h-full pt-14 r-container">
+            <div class="w-full justify-start r-container-item-flex">
+                <MudButton
+                    OnClick="NavigateToProjects"
+                    Variant="Variant.Outlined"
+                    Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
+                    Voltar
+                </MudButton>
+            </div>
+            
+            <MudPaper
+                Class="d-flex flex-column pa-6 rounded-lg gap-10 h-max r-paper r-account  w-full"
+                Outlined="true">
+                <div class="w-full justify-start r-container-item-flex-hidden">
+                    <MudButton
+                        StartIcon="@Icons.Material.Filled.ArrowBack"
+                        OnClick="NavigateToProjects"
+                        Variant="Variant.Text"
+                        Class="r-container-item-flex-hidden justify-start">
+                        Voltar
+                    </MudButton>
+                </div>
+                
+                @if (!IsEditState)
+                {
+                    @if (!IsBusy)
+                    {
+                        <div class="d-flex flex-column align-center gap-10 max-account-container">
+                            <div class="d-flex flex-column align-center gap-4">
+                                <div class="relative">
+                                    <MudImage
+                                        Src="@Link"
+                                        Class="rounded-circle"
+                                        Width="180"
+                                        Height="180"/>
+
+                                    <div class="absolute" style="bottom: 0; right: 0;">
+                                        <MudTooltip
+                                            Delay="400"
+                                            Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
+                                            Style="width: 200px;">
+                                            <ChildContent>
+                                                <MudIconButton
+                                                    Icon="@Icons.Material.Filled.HelpOutline"
+                                                    Size="Size.Small"
+                                                    Href="https://br.gravatar.com/profile"
+                                                    Target="_blank"/>
+                                            </ChildContent>
+                                        </MudTooltip>
+                                    </div>
+                                </div>
+
+                                <MudText
+                                    Align="Align.Center"
+                                    Typo="Typo.h5"
+                                    Style="font-weight: bold">
+                                    @Response?.Data!.Name
+                                </MudText>
+                            </div>
+
+                            <MudTextField
+                                ShrinkLabel="true"
+                                T="string"
+                                Label="E-mail"
+                                Variant="Variant.Filled"
+                                Value="@Response?.Data!.Email"
+                                ReadOnly="true"
+                                FullWidth="true"/>
+                        </div>
+
+                        <div class="d-flex align-center justify-center gap-9 max-account-container">
+                            <MudButton
+                                EndIcon="@Icons.Material.Filled.Delete"
+                                Variant="Variant.Filled"
+                                Color="Color.Error"
+                                Class="py-2 r-max-btn w-full"
+                                OnClick="@(_ => DeleteAccountAsync(DeleteRequest))">
+                                Excluir
+                            </MudButton>
+
+                            <MudButton
+                                EndIcon="@Icons.Material.Filled.Edit"
+                                Variant="Variant.Filled"
+                                Color="Color.Info"
+                                Class="py-2 r-max-btn w-full"
+                                OnClick="ChangeState">
+                                Editar
+                            </MudButton>
+                        </div>
+                    }
+                    else
+                    {
+                        <ResearcherProfileSkeleton/>
+                    }
+                }
+                else
+                {
+                    <ValidateForm
+                        Class="d-flex flex-column align-center gap-10 max-account-container add-py"
+                        SubmitFunction="UpdateAccountAsync"
+                        TwoOptions="true"
+                        ButtonColor="Color.Success"
+                        ButtonIcon="@Icons.Material.Filled.Save"
+                        SecondTextButton="Cancelar"
+                        SecondFunction="ChangeState"
+                        IsBusy="IsBusyUpdate">
+                        <div class="relative">
+                            <MudImage
+                                Src="@Link"
+                                Class="rounded-circle"
+                                Width="180"
+                                Height="180"/>
+
+                            <div class="absolute" style="bottom: 0; right: 0;">
+                                <MudTooltip
+                                    Delay="400"
+                                    Text="Essa imagem é a mesma da sua conta no Gravatar. Caso não tenha foto, é necessário criar conta e adicionar uma foto de perfil a sua conta no Gravatar."
+                                    Style="width: 200px;">
+                                    <MudIconButton
+                                        Icon="@Icons.Material.Filled.HelpOutline"
+                                        Size="Size.Small"
+                                        Href="https://br.gravatar.com/profile"
+                                        Target="_blank"/>
+                                </MudTooltip>
+                            </div>
+                        </div>
+
+                        @* ReSharper disable once CSharpWarnings::CS8974 *@
+                        <MudTextField
+                            ShrinkLabel="true"
+                            T="string"
+                            Label="Nome"
+                            InputType="InputType.Text"
+                            Variant="Variant.Filled"
+                            @bind-Value="Request.Name"
+                            Required="true"
+                            RequiredError="O nome deve ser informado"
+                            Immediate="true"
+                            OnlyValidateIfDirty="true"
+                            Validation="@NameValidator.Validate"
+                            FullWidth="true"/>
+
+                        <MudTextField
+                            ShrinkLabel="true"
+                            T="string"
+                            Label="E-mail"
+                            Variant="Variant.Filled"
+                            Value="Response?.Data?.Email"
+                            ReadOnly="true"
+                            FullWidth="true"/>
+
+                        <PasswordTextField
+                            @bind-Password="Request.Password"
+                            ValidatorType="ValidatorTypes.Validator"/>
+
+                        <PasswordTextField
+                            Label="Confirmar senha"
+                            @bind-Password="ConfirmPassword"
+                            ConfirmPassword="@Request.Password"
+                            ValidatorType="ValidatorTypes.Comparator"/>
+                    </ValidateForm>
+                }
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+    
+    
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
+</AuthorizeView>

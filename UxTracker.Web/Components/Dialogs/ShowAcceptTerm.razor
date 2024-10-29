@@ -1,0 +1,66 @@
+@using UxTracker.Core.Contexts.Review.Handlers
+@using AcceptTerm = UxTracker.Core.Contexts.Review.UseCases.AcceptTerm
+
+<MudDialog fullWidth="false">
+    <TitleContent>
+        Termo de Consentimento Livre e Esclarecido
+    </TitleContent>
+    
+    <DialogContent>
+        <iframe 
+            src="@(TermUrl)" 
+            style="width: 100%; height: 700px;"
+            allowfullscreen></iframe>
+    </DialogContent>
+    
+    <DialogActions>
+        <MudButton
+            Color="Color.Primary"
+            OnClick="Submit"
+            Variant="Variant.Outlined">
+            Aceitar Termo
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Inject] protected IReviewContextHandler ReviewContextHandler { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    
+    [Parameter] public string? TermUrl { get; set; }
+    [Parameter] public Guid ProjectId { get; set; }
+
+    private readonly AcceptTerm.Request _request = new();
+    
+    private void Submit() => MudDialog.Close(DialogResult.Ok(AcceptTermAsync()));
+
+    private async Task AcceptTermAsync()
+    {
+        try
+        {
+            _request.ProjectId = ProjectId.ToString();
+
+            var response = await ReviewContextHandler.AcceptTermAsync(_request);
+
+            if (response is not null)
+            {
+                if (!response.IsSuccessful)
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            }
+            else
+                Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+    }
+}

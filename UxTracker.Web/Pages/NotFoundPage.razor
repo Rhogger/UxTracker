@@ -1,0 +1,89 @@
+@using Blazored.LocalStorage
+
+@page "/not-found"
+@layout StatusCodeLayout
+
+<MudContainer
+    MaxWidth="MaxWidth.Medium"
+    Class="d-flex justify-center align-center flex-column gap-6 pa-8 h-full">
+    <MudText
+        Typo="Typo.h2"
+        Color="Color.Primary"
+        Align="Align.Center"
+        Class="title-2">
+        Erro 404 - Página Não Encontrada
+    </MudText>
+    
+    <MudText 
+        Typo="Typo.body1"
+        Align="Align.Center">
+        Desculpe, a página que você está procurando não foi encontrada.
+    </MudText>
+
+    <AuthorizeView Roles="Researcher">
+        <MudButton
+            Href="/projects"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="mt-4">
+            Voltar para a página inicial
+        </MudButton>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Reviewer">
+        <MudButton
+            Href="@Link"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="mt-4">
+            Voltar para a pesquisa
+        </MudButton>
+    </AuthorizeView>
+
+    <AuthorizeView>
+        <Authorized/>
+        <NotAuthorized>
+            @if (UserType.Equals("researcher"))
+            {
+                <MudButton
+                    Href="/login"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voltar para a página inicial
+                </MudButton>
+            }else if (UserType.Equals("reviewer"))
+            {
+                <MudButton
+                    Href="/reviewers/login"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voltar para a página inicial
+                </MudButton>
+            }
+            else
+            {
+                <MudButton
+                    Href="/"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voltar para a página inicial
+                </MudButton>
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+</MudContainer>
+
+@code{
+
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
+
+    private string ResearchCode { get; set; } = string.Empty;
+    private string Link { get; set; } = "/reviewers/login";
+    private string UserType { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResearchCode = await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty;
+        Link = $"reviewers/research/{ResearchCode}";
+    }
+}

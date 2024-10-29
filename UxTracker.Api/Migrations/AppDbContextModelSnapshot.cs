@@ -17,10 +17,25 @@ namespace UxTracker.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ProjectRelatory", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RelatoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProjectId", "RelatoryId");
+
+                    b.HasIndex("RelatoryId");
+
+                    b.ToTable("ProjectRelatory");
+                });
 
             modelBuilder.Entity("UserRole", b =>
                 {
@@ -56,17 +71,17 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("73bc5e43-a806-46c9-becf-f778e7031069"),
+                            Id = new Guid("64401e1d-cac4-4692-8ec9-6cf695d4364a"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("825533a5-e09d-431c-bd5a-750261e6b94e"),
+                            Id = new Guid("4be05ca3-7782-481d-b3f0-c748228bf802"),
                             Name = "Researcher"
                         },
                         new
                         {
-                            Id = new Guid("62d51832-25cf-457d-b192-1c281de0c64d"),
+                            Id = new Guid("76802828-5553-4a6c-b35e-fbd1e51d4205"),
                             Name = "Reviewer"
                         });
                 });
@@ -81,15 +96,237 @@ namespace UxTracker.Api.Migrations
                         .HasColumnType("BIT")
                         .HasColumnName("IsActivate");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", (string)null);
+
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConsentTermHash")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(64)")
+                        .HasColumnName("ConsentTermHash");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("Description");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndDate");
+
+                    b.Property<string>("PeriodType")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(10)")
+                        .HasColumnName("PeriodType");
+
+                    b.Property<DateTime?>("StartDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartDate");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Status");
+
+                    b.Property<int>("SurveyCollections")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("SurveyCollections");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Title");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Projects", (string)null);
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Relatory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Relatories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("81d07f64-84d7-41a1-b836-2c7f2c36ce72"),
+                            Title = "Visão geral da evolução das avaliações"
+                        },
+                        new
+                        {
+                            Id = new Guid("e02ba04d-e550-4e59-a3a0-11dda84794a4"),
+                            Title = "Avaliações de cada usuário por período"
+                        },
+                        new
+                        {
+                            Id = new Guid("a4427852-71b7-4bd8-acee-b3436261e814"),
+                            Title = "Distribuição das avaliações por período"
+                        },
+                        new
+                        {
+                            Id = new Guid("65e80003-298c-401d-b18c-7652c942ce49"),
+                            Title = "Frequência das avaliações por período de tempo"
+                        },
+                        new
+                        {
+                            Id = new Guid("c5f0026d-062b-433a-973f-be7f74604301"),
+                            Title = "Número adequado de clusters de usuário"
+                        },
+                        new
+                        {
+                            Id = new Guid("bcb23374-e4ad-414c-a28a-9ede7326930c"),
+                            Title = "Média da experiência do usuário ao longo do tempo"
+                        });
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.Rate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)")
+                        .HasColumnName("Comment");
+
+                    b.Property<int>("Index")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Index");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("RatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("RatedAt");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("DECIMAL(3,1)")
+                        .HasColumnName("Rating");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews", (string)null);
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.UserAcceptedTcle", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ProjectId");
+
+                    b.Property<DateTime>("AcceptedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("AcceptedAt");
+
+                    b.HasKey("UserId", "ProjectId");
+
+                    b.ToTable("AcceptedTerms", (string)null);
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Researcher", b =>
+                {
+                    b.HasBaseType("UxTracker.Core.Contexts.Account.Entities.User");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("NVARCHAR")
                         .HasColumnName("Name");
 
-                    b.HasKey("Id");
+                    b.ToTable("Researchers", (string)null);
+                });
 
-                    b.ToTable("Users", (string)null);
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Reviewer", b =>
+                {
+                    b.HasBaseType("UxTracker.Core.Contexts.Account.Entities.User");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("BirthDate");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("City");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Country");
+
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("Sex");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnName("State");
+
+                    b.ToTable("Reviewers", (string)null);
+                });
+
+            modelBuilder.Entity("ProjectRelatory", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Research.Entities.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UxTracker.Core.Contexts.Research.Entities.Relatory", null)
+                        .WithMany()
+                        .HasForeignKey("RelatoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("UserRole", b =>
@@ -164,10 +401,15 @@ namespace UxTracker.Api.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("Hash")
-                                .IsRequired()
                                 .HasMaxLength(75)
                                 .HasColumnType("NVARCHAR")
                                 .HasColumnName("PasswordHash");
+
+                            b1.Property<bool>("PasswordExists")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("BIT")
+                                .HasDefaultValue(true)
+                                .HasColumnName("PasswordExists");
 
                             b1.HasKey("UserId");
 
@@ -208,8 +450,70 @@ namespace UxTracker.Api.Migrations
                     b.Navigation("Email")
                         .IsRequired();
 
-                    b.Navigation("Password")
+                    b.Navigation("Password");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Project", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.Researcher", "User")
+                        .WithMany("Projects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Review.Entities.Rate", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Research.Entities.Project", "Project")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.Reviewer", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Researcher", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("UxTracker.Core.Contexts.Account.Entities.Researcher", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Reviewer", b =>
+                {
+                    b.HasOne("UxTracker.Core.Contexts.Account.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("UxTracker.Core.Contexts.Account.Entities.Reviewer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Research.Entities.Project", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Researcher", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("UxTracker.Core.Contexts.Account.Entities.Reviewer", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

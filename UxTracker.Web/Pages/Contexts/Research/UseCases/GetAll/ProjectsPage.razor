@@ -1,0 +1,117 @@
+@using UxTracker.Core.Contexts.Research.Extensions
+
+@page "/projects"
+@inherits Projects
+
+<AuthorizeView Roles="Researcher">
+    <Authorized>
+        <MudContainer
+            MaxWidth="MaxWidth.Large"
+            Class="pt-14 h-full r-container">
+            <MudPaper Class="h-max paper-projects r-paper rounded-lg">
+                <div Class="projects">
+                    <MudText
+                        Typo="Typo.h5"
+                        Align="Align.Start"
+                        Class="r-paper-title w-full">
+                        Projetos de pesquisa
+                    </MudText>
+
+                    <MudButton
+                        Class="r-add d-flex gap-2 py-2"
+                        Color="Color.Primary"
+                        Variant="Variant.Filled"
+                        Href="/projects/new"
+                        OnClick="AddNewProject">
+                        <MudText Typo="Typo.button" Class="add-hidden">
+                            Novo Projeto
+                        </MudText>
+
+                        <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                    </MudButton>
+                </div>
+
+                <MudDivider Class="ma-0" DividerType="DividerType.Inset"/>
+                
+                @if (!IsBusy)
+                {
+                    @if (Response.Data?.Projects.Count > 0)
+                    {
+                        <MudGrid>
+                            @foreach (var project in Response.Data.Projects)
+                            {
+                                <MudItem 
+                                    xs="12" sm="12" 
+                                    md="6" lg="6" 
+                                    xl="6" xxl="6">
+                             
+                                    <MudCard
+                                        Class="w-full rounded-lg h-full relative"
+                                        Style="background-color: #313945;"
+                                        Elevation="16"
+                                        Outlined="true">
+                                        <MudCardHeader
+                                            Class="d-flex align-start justify-space-between">
+                                            <MudText
+                                                Typo="Typo.subtitle1"
+                                                Align="Align.Start"
+                                                Class="title-projects">
+                                                @project.Title
+                                            </MudText>
+
+                                            <MudIcon
+                                                Class="pl-xs"
+                                                Icon="@Icons.Material.Filled.Circle"
+                                                Color="@GetStatusColor(project.Status)"/>
+                                        </MudCardHeader>
+                                        <MudDivider DividerType="DividerType.Middle"/>
+                                        <MudCardContent Class="d-flex pa-0">
+                                            <div class="w-full d-flex flex-column justify-start gap-5 pa-4">
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Status: @project.Status.ToHumanize()</MudText>
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Participantes: @project.ReviewersCount</MudText>
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Entregas: @project.ReviewsCount</MudText>
+                                            </div>
+
+                                            <MudDivider Class="mb-4" FlexItem="true" DividerType="DividerType.FullWidth" Vertical="true"/>
+
+                                            <div class="w-full  d-flex flex-column justify-start gap-5 pa-4">
+                                                <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data início: @project.StartDate?.ToString("dd/MM/yyyy")</MudText>
+                                                @if (project.EndDate != null)
+                                                {
+                                                    <MudText Align="Align.Start" Typo="Typo.body2" Class="text-projects">Data fim: @project.EndDate.Value.ToString("dd/MM/yyyy")</MudText>
+                                                }
+                                            </div>
+                                        </MudCardContent>
+                                        <MudButton
+                                            Class="pa-0 ma-0 h-full absolute"
+                                            Style="top: 0; left: 0;"
+                                            FullWidth="true"
+                                            OnClick="() => NavigateToProject(project.Id.ToString())"/>
+                                    </MudCard>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    }
+                    else
+                    {
+                        <div class="no-projects">
+                            <MudText Typo="Typo.h6" Class="no-projects-text">
+                                Não há projetos.
+                            </MudText>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-projects">
+                        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Medium" StrokeWidth="4" />
+                    </div>
+                }
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <RedirectToUnauthorizedPage/>
+    </NotAuthorized>
+</AuthorizeView>

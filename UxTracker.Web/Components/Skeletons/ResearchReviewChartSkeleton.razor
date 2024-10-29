@@ -1,0 +1,11 @@
+<MudSkeleton
+    Class="@SkeletonClass"
+    Animation="Animation.Wave"
+    Width="100%" 
+    Height="320px"
+    Style="transform: none"/>
+
+@code
+{
+    [Parameter] public string SkeletonClass { get; set; } = "w-full";
+}

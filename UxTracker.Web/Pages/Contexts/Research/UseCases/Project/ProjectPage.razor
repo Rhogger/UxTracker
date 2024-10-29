@@ -1,0 +1,448 @@
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Research.Validators
+@using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.Relatories
+@using UxTracker.Web.Components.MudBlazorExtensions
+
+@page "/project/{ProjectId:guid}"
+@inherits Project
+
+<AuthorizeView Roles="Researcher">
+<Authorized>
+<MudContainer
+    MaxWidth="MaxWidth.Large"
+    Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
+<div class="w-full justify-start r-container-item-flex">
+    <MudButton
+        OnClick="NavigateToBack"
+        Variant="Variant.Outlined"
+        Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
+        Voltar
+    </MudButton>
+</div>
+@if (!IsBusy)
+{
+    <div class="w-full h-full d-flex flex-column justify-center align-center gap-10">
+    <MudPaper
+        Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+        Outlined="true">
+    <div class="w-full justify-start r-container-item-flex-hidden">
+        <MudButton
+            StartIcon="@Icons.Material.Filled.ArrowBack"
+            OnClick="NavigateToBack"
+            Variant="Variant.Text"
+            Class="r-container-item-flex-hidden justify-start">
+            Voltar
+        </MudButton>
+    </div>
+    @if (!IsEditState)
+    {
+        <MudText
+            Typo="Typo.h4"
+            Align="Align.Center"
+            Class="r-paper-title">
+            @Response.Data!.Project.Title
+        </MudText>
+
+        <MudText
+            Typo="Typo.body1"
+            Class="r-paper-description">
+            @Response.Data!.Project.Description
+        </MudText>
+
+
+        <ValidateForm
+            TwoOptions="true"
+            Class="d-flex flex-column align-center gap-10"
+            ButtonContainerClass="d-flex justify-space-between w-full r-container-button"
+            ButtonClass="py-2 r-max-btn-icon w-full"
+            TextButton="Editar"
+            ButtonColor="Color.Info"
+            ButtonIcon="@Icons.Material.Filled.Edit"
+            SubmitFunction="ChangeState"
+            SecondTextButton="@TextChangeStatusButton"
+            SecondFunction="ChangeStatusAsync"
+            SecondButtonColor="@ColorButtonChangeStatus"
+            SecondButtonIcon="@Icons.Material.Filled.Autorenew"
+            FullWidthButton="false">
+            <MudGrid Spacing="6">
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudDatePicker
+                        Label="Data Inicial"
+                        Variant="Variant.Filled"
+                        Date="Response.Data?.Project.StartDate"
+                        ReadOnly="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudDatePicker
+                        Label="Data Final"
+                        Date="Response.Data?.Project.EndDate"
+                        ReadOnly="true"
+                        Variant="Variant.Filled"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Tipo do Período"
+                        Value="Response.Data?.Project.PeriodType.ToHumanize()"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        ReadOnly="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudNumericField
+                        ShrinkLabel="true"
+                        T="int"
+                        Label="Quantidade de Coleta"
+                        Value="Response.Data!.Project.SurveyCollections"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        ReadOnly="true"
+                        HideSpinButtons="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Status"
+                        Value="Response.Data?.Project.Status.ToHumanize()"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        ReadOnly="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="6" sm="4"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudNumericField
+                        ShrinkLabel="true"
+                        T="int"
+                        Label="Última entrega"
+                        Value="Response.Data!.Project.LastSurveyCollection"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        ReadOnly="true"
+                        HideSpinButtons="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="12" sm="6"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    <MudNumericField
+                        ShrinkLabel="true"
+                        T="int"
+                        Label="Quantidade de Avaliações"
+                        Value="Response.Data!.Project.ReviewsCount"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        ReadOnly="true"
+                        HideSpinButtons="true"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="12" sm="6"
+                    md="3" lg="3"
+                    xl="3" xxl="3">
+                    @if (Response.Data != null)
+                    {
+                        <MudNumericField
+                            ShrinkLabel="true"
+                            T="int"
+                            Label="Quantidade de Participantes"
+                            Value="Response.Data.Project.ReviewersCount"
+                            Variant="Variant.Filled"
+                            FullWidth="true"
+                            ReadOnly="true"
+                            HideSpinButtons="true"/>
+                    }
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudTextField
+                        @ref="CopyTextField"
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Link da Avaliação"
+                        Value="Response.Data?.Project.ResearchUrl"
+                        ReadOnly="true"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.ContentCopy"
+                        OnAdornmentClick="CopyTextToClipboard"/>
+                </GridItem>
+
+                <GridItem
+                    Xxs="12"
+                    xs="12" sm="6"
+                    md="6" lg="6"
+                    xl="6" xxl="6">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Termo de Aceite"
+                        Value="Response.Data?.Project.ConsentTermName"
+                        ReadOnly="true"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.Download"
+                        OnAdornmentClick="DownloadFileAsync"/>
+                </GridItem>
+            </MudGrid>
+        </ValidateForm>
+    }
+    else
+    {
+        <ValidateForm
+            TwoOptions="true"
+            ButtonContainerClass="d-flex justify-space-between w-full"
+            ButtonClass="py-2 r-max-btn w-full"
+            TextButton="Salvar"
+            ButtonIcon="@Icons.Material.Filled.Save"
+            ButtonColor="Color.Success"
+            SubmitFunction="UpdateAsync"
+            SecondTextButton="Excluir"
+            SecondButtonColor="Color.Error"
+            SecondButtonIcon="@Icons.Material.Filled.Delete"
+            SecondFunction="DeleteAsync"
+            FullWidthButton="false">
+            <MudGrid Spacing="6">
+                <MudItem xs="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Título"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        @bind-Value="UpdateRequest.Title"
+                        Required="true"
+                        RequiredError="O título deve ser informado"
+                        DebounceInterval="500"
+                        OnlyValidateIfDirty="true"
+                        Validation="@TitleValidator.Validate"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField
+                        ShrinkLabel="true"
+                        T="string"
+                        Label="Descrição"
+                        Variant="Variant.Filled"
+                        FullWidth="true"
+                        Lines="5"
+                        @bind-Value="UpdateRequest.Description"
+                        Required="true"
+                        RequiredError="A descrição deve ser informada"
+                        DebounceInterval="500"
+                        OnlyValidateIfDirty="true"
+                        Validation="@DescriptionValidator.Validate"/>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect
+                        T="PeriodType"
+                        Label="Tipo de periodo"
+                        AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="UpdateRequest.PeriodType"
+                        Required="true"
+                        RequiredError="Selecione o tipo de periodo"
+                        Variant="Variant.Filled">
+                        <MudSelectItem Value="PeriodType.Daily">Diario</MudSelectItem>
+                        <MudSelectItem Value="PeriodType.Weekly">Semanal</MudSelectItem>
+                        <MudSelectItem Value="PeriodType.Monthly">Mensal</MudSelectItem>
+                        <MudSelectItem Value="PeriodType.Yearly">Anual</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudNumericField
+                        T="int"
+                        ShrinkLabel="true"
+                        Label="Quantidade de coletas"
+                        @bind-Value="UpdateRequest.SurveyCollections"
+                        Variant="Variant.Filled"
+                        Min="1"
+                        HideSpinButtons="true"
+                        Required="true"
+                        RequiredError="Informe a quantidade de coleta"
+                        FullWidth="true"/>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker
+                        Label="Data Inicial"
+                        @bind-Date="UpdateRequest.StartDate"
+                        Variant="Variant.Filled"/>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker
+                        Label="Data Final"
+                        @bind-Date="UpdateRequest.EndDate"
+                        Variant="Variant.Filled"/>
+                </MudItem>
+
+                <MudItem xs="12" sm="12" class="d-flex justify-center mt-4">
+                    <MudStack Class="w-full">
+                        <MudFileUpload
+                            T="IBrowserFile?"
+                            OnFilesChanged="OnInputFileChanged"
+                            Hidden="false"
+                            InputClass="absolute w-full h-full overflow-hidden z-10"
+                            InputStyle="opacity:0"
+                            AppendMultipleFiles="false"
+                            acceptedFileTypes="application/pdf"
+                            @ondrop="ClearDragClass"
+                            @ondragenter="SetDragClass"
+                            @ondragleave="ClearDragClass"
+                            @ondragend="ClearDragClass"
+                            @onfocus="SetDragClass"
+                            @onfocusin="SetDragClass"
+                            @onfocusout="ClearDragClass">
+                            <ActivatorContent>
+                                <MudPaper
+                                    Height="300px"
+                                    Outlined="true"
+                                    Class="@DragClass">
+                                    <MudText
+                                        Typo="Typo.body1"
+                                        Align="Align.Center">
+                                        Arraste e solte o Termo de aceite ou clique aqui (somente PDF)
+                                    </MudText>
+                                    @if (FileName is not null)
+                                    {
+                                        <MudChip T="string"
+                                                 Color="Color.Dark"
+                                                 Text="@FileName"
+                                                 tabindex="-1"/>
+                                    }
+                                </MudPaper>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                    </MudStack>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h6">Relatórios</MudText>
+                </MudItem>
+
+                @if (!IsRelatoriesBusy)
+                {
+                    @foreach (var relatory in SelectedRelatories)
+                    {
+                        <MudItem
+                            xs="12" sm="12"
+                            md="6" lg="6"
+                            xl="6" xxl="6">
+                            <MudCheckBox
+                                T="bool"
+                                Label="@relatory.Title"
+                                @bind-Value="relatory.IsChecked"
+                                Validation="@RelatoriesValidator.Validate(UpdateRequest.Relatories)"/>
+                        </MudItem>
+                    }
+
+                    if (!IsValid)
+                    {
+                        <MudText
+                            Align="Align.Start"
+                            Color="Color.Error"
+                            Class="pa-8">
+                            @RelatoriesValidator.Validate(UpdateRequest.Relatories)
+                        </MudText>
+                    }
+                }
+                else
+                {
+                    <div class="d-flex justify-center align-center w-full" style="min-height: 100px;">
+                        <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Medium" StrokeWidth="4"/>
+                    </div>
+                }
+            </MudGrid>
+        </ValidateForm>
+    }
+    </MudPaper>
+
+    @if (Response.Data != null && !IsEditState)
+    {
+        if (!Response.Data.Project.Status.Equals(Status.NotStarted))
+        {
+            <MudPaper
+                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+                Outlined="true">
+                <MudText
+                    Typo="Typo.h4"
+                    Align="Align.Center"
+                    Class="r-paper-title">
+                    Relatórios
+                </MudText>
+
+                @if (Response.Data.Project.Status.Equals(Status.Finished) && Response.Data.Project.Relatories != null)
+                {
+                    foreach (var relatory in Response.Data.Project.Relatories)
+                    {
+                        <MudText
+                            Align="Align.Center"
+                            Class=""
+                            Typo="Typo.h5">
+                            @relatory.Title    
+                        </MudText>
+
+                        if (@relatory.Title.Equals("Distribuição das avaliações por período"))
+                        {
+                            <BoxplotEvaluationDistribution
+                                PeriodType="Response.Data.Project.PeriodType"
+                                SurveyCollections="Response.Data.Project.SurveyCollections"
+                                Rates="Response.Data.Project.Reviews"
+                                ContainerClass="w-full r-no-graphics"/>
+                        }
+                    }
+                }
+            </MudPaper>
+        }
+    }
+    </div>
+}
+</MudContainer>
+</Authorized>
+    
+<NotAuthorized>
+    <RedirectToUnauthorizedPage/>
+</NotAuthorized>
+</AuthorizeView>

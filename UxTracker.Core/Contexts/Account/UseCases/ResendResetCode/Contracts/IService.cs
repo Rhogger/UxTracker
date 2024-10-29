@@ -4,5 +4,5 @@ namespace UxTracker.Core.Contexts.Account.UseCases.ResendResetCode.Contracts;
 
 public interface IService
 {
-    Task ResendResetCodeAsync(User user, CancellationToken cancellationToken);
+    Task ResendResetCodeAsync(Researcher user, CancellationToken cancellationToken);
 }

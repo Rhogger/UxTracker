@@ -1,0 +1,73 @@
+@using UxTracker.Core.Contexts.Account.Enums
+@using UxTracker.Core.Contexts.Account.Validators
+@using UxTracker.Web.Components.TextFields
+@using UxTracker.Web.Components.Forms
+
+@page "/register"
+@layout HeadlessLayout
+@inherits Register
+
+<MudContainer
+    MaxWidth="MaxWidth.Small"
+    Class="d-flex flex-column justify-center align-content-center gap-9 h-full py-14">
+    <MudText
+        Typo="Typo.h4"
+        Align="Align.Center"        
+        Class="headless-title">
+        Cadastre-se no UxTracker
+    </MudText>
+
+    <MudContainer 
+        MaxWidth="MaxWidth.ExtraSmall" 
+        Class="d-flex flex-column gap-4">
+        <MudPaper Class="pa-6 rounded-lg" Outlined="true">
+            <ValidateForm 
+                SubmitFunction="SignUpAsync" 
+                TextButton="Cadastrar" 
+                IsBusy="IsBusy">
+                @* ReSharper disable once CSharpWarnings::CS8974 *@
+                <MudTextField
+                    ShrinkLabel="true"
+                    T="string"
+                    Label="Nome completo"
+                    HelperText="Mínimo de 3 caracteres"
+                    Variant="Variant.Filled"
+                    @bind-Value="Request.Name"
+                    Required="true"
+                    RequiredError="O nome deve ser informado"
+                    Immediate="true"
+                    OnlyValidateIfDirty="true"
+                    Validation="@NameValidator.Validate"/>
+
+                <EmailTextField @bind-Email="Request.Email"/>
+
+                <PasswordTextField 
+                    @bind-Password="Request.Password" 
+                    ValidatorType="ValidatorTypes.Validator"/>
+                
+                <PasswordTextField
+                    Label="Confirmar senha" 
+                    @bind-Password="ConfirmPassword" 
+                    ConfirmPassword="@Request.Password" 
+                    ValidatorType="ValidatorTypes.Comparator"/>
+            </ValidateForm>
+        </MudPaper>
+
+        <MudPaper 
+            Class="px-4 py-7 rounded-lg" 
+            Outlined="true">
+            <MudText 
+                Align="Align.Center"
+                Class="headless-text">
+                É novo no UxTracker?
+                <MudLink 
+                    Href="/login"
+                    Class="headless-text">
+                    <strong>
+                        Faça Login
+                    </strong>
+                </MudLink>
+            </MudText>
+        </MudPaper>
+    </MudContainer>
+</MudContainer>

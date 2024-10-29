@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -17,9 +18,10 @@ public static class BuilderExtensions
         Configuration.Database.ConnectionString =
             builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
-        Configuration.Secrets.ApiKey =
-            builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") 
-            ?? string.Empty;
+        //TODO: Analisar utilidade
+        // Configuration.Secrets.ApiKey =
+        //     builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") 
+        //     ?? string.Empty;
         Configuration.Secrets.JwtPrivateKey =
             builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey")
             ?? string.Empty;
@@ -59,7 +61,15 @@ public static class BuilderExtensions
             )
         );
     }
-
+    
+    public static void AddFormOptions(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<FormOptions>(options =>
+        {
+            options.MultipartBodyLengthLimit = 20 * 1024 * 1024;
+        });
+    }
+    
     public static void AddJwtAuthentication(this WebApplicationBuilder builder)
     {
         builder
@@ -84,20 +94,12 @@ public static class BuilderExtensions
                 };
             });
 
-        builder.Services.AddAuthorizationBuilder()
-            .AddPolicy("ResearcherPolicy", policy =>
-            {
-                policy.RequireRole("Researcher");
-            })
-            .AddPolicy("ReviewerPolicy", policy =>
-            {
-                policy.RequireRole("Reviewer");
-            })
-            .AddPolicy("AdminPolicy", policy =>
-            {
-                policy.RequireRole("Admin");
-            });
-        
+        builder.Services.AddAuthorizationBuilder();
+    }
+
+    public static void AddSecurity(this WebApplicationBuilder builder)
+    {        
+        builder.Services.AddAntiforgery();
     }
 
     public static void AddMediator(this WebApplicationBuilder builder)

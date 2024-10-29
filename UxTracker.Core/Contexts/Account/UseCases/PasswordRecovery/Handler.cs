@@ -4,17 +4,8 @@ using UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery.Contracts;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.PasswordRecovery;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository, IService service) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-    private readonly IService _service;
-
-    public Handler(IRepository repository, IService service)
-    {
-        _repository = repository;
-        _service = service;
-    }
-
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição 
@@ -33,13 +24,13 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
 
-        User? user;
-        
         #region 02. Recuperar usuário do banco
+        
+        Researcher? user;
 
         try
         {
-            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            user = await repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
@@ -69,9 +60,9 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            user.Password.GenerateResetCode();
+            user.Password?.GenerateResetCode();
 
-            await _repository.UpdateResetCodeAsync(user, cancellationToken);
+            await repository.UpdateResetCodeAsync(user, cancellationToken);
         }
         catch
         {
@@ -84,7 +75,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            await _service.SendResetCodeAsync(user, cancellationToken);
+            await service.SendResetCodeAsync(user, cancellationToken);
         }
         catch
         {

@@ -1,15 +1,12 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using UxTracker.Core.Contexts.Shared.Extensions;
 using UxTracker.Core.Contexts.Shared.ValueObjects;
 
 namespace UxTracker.Core.Contexts.Account.ValueObjects;
 
 public partial class Email : ValueObject
 {
-    protected Email() { }
-
     public Email(string address)
     {
         if (string.IsNullOrEmpty(address))
@@ -26,7 +23,6 @@ public partial class Email : ValueObject
 
     private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
     public string Address { get; }
-    public string Hash => Address.ToBase64();
     public Verification Verification { get; private set; } = new();
     
     public void ResendVerification() =>
@@ -39,7 +35,7 @@ public partial class Email : ValueObject
     public override string ToString() => Address;
 
     [GeneratedRegex(Pattern)]
-    private static partial Regex EmailRegex();
+    internal static partial Regex EmailRegex();
     
     public string ToSha256Hash()
     {

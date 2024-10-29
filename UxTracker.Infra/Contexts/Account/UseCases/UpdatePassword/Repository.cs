@@ -5,26 +5,22 @@ using UxTracker.Infra.Data;
 
 namespace UxTracker.Infra.Contexts.Account.UseCases.UpdatePassword;
 
-public class Repository: IRepository
+public class Repository(AppDbContext context) : IRepository
 {
-    private readonly AppDbContext _context;
-    
-    public Repository(AppDbContext context) => _context = context;
-    
-    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
-        => await _context
-            .Users
+    public async Task<Researcher?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+        => await context
+            .Researchers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Address == email && x.IsActive == true, cancellationToken: cancellationToken);
 
-    public async Task UpdatePasswordAsync(User user, string plainTextPassword, CancellationToken cancellationToken)
+    public async Task UpdatePasswordAsync(Researcher user, string plainTextPassword, CancellationToken cancellationToken)
     {
         user.UpdatePassword(plainTextPassword);
 
-        _context
-            .Users
+        context
+            .Researchers
             .Update(user);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

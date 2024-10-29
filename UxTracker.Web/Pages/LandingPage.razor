@@ -1,0 +1,191 @@
+@page "/"
+@layout HeadlessLayout
+
+<MudAppBar>
+    <MudText
+        Typo="Typo.h5"
+        Style="font-weight: bold; color: white;">
+        UxTracker
+    </MudText>
+
+    <MudSpacer/>
+
+    <div class="d-flex gap-4">
+        <MudButton
+            Href="/login"
+            Variant="Variant.Text"
+            Color="Color.Inherit">
+            Login
+        </MudButton>
+
+        <MudButton
+            Href="/register"
+            Variant="Variant.Outlined"
+            Color="Color.Inherit">
+            Cadastre-se
+        </MudButton>
+    </div>
+</MudAppBar>
+
+<MudContainer 
+    MaxWidth="MaxWidth.Large"
+    Class="mt-14 pt-14 px-15 h-full">
+    <MudGrid>
+        <MudItem 
+            xs="12" sm="12" 
+            md="6" lg="6" 
+            xl="6" xxl="6" 
+            Class="d-flex flex-column gap-8">
+            <MudText
+                Typo="Typo.h2"
+                Class="title-2">
+                Bem-vindo ao UxTracker
+            </MudText>
+            
+            <MudText Typo="Typo.body1">
+                O Ux Tracker é um software desenvolvido para automatizar e facilitar a vida dos profissionais
+                que trabalham no ramo da experiência do usuário. Avalie de forma longitudinal e obtenha
+                feedbacks valiosos para melhorar a usabilidade do seu produto ou serviço.
+            </MudText>
+            
+            <MudButton 
+                Href="/register" 
+                Variant="Variant.Filled" 
+                Color="Color.Primary"
+                Class="d-block w-fit">
+                Comece Agora
+            </MudButton>
+        </MudItem>
+        
+        <MudItem 
+            xs="12" sm="12" 
+            md="6" lg="6" 
+            xl="6" xxl="6">
+            <MudPaper 
+                Elevation="4" 
+                Class="pa-4"> 
+                <MudCarousel 
+                    TData="object"
+                    Class="w-full h-full" 
+                    Style="height:400px;" 
+                    ShowArrows="true" 
+                    ShowBullets="true"
+                    EnableSwipeGesture="true" 
+                    AutoCycle="true">
+                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
+                        @* <img  *@
+                        @*     src="images/Gráficos.png"  *@
+                        @*     alt="BoxPlot"  *@
+                        @*     class="obj-fit" *@
+                        @*     style="max-height:100%; max-width:100%;" /> *@
+                        <div class="w-full h-full obj-fit" style="background-color: white; max-height: 220px;"></div>
+                    </MudCarouselItem>
+
+                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
+                        @* <img  *@
+                        @*     src="images/UxCurve.png"  *@
+                        @*     alt="UxCurve"  *@
+                        @*     class="obj-fit" *@
+                        @*     style="max-height:100%; max-width:100%;" /> *@
+                        <div class="w-full h-full obj-fit" style="background-color: white; max-height: 220px;"></div>
+                    </MudCarouselItem>
+                </MudCarousel>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem 
+            Class="py-14 mt-16" 
+            xs="12" sm="12" 
+            md="12" lg="12" 
+            xl="12" xxl="12">
+            <MudText
+                Typo="Typo.h4"
+                Align="Align.Center">
+                Funcionalidades
+            </MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Class="inverse">
+        <MudItem
+            Class="mb-12 pr-6"
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
+            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
+            @*      style="max-height:100%; max-width:100%;" /> *@
+        </MudItem>
+        
+        <MudItem
+            Class="mb-12"
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Interface Intuitiva
+            </MudText>
+            <MudText Typo="Typo.body1">
+                Interface amigável que facilita a curva de aprendizado dos fluxos do sistema.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem
+            Class="mb-12 pr-6"
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Análise Longitudinal
+            </MudText>
+            <MudText Typo="Typo.body1">
+                Avalie e acompanhe a evolução da experiência do usuário ao longo do tempo.
+            </MudText>
+        </MudItem>
+        
+        <MudItem
+            Class="mb-12"
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
+            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
+            @*      style="max-height:100%; max-width:100%;" /> *@
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Class="inverse">
+        <MudItem 
+            Class="pr-6"
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
+            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
+            @*      style="max-height:100%; max-width:100%;" /> *@
+        </MudItem>
+        
+        <MudItem
+            xs="12" sm="12"
+            md="6" lg="6"
+            xl="6" xxl="6">
+            <MudText
+                Typo="Typo.h5"
+                Color="Color.Primary"
+                Style="font-weight: bold;">
+                Relatórios Detalhados
+            </MudText>
+            
+            <MudText Typo="Typo.body1">
+                Obtenha relatórios precisos e detalhados sem a necessidade de transfêrencia de dados para softwares externos
+                e de forma manual.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+        
+    <div class="pb-10 pt-20">
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            © 2024 UxTracker. Todos os direitos reservados.
+        </MudText>
+    </div>
+</MudContainer>

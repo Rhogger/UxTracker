@@ -9,8 +9,12 @@ builder.AddDatabase();
 builder.AddCrossOrigin();
 builder.AddDocumentation();
 builder.AddJwtAuthentication();
+builder.AddSecurity();
 
+builder.AddFormOptions();
 builder.AddAccountContext();
+builder.AddResearchContext();
+builder.AddReviewContext();
 
 builder.AddMediator();
 
@@ -26,5 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseConfigurationsDevEnvironment();
 
 app.MapAccountEndpoints();
+app.MapResearchEndpoints();
+app.MapReviewEndpoints();
 
 app.Run();

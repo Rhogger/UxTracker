@@ -4,15 +4,8 @@ using UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify.Contracts;
 
 namespace UxTracker.Core.Contexts.Account.UseCases.PasswordRecoveryVerify;
 
-public class Handler: IRequestHandler<Request, Response>
+public class Handler(IRepository repository) : IRequestHandler<Request, Response>
 {
-    private readonly IRepository _repository;
-
-    public Handler(IRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         #region 01. Validar requisição
@@ -31,13 +24,13 @@ public class Handler: IRequestHandler<Request, Response>
 
         #endregion
         
-        User? user;
-
         #region 02. Recuperar usuário do banco
+
+        Researcher? user;
 
         try
         {
-            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            user = await repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
                 return new Response("Usuário não cadastrado", 404);
@@ -65,10 +58,10 @@ public class Handler: IRequestHandler<Request, Response>
         
         #region 04. Checar validade do código
 
-        if (!user.Password.IsValidResetCode(request.ResetCode))
+        if (user.Password != null && !user.Password.IsValidResetCode(request.ResetCode))
             return new Response("Código está incorreto", 400);
         
-        if (user.Password.ResetCode.ExpireAt < DateTime.UtcNow)
+        if (user.Password?.ResetCode?.ExpireAt < DateTime.UtcNow)
             return new Response("Código está expirado", 400);
 
         #endregion
@@ -77,7 +70,7 @@ public class Handler: IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.ValidateResetCodeAsync(user, cancellationToken);
+            await repository.ValidateResetCodeAsync(user, cancellationToken);
         }
         catch
         {
