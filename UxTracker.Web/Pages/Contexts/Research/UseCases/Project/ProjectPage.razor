@@ -2,6 +2,7 @@
 @using UxTracker.Core.Contexts.Research.Extensions
 @using UxTracker.Core.Contexts.Research.Validators
 @using UxTracker.Web.Components.Forms
+@using UxTracker.Web.Components.Relatories
 @using UxTracker.Web.Components.MudBlazorExtensions
 
 @page "/project/{ProjectId:guid}"
@@ -13,17 +14,18 @@
     MaxWidth="MaxWidth.Large"
     Class="d-flex flex-column justify-center align-center gap-4 pt-14 h-full r-container">
 <div class="w-full justify-start r-container-item-flex">
-    <MudButton 
+    <MudButton
         OnClick="NavigateToBack"
-        Variant="Variant.Outlined" 
+        Variant="Variant.Outlined"
         Class="py-2 px-15 mud-paper-outlined mud-paper r-container-item-flex">
         Voltar
     </MudButton>
 </div>
 @if (!IsBusy)
 {
-    <MudPaper 
-        Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper" 
+    <div class="w-full h-full d-flex flex-column justify-center align-center gap-10">
+    <MudPaper
+        Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
         Outlined="true">
     <div class="w-full justify-start r-container-item-flex-hidden">
         <MudButton
@@ -49,7 +51,7 @@
             @Response.Data!.Project.Description
         </MudText>
 
-                
+
         <ValidateForm
             TwoOptions="true"
             Class="d-flex flex-column align-center gap-10"
@@ -372,8 +374,7 @@
                                 T="bool"
                                 Label="@relatory.Title"
                                 @bind-Value="relatory.IsChecked"
-                                Validation="@RelatoriesValidator.Validate(UpdateRequest.Relatories)"
-                            />
+                                Validation="@RelatoriesValidator.Validate(UpdateRequest.Relatories)"/>
                         </MudItem>
                     }
 
@@ -397,6 +398,46 @@
         </ValidateForm>
     }
     </MudPaper>
+
+    @if (Response.Data != null && !IsEditState)
+    {
+        if (!Response.Data.Project.Status.Equals(Status.NotStarted))
+        {
+            <MudPaper
+                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+                Outlined="true">
+                <MudText
+                    Typo="Typo.h4"
+                    Align="Align.Center"
+                    Class="r-paper-title">
+                    Relatórios
+                </MudText>
+
+                @if (Response.Data.Project.Status.Equals(Status.Finished) && Response.Data.Project.Relatories != null)
+                {
+                    foreach (var relatory in Response.Data.Project.Relatories)
+                    {
+                        <MudText
+                            Align="Align.Center"
+                            Class=""
+                            Typo="Typo.h5">
+                            @relatory.Title    
+                        </MudText>
+
+                        if (@relatory.Title.Equals("Distribuição das avaliações por período"))
+                        {
+                            <BoxplotEvaluationDistribution
+                                PeriodType="Response.Data.Project.PeriodType"
+                                SurveyCollections="Response.Data.Project.SurveyCollections"
+                                Rates="Response.Data.Project.Reviews"
+                                ContainerClass="w-full r-no-graphics"/>
+                        }
+                    }
+                }
+            </MudPaper>
+        }
+    }
+    </div>
 }
 </MudContainer>
 </Authorized>
@@ -405,95 +446,3 @@
     <RedirectToUnauthorizedPage/>
 </NotAuthorized>
 </AuthorizeView>
-
-@* else *@
-@* { *@
-@*     <MudPaper Class="pa-4 rounded-lg" Outlined="true"> *@
-@*         <MudTextField T="string" Label="Título da pesquisa" Variant="Variant.Filled" FullWidth="true" *@
-@*                       @bind-Value="UpdateRequest.Title" Class="pa-5"/> *@
-@*         <MudTextField T="string" Label="Descrição da pesquisa" Variant="Variant.Filled" FullWidth="true" *@
-@*                       @bind-Value="UpdateRequest.Description" Class="pa-5"/> *@
-@* *@
-@*         <MudForm Class="pa-5"> *@
-@*             <MudGrid Spacing="3"> *@
-@*                 <MudItem xs="12" sm="3"> *@
-@*                     <MudDatePicker Label="Data Inicial" @bind-Date="_startDate" Variant="Variant.Filled"/> *@
-@*                 </MudItem> *@
-@*                 <MudItem xs="12" sm="3"> *@
-@*                     <MudTextField ShrinkLabel="true" T="string" Label="Código da pesquisa" Variant="Variant.Filled" FullWidth="true" ReadOnly="true"/> *@
-@*                 </MudItem> *@
-@*                 <MudItem xs="12" sm="6"> *@
-@*                     <MudTextField @ref="textFieldRef" ShrinkLabel="true" T="string" Label="Link da Avaliação" *@
-@*                                   Value="@evaluationLink" Variant="Variant.Filled" FullWidth="true" *@
-@*                                   Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" *@
-@*                                   OnAdornmentClick="CopyTextToClipboard" ReadOnly="true"/> *@
-@*                 </MudItem> *@
-@*                 <MudItem xs="12" sm="3"> *@
-@*                     <MudDatePicker Label="Data Final" @bind-Date="_endDate" Variant="Variant.Filled"/> *@
-@*                 </MudItem> *@
-@*                 <MudItem xs="12" sm="3"> *@
-@*                     <MudTextField ShrinkLabel="true" T="string" Label="Status" Variant="Variant.Filled" FullWidth="true" ReadOnly="true"/> *@
-@*                 </MudItem> *@
-@*                 <MudItem xs="12" sm="6"> *@
-@*                     <MudTextField ShrinkLabel="true" T="string" Label="Termo de Aceite" ReadOnly="true" Variant="Variant.Filled" *@
-@*                                   FullWidth="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" *@
-@*                                   OnAdornmentClick="DownloadFile"/> *@
-@*                 </MudItem> *@
-@*             </MudGrid> *@
-@*         </MudForm> *@
-@*         <div class="d-flex justify-center"> *@
-@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Error" Class="py-2 px-15 mx-2" OnClick="CancelChanges">Cancelar</MudButton> *@
-@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15 mx-2" OnClick="ChangeState">Salvar</MudButton> *@
-@*         </div> *@
-@*     </MudPaper> *@
-@* } *@
-@* *@
-@* @if (Status == "Em andamento") *@
-@* { *@
-@*     <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatório</MudText> *@
-@* *@
-@*     <MudContainer MaxWidth="MaxWidth.Medium"> *@
-@*         <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
-@*             <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot> *@
-@*                 <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)" *@
-@*                                    Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)" *@
-@*                                    Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)"/> *@
-@*             </ApexChart> *@
-@*         </MudPaper> *@
-@* *@
-@*         <div class="d-flex justify-end mt-3"> *@
-@*             <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Success" Class="py-2 px-15" OnClick="FinishResearch"> *@
-@*                 Finalizar Pesquisa *@
-@*             </MudButton> *@
-@*         </div> *@
-@*     </MudContainer> *@
-@* } *@
-@* else if (Status == "Concluído") *@
-@* { *@
-@*         <MudText Typo="Typo.h4" Align="MudBlazor.Align.Center" Class="pa-5">Relatórios</MudText> *@
-@*         <MudContainer MaxWidth="MaxWidth.Medium"> *@
-@*             <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
-@*                 <ApexChart TItem="BoxPlotSample" Title="Distribuição das avaliações por período" Options=options @ref=BoxPlot> *@
-@*                     <ApexBoxPlotSeries TItem="BoxPlotSample" Items="incidents" Name="incidents" XValue="@(e => e.Name)" *@
-@*                                        Max="@(e => (decimal)e.Max)" Min="@(e => (decimal)e.Min)" Quantile1="@(e => (decimal)e.Q1)" *@
-@*                                        Quantile3="@(e => (decimal)e.Q3)" Median="@(e => (decimal)e.Median)"/> *@
-@*                 </ApexChart> *@
-@*             </MudPaper> *@
-@* *@
-@*             <MudContainer Class="pa-5" MaxWidth="MaxWidth.Medium"> *@
-@*                 <MudPaper Class="pa-5 rounded-lg" Outlined="true"> *@
-@*                     <ApexChart TItem="Cluster" Title="Distribuição de Desconto" XAxisType="XAxisType.Numeric" Debug Options="ClustersOptions"> *@
-@*                         <ApexPointSeries TItem="Cluster" Items="clusters" Name="% Bruto" SeriesType="SeriesType.Scatter" *@
-@*                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e => e.X"/> *@
-@*                         <ApexPointSeries TItem="Cluster" SeriesType="SeriesType.Line" Name="Tendência" *@
-@*                                          XValue="@(e => e.DiscountPercentage)" YValue="@(e => e.GrossValue)" OrderByDescending="e => e.X"/> *@
-@*                     </ApexChart> *@
-@*                 </MudPaper> *@
-@*             </MudContainer> *@
-@*         </MudContainer> *@
-@*         } *@
-@*     } *@
-@*     else *@
-@*     { *@
-@*     <MudText>Carregando...</MudText> *@
-@*     } *@

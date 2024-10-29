@@ -41,7 +41,6 @@ public class Project: ComponentBase
     protected string DragClass = DefaultDragClass;
     protected string? FileName = string.Empty;
     private IBrowserFile? _consentTerm;
-    protected byte[]? ConsentTermBytes { get; set; } = null!;
     protected MudTextField<string> CopyTextField = null!;
 
     
@@ -60,7 +59,18 @@ public class Project: ComponentBase
                     UpdateRequest.ProjectId = ProjectId.ToString();
                     UpdateStatusRequest.ProjectId = ProjectId.ToString();
                     FileName = Response.Data?.Project.ConsentTermName;
-                    TextChangeStatusButton = Response.Data is { Project.Status: Status.InProgress } ? "Finalizar Pesquisa" : "Iniciar Pesquisa";
+                    
+                    if (Response.Data != null)
+                    {
+                        TextChangeStatusButton = Response.Data.Project.Status switch
+                        {
+                            Status.NotStarted => "Iniciar Pesquisa",
+                            Status.InProgress => "Finalizar Pesquisa",
+                            Status.Finished => "Retomar Pesquisa",
+                            _ => TextChangeStatusButton
+                        };
+                    }
+
                     ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
                         ? Color.Success
                         : Color.Warning;
@@ -164,9 +174,14 @@ public class Project: ComponentBase
 
                         Response.Data.Project.ConsentTermName = FileName;
 
-                        TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress)
-                            ? "Finalizar Pesquisa"
-                            : "Iniciar Pesquisa";
+                        TextChangeStatusButton = Response.Data.Project.Status switch
+                        {
+                            Status.NotStarted => "Iniciar Pesquisa",
+                            Status.InProgress => "Finalizar Pesquisa",
+                            Status.Finished => "Retomar Pesquisa",
+                            _ => TextChangeStatusButton
+                        };
+                        
                         ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
                             ? Color.Success
                             : Color.Warning;
@@ -219,9 +234,13 @@ public class Project: ComponentBase
                         Response.Data.Project.EndDate = response.Data?.Data?.Project.EndDate;
                         if (response.Data?.Data != null)
                             Response.Data.Project.Status = response.Data.Data.Project.Status;
-                        TextChangeStatusButton = Response.Data.Project.Status.Equals(Status.InProgress)
-                            ? "Finalizar Pesquisa"
-                            : "Iniciar Pesquisa";
+                        TextChangeStatusButton = Response.Data.Project.Status switch
+                        {
+                            Status.NotStarted => "Iniciar Pesquisa",
+                            Status.InProgress => "Finalizar Pesquisa",
+                            Status.Finished => "Retomar Pesquisa",
+                            _ => TextChangeStatusButton
+                        };
                         ColorButtonChangeStatus = Response.Data.Project.Status.Equals(Status.InProgress)
                             ? Color.Success
                             : Color.Warning;

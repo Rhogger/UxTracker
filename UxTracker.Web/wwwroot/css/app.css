@@ -122,6 +122,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
+.apexcharts-menu{
+    background-color: #313945 !important;
+}
 
 @media screen and (max-width: 961px) {
     .inverse{
