@@ -9,9 +9,8 @@ namespace UxTracker.Infra.Contexts.Research.UseCases.GetForReview;
 public class Repository(AppDbContext context) : IRepository
 {
     public async Task<GetForReviewDto?> GetProjectsByIdAsync(string userId, string projectId,
-        CancellationToken cancellationToken)
-    {
-        var project = await context
+        CancellationToken cancellationToken) =>
+        await context
             .Projects
             .AsNoTracking()
             .Where(x => x.Id.ToString().Equals(projectId))
@@ -28,39 +27,14 @@ public class Repository(AppDbContext context) : IRepository
                     .OrderBy(r => r.RatedAt)
                     .Select(rate => new UserRates
                     {
+                        Index = rate.Index,
                         Rate = rate.Rating,
                         Comment = rate.Comment,
                         RatedAt = rate.RatedAt
                     }).ToList()
             })
             .FirstOrDefaultAsync(cancellationToken);
-        
-        if (project == null)
-        {
-            return null;
-        }
-
-        var indexedReviews = project.Reviews
-            .Select((review, index) => new UserRates
-            {
-                Rate = review.Rate,
-                Comment = review.Comment,
-                RatedAt = review.RatedAt,
-                Index = index
-            }).ToList();
-
-        return new GetForReviewDto
-        {
-            Id = project.Id,
-            Title = project.Title,
-            Description = project.Description,
-            Status = project.Status,
-            PeriodType = project.PeriodType,
-            SurveyCollections = project.SurveyCollections,
-            Reviews = indexedReviews
-        };
-    }
-
+    
     public async Task<bool> IsTermAcceptedAsync(string userId, string projectId, CancellationToken cancellationToken) =>
         await context
             .AcceptedTerms

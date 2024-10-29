@@ -20,7 +20,6 @@ public class Repository(AppDbContext context) : IRepository
 
     public async Task<Project?> GetProjectByIdAsync(string id, CancellationToken cancellationToken) => await context
         .Projects
-        .AsNoTracking()
         .Include(x => x.Relatories)
         .Include(x => x.Reviews)
         .FirstOrDefaultAsync(x => x.Id.ToString() == id, cancellationToken);

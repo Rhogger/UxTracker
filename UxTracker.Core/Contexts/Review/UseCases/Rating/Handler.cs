@@ -81,10 +81,18 @@ public class Handler(IRepository repository) : IRequestHandler<Request, Response
         #region 04. Gerar os Objetos
 
         Rate rate;
+        
+        var lastRate = rates is not null && rates.Count > 0 
+            ? rates.MaxBy(r => r.RatedAt) 
+            : null;
+        
+        var index = lastRate is not null 
+            ? lastRate.Index + 1
+            : 0;
 
         try
         {
-            rate = new Rate(Guid.Parse(request.UserId), Guid.Parse(request.ProjectId), request.Rating, request.Comment);
+            rate = new Rate(Guid.Parse(request.UserId), Guid.Parse(request.ProjectId), index, request.Rating, request.Comment);
         }
         catch (Exception ex)
         {

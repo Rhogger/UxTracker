@@ -23,7 +23,7 @@ public class Repository(AppDbContext context) : IRepository
                 EndDate = x.EndDate,
                 PeriodType = x.PeriodType,
                 SurveyCollections = x.SurveyCollections,
-                LastSurveyCollection = x.Reviews.Count > 0 
+                LastSurveyCollection = x.Reviews.Count > 0
                     ? x.Reviews
                         .GroupBy(rate => rate.UserId)
                         .Select(rates => rates.Count())
@@ -41,12 +41,17 @@ public class Repository(AppDbContext context) : IRepository
                     Id = relatory.Id,
                     Title = relatory.Title,
                 }).ToList(),
-                Reviews = x.Reviews.Select(rate => new ReviewsDto
-                {
-                    UserId = rate.UserId,
-                    Email = rate.User.Email,
-                    Rate = rate.Rating,
-                    Comment = rate.Comment,
-                }).ToList(),
+                Reviews = x.Reviews.Count > 0
+                    ? x.Reviews
+                        .OrderBy(rate => rate.RatedAt)
+                        .Select(rate => new ReviewsDto
+                        {
+                            UserId = rate.UserId,
+                            Email = rate.User.Email,
+                            Index = rate.Index,
+                            Rate = rate.Rating,
+                            Comment = rate.Comment,
+                        }).ToList()
+                    : new List<ReviewsDto>(),
             }).FirstOrDefaultAsync(cancellationToken);
 }

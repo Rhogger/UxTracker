@@ -10,6 +10,11 @@ public class ReviewMap: IEntityTypeConfiguration<Rate>
     {
         builder.ToTable("Reviews");
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Index)
+            .HasColumnName("Index")
+            .HasColumnType("INTEGER")
+            .IsRequired();
         
         builder.Property(x => x.Rating)
             .HasColumnName("Rating")

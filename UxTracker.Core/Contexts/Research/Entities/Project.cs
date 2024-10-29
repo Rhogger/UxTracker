@@ -170,6 +170,4 @@ public class Project: Entity
 
         return !allMatch;
     }
-
-
 }

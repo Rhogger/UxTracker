@@ -18,5 +18,5 @@ public class GetDto
     public string ConsentTermUrl { get; set; } = string.Empty;
     public string ResearchUrl { get; set; } = string.Empty;
     public List<GetRelatoriesDto>? Relatories { get; set; } = [];
-    public List<ReviewsDto> Reviews { get; set; } = [];
+    public List<ReviewsDto>? Reviews { get; set; } = [];
 }
