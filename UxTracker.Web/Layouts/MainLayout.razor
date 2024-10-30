@@ -1,5 +1,6 @@
 @using System.Security.Claims
 @using Blazored.LocalStorage
+@using UxTracker.Core
 @using UxTracker.Core.Contexts.Account.Handlers
 @using UxTracker.Core.Security
 @using UxTracker.Web.Utils.Theme
@@ -121,6 +122,14 @@ else
     
     protected override async Task OnInitializedAsync()
     {
+        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/"))
+        {
+            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/", string.Empty);
+
+            await LocalStorage.SetItemAsync("researchCode", code);
+            await LocalStorage.SetItemAsync("type", "reviewer");
+        }
+        
         UserType = await LocalStorage.GetItemAsync<string>("type") ?? string.Empty;
         ResearchLink = $"{ResearchLink}{await LocalStorage.GetItemAsync<string>("researchCode") ?? string.Empty}";
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
