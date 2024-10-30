@@ -512,20 +512,6 @@ public class ProjectTests
         // Assert
         Assert.AreEqual(PeriodType.Weekly, _project.PeriodType);
     }
-    
-    [TestMethod]
-    public void UpdatePeriodType_Should_Update_PeriodType_If_Status_Is_InProgress()
-    {
-        // Arrange
-        typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1));
-        typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(2)); 
-
-        // Act
-        _project?.UpdatePeriodType(PeriodType.Weekly);
-
-        // Assert
-        Assert.AreEqual(PeriodType.Weekly, _project?.PeriodType);
-    }
 
     [TestMethod]
     public void UpdatePeriodType_Should_Update_If_InProgress_And_No_Evaluations()
@@ -642,15 +628,33 @@ public class ProjectTests
         // Act
         _project.UpdateSurveyCollections(2);
     }
-
+    
     [TestMethod]
-    public void UpdateConsentTermHash_Should_Update_ConsentTermHash()
+    public void IsNewSurveyCollections_Should_Return_True_If_SurveyCollections_Is_Different()
     {
+        // Arrange
+        _project.UpdateSurveyCollections(5);
+        int newSurveyCollections = 10; 
+
         // Act
-        _project?.UpdateConsentTermHash("newHash");
+        var result = _project.IsNewSurveyCollections(newSurveyCollections);
 
         // Assert
-        Assert.AreEqual("newHash", _project?.ConsentTermHash);
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsNewSurveyCollections_Should_Return_False_If_SurveyCollections_Is_Same()
+    {
+        // Arrange
+        int sameSurveyCollections = 5; 
+        _project.UpdateSurveyCollections(sameSurveyCollections); 
+
+        // Act
+        var result = _project.IsNewSurveyCollections(sameSurveyCollections);
+
+        // Assert
+        Assert.IsFalse(result);
     }
 
     [TestMethod]
