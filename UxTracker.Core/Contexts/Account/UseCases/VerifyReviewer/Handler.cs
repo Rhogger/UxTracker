@@ -84,7 +84,7 @@ public class Handler(IRepository repository, IService service) : IRequestHandler
         #region 06. Verificar se usuário informou código de pesquisa
 
         if(string.IsNullOrEmpty(request.ResearchCode))
-            return new Response("Código de pesquisa não informado", 200);
+            return new Response("Código de pesquisa não informado", 400);
 
         #endregion
         

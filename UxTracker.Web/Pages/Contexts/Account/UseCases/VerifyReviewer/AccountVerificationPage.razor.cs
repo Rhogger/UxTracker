@@ -35,7 +35,7 @@ public class AccountVerification: ComponentBase
                 if (response.IsSuccessful)
                 {
                     Snackbar.Add("Conta verificada com sucesso!", Severity.Success);
-
+                    
                     Navigation.NavigateTo(string.IsNullOrEmpty(response.Data?.Data?.ResearchCode)
                         ? "reviewers/login"
                         : $"reviewers/research/{response.Data.Data.ResearchCode}");
@@ -45,8 +45,21 @@ public class AccountVerification: ComponentBase
                     if (response.Data?.Notifications is not null)
                         foreach (var notification in response.Data.Notifications)
                             Snackbar.Add(notification.Message, Severity.Error);
-                    else if (response.Data != null)
-                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                    else
+                    {
+                        if (response.Data?.Message != null)
+                        {
+                            Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                         
+                            if(response.Data.Message.Equals("Código de pesquisa não informado") ||
+                               response.Data.Message.Equals("Pesquisa não encontrada"))
+                            {
+                                Snackbar.Add("Conta verificada com sucesso!", Severity.Success);
+                                
+                                Navigation.NavigateTo("reviewers/login");
+                            }
+                        }
+                    }
                 }
             else
                 Snackbar.Add($"Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
