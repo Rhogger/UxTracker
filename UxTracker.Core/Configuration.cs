@@ -13,8 +13,6 @@ public static class Configuration
 
     public class SecretsConfiguration
     {
-        //TODO: Analisar utilidade 
-        // public string ApiKey { get; set; } = string.Empty;
         public string JwtPrivateKey { get; set; } = string.Empty;
         public string PasswordSaltKey { get; set; } = string.Empty;
     }
@@ -37,8 +35,8 @@ public static class Configuration
 
     public class ApplicationUrlConfiguration
     {
-        public string BackendUrl { get; set; } = "http://localhost:5264";
-        public string FrontendUrl { get; set; } = "http://localhost:5098";
+        public string BackendUrl { get; set; } = "http://localhost:8080";
+        public string FrontendUrl { get; set; } = "http://localhost";
     }
     
     public class CorsConfiguration
@@ -51,7 +49,7 @@ public static class Configuration
         public string? AccessTokenCookieName { get; set; } = "AccessToken";
         public string? RefreshTokenCookieName { get; set; } = "RefreshToken";
     }
-
+    
     public class ConsentTermConfiguration
     {
         public string Url { get; set; } = "wwwroot/ConsentTerms/";

@@ -7,6 +7,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
     <NoWarn>CS8974;CS8669</NoWarn>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 <!--  <PropertyGroup>-->
@@ -58,6 +59,12 @@
   <ItemGroup>
     <AdditionalFiles Include="Pages\Contexts\Account\UseCases\GetReviewer\ProfilePage.razor" />
     <AdditionalFiles Include="Pages\Contexts\Account\UseCases\VerifyReviewer\AccountVerificationPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>

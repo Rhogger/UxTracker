@@ -1,0 +1,47 @@
+﻿services:
+  uxtracker.api:
+    image: uxtracker.api
+    build:
+      context: .
+      dockerfile: UxTracker.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - Database__ConnectionString=${DATABASE__CONNECTIONSTRING}
+      - SendGrid__ApiKey=${SENDGRID__APIKEY}
+      - JwtPrivateKey=${JWT_PRIVATE_KEY}
+      - DefaultFromEmail=${DEFAULT_FROM_EMAIL}
+      - CorsPolicyName=${CORS_POLICY_NAME}
+      - PasswordSaltKey=${PASSWORD_SALT_KEY}
+      - FrontendUrl=${FRONTEND_URL}
+      - BackendUrl=${BACKEND_URL}
+    
+    ports:
+      - "8080:8080"
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+      - USER=sa
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+  
+  uxtracker.web:
+    image: uxtracker.web
+    build:
+      context: .
+      dockerfile: UxTracker.Web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - FrontendUrl=${FRONTEND_URL}
+      - BackendUrl=${BACKEND_URL}
+    ports:
+      - "80:80"
+    depends_on:
+      - uxtracker.api
+
+volumes:
+  sql_data:

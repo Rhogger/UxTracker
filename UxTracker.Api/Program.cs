@@ -26,8 +26,8 @@ app.UseRouting();
 app.UseSecurity();
 app.UseCors(Configuration.Cors.CorsPolicyName);
 
-if (app.Environment.IsDevelopment())
-    app.UseConfigurationsDevEnvironment();
+// if (app.Environment.IsDevelopment())
+// app.UseConfigurationsDevEnvironment();
 
 app.MapAccountEndpoints();
 app.MapResearchEndpoints();
