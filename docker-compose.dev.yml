@@ -14,6 +14,8 @@
       - PasswordSaltKey=${PASSWORD_SALT_KEY}
       - FrontendUrl=${FRONTEND_URL}
       - BackendUrl=${BACKEND_URL}
+    volumes:
+      - ./data/images:/app/wwwroot/
     
     ports:
       - "8080:8080"
@@ -38,6 +40,8 @@
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - FrontendUrl=${FRONTEND_URL}
       - BackendUrl=${BACKEND_URL}
+    volumes:
+      - ./data/images:/app/wwwroot/
     ports:
       - "80:80"
     depends_on:
