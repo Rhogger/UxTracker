@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+EXPOSE 8081
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["UxTracker.Web/UxTracker.Web.csproj", "UxTracker.Web/"]
+COPY ["UxTracker.Core/UxTracker.Core.csproj", "UxTracker.Core/"]
+RUN dotnet restore "UxTracker.Web/UxTracker.Web.csproj"
+COPY . .
+WORKDIR "/src/UxTracker.Web"
+RUN dotnet build "UxTracker.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "UxTracker.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM nginx:alpine AS final
+COPY nginx.web.conf /etc/nginx/conf.d/default.conf
+COPY --from=publish /app/publish/wwwroot /usr/share/nginx/html

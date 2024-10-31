@@ -1,7 +1,22 @@
-﻿services:
+﻿version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - uxtracker.web
+      - uxtracker.api
+  
   uxtracker.api:
     image: uxtracker.api
-    container_name: ux-tracker-api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: uxtracker.api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - Database__ConnectionString=${DATABASE__CONNECTIONSTRING}
@@ -13,24 +28,22 @@
       - FrontendUrl=${FRONTEND_URL}
       - BackendUrl=${BACKEND_URL}
     volumes:
-      - ./data/images:/app/wwwroot/
+      - ./data/images:/app/wwwroot/ConsentTerms
     ports:
       - "8080:8080"
-  
+    restart: always
+
+
   uxtracker.web:
     image: uxtracker.web
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: uxtracker.web
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - FrontendUrl=${FRONTEND_URL}
       - BackendUrl=${BACKEND_URL}
-    volumes:
-      - ./data/images:/app/wwwroot/
     ports:
-      - "80:80"
-    depends_on:
-      - uxtracker.api
-      
-#  working_dir: /app
-        
-volumes:
-  uxtracker_data:
+      - "8081:8081"
+    restart: always

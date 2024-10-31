@@ -35,8 +35,8 @@ public static class Configuration
 
     public class ApplicationUrlConfiguration
     {
-        public string BackendUrl { get; set; } = "http://localhost:8080";
-        public string FrontendUrl { get; set; } = "http://localhost";
+        public string BackendUrl { get; set; } = "http://uxtracker.duckdns.org/";
+        public string FrontendUrl { get; set; } = "http://uxtracker.duckdns.org/";
     }
     
     public class CorsConfiguration
@@ -52,7 +52,7 @@ public static class Configuration
     
     public class ConsentTermConfiguration
     {
-        public string Url { get; set; } = "wwwroot/ConsentTerms/";
+        public string Url { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ConsentTerms");
         public string Folder { get; set; } = "ConsentTerms/";
         public long MaxSize { get; set; } = 2 * 1024 * 1024;
     }
