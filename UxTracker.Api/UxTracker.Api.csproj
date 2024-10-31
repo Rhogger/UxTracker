@@ -32,12 +32,6 @@
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\eb1fb9ca-2e9c-4a58-ac7d-834d229b1473\TermoDeConsentimento.pdf" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
