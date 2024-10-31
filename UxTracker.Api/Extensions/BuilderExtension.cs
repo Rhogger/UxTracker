@@ -46,11 +46,12 @@ public static class BuilderExtensions
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(x =>
+        {
             x.UseSqlServer(
                 Configuration.Database.ConnectionString,
                 b => b.MigrationsAssembly("UxTracker.Api")
-            )
-        );
+            );
+        });
     }
     
     public static void AddFormOptions(this WebApplicationBuilder builder)

@@ -20,14 +20,12 @@ builder.AddMediator();
 
 var app = builder.Build();
 
+app.UseDatabaseManagement();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSecurity();
 app.UseCors(Configuration.Cors.CorsPolicyName);
-
-// if (app.Environment.IsDevelopment())
-// app.UseConfigurationsDevEnvironment();
 
 app.MapAccountEndpoints();
 app.MapResearchEndpoints();
