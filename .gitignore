@@ -483,5 +483,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+<<<<<<< Updated upstream
 # Consent Terms Files
+=======
+# SSL
+>>>>>>> Stashed changes
 certbot/
