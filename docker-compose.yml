@@ -1,37 +1,9 @@
 ﻿version: '3'
 services:
-<<<<<<< Updated upstream
-=======
-
-  # nginx:
-  #   build: 
-  #     context: .
-  #     dockerfile: Dockerfile.nginx
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - ./certbot:var/certbot:ro
-  #   depends_on:
-  #     - certbot
-  #     - uxtracker.web 
-  #     - uxtracker.api 
-
->>>>>>> Stashed changes
   nginx:
     image: nginx:alpine
     ports:
       - "80:80"
-<<<<<<< Updated upstream
-    restart: always
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - uxtracker.web
-      - uxtracker.api
-  
-=======
       - "443:443"
     restart: always
     volumes:
@@ -41,7 +13,6 @@ services:
       - uxtracker.web 
       - uxtracker.api 
 
->>>>>>> Stashed changes
   uxtracker.api:
     image: uxtracker.api
     build:
@@ -51,11 +22,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - Database__ConnectionString=${DATABASE__CONNECTIONSTRING}
-<<<<<<< Updated upstream
-=======
-      - BlobStorage__ConnectionString=${BLOBSTORAGE__CONNECTIONSTRING}
-      - BlobStorage__ContainerName=${BLOBSTORAGE_CONTAINER_NAME}
->>>>>>> Stashed changes
       - SendGrid__ApiKey=${SENDGRID__APIKEY}
       - JwtPrivateKey=${JWT_PRIVATE_KEY}
       - DefaultFromEmail=${DEFAULT_FROM_EMAIL}
@@ -64,11 +30,7 @@ services:
       - FrontendUrl=${FRONTEND_URL}
       - BackendUrl=${BACKEND_URL}
     volumes:
-<<<<<<< Updated upstream
-      - ./data/images:/app/wwwroot/ConsentTerms
-=======
       - /home/rhogger/media/terms:/app/media/terms
->>>>>>> Stashed changes
     ports:
       - "8080:8080"
     restart: always
