@@ -231,7 +231,7 @@
     {
         <ValidateForm
             TwoOptions="true"
-            ButtonContainerClass="d-flex justify-space-between w-full"
+            ButtonContainerClass="d-flex justify-center w-full"
             ButtonClass="py-2 r-max-btn w-full"
             TextButton="Salvar"
             ButtonIcon="@Icons.Material.Filled.Save"
@@ -399,7 +399,7 @@
     }
     </MudPaper>
 
-    @if (Response.Data != null && !IsEditState)
+    @if (Response.Data != null && !IsEditState && Response.Data.Project.Status.Equals(Status.Finished))
     {
         if (!Response.Data.Project.Status.Equals(Status.NotStarted))
         {
@@ -424,7 +424,7 @@
                             @relatory.Title    
                         </MudText>
 
-                        if (@relatory.Title.Equals("Distribuição das avaliações por período"))
+                        if (relatory.Title.Equals("Distribuição das avaliações por período"))
                         {
                             <BoxplotEvaluationDistribution
                                 PeriodType="Response.Data.Project.PeriodType"

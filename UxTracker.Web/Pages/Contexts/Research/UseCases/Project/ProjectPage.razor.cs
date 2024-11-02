@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using MudBlazor;
+using UxTracker.Core;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
@@ -362,6 +363,11 @@ public class Project: ComponentBase
         else
         {
             Snackbar.Add($"Arquivo '{file.Name}' não é um PDF.", Severity.Error);
+        }
+
+        if (file.Size > Configuration.ConsentTerm.MaxSize)
+        {
+            Snackbar.Add($"O tamanho máximo suportado é 2MB.", Severity.Error);
         }
     }
 

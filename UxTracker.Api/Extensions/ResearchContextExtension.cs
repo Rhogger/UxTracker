@@ -230,7 +230,7 @@ public static class ResearchContextExtension
                     return Results.Json(result, statusCode: result.StatusCode);
                 }
 
-                var directory = $"{Configuration.ConsentTerm.Url}{projectId}";
+                var directory = $"{Configuration.ConsentTerm.Url}/{projectId}";
 
                 try
                 {
