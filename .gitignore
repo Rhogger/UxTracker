@@ -483,5 +483,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+<<<<<<< Updated upstream
 # Consent Terms Files
-UxTracker.Api/wwwroot/ConsentTerms
+=======
+# SSL
+>>>>>>> Stashed changes
+certbot/
