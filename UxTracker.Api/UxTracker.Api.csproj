@@ -6,7 +6,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.Scalar" Version="1.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,13 +28,22 @@
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\bea10989-dbf4-4d57-9443-79dafc230660\introducao_a_gestao_de_RH.pdf" />
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\caddbd25-abee-4372-8e35-3bc0ed816b22\Psyco - Rhogger.pdf" />
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\e07fb2c4-5af7-4cdc-a69f-e32079bd4419\CNH-e.pdf.pdf" />
+    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\779a5b77-8e85-4988-bf40-9c102751948e\TermoDeConsentimento.pdf" />
+    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\eb1fb9ca-2e9c-4a58-ac7d-834d229b1473\TermoDeConsentimento.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>b8f6925c-ea9f-42b7-927d-1f2210ba0173</UserSecretsId>
+<!--    <UserSecretsId>b8f6925c-ea9f-42b7-927d-1f2210ba0173</UserSecretsId>-->
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 </Project>

@@ -7,6 +7,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
     <NoWarn>CS8974;CS8669</NoWarn>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 <!--  <PropertyGroup>-->
@@ -25,7 +26,7 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />
+<!--    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />-->
     <PackageReference Include="MudBlazor" Version="7.9.0" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
     <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="112.1.0" />
@@ -58,6 +59,12 @@
   <ItemGroup>
     <AdditionalFiles Include="Pages\Contexts\Account\UseCases\GetReviewer\ProfilePage.razor" />
     <AdditionalFiles Include="Pages\Contexts\Account\UseCases\VerifyReviewer\AccountVerificationPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -16,50 +16,42 @@ public static class BuilderExtensions
     public static void AddConfiguration(this WebApplicationBuilder builder)
     {
         Configuration.Database.ConnectionString =
-            builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+            Environment.GetEnvironmentVariable("Database__ConnectionString") ?? string.Empty;
 
-        //TODO: Analisar utilidade
-        // Configuration.Secrets.ApiKey =
-        //     builder.Configuration.GetSection("Secrets").GetValue<string>("ApiKey") 
-        //     ?? string.Empty;
         Configuration.Secrets.JwtPrivateKey =
-            builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey")
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("JwtPrivateKey") ?? string.Empty;
+
         Configuration.Secrets.PasswordSaltKey =
-            builder.Configuration.GetSection("Secrets").GetValue<string>("PasswordSaltKey")
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("PasswordSaltKey") ?? string.Empty;
 
         Configuration.SendGrid.ApiKey =
-            builder.Configuration.GetSection("SendGrid").GetValue<string>("ApiKey") 
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("SendGrid__ApiKey") ?? string.Empty;
 
         Configuration.Email.DefaultFromEmail =
-            builder.Configuration.GetSection("Email").GetValue<string>("DefaultFromEmail")
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("DefaultFromEmail") ?? string.Empty;
+
         Configuration.Email.DefaultFromName =
-            builder.Configuration.GetSection("Email").GetValue<string>("DefaultFromName")
-            ?? string.Empty;
+            builder.Configuration.GetSection("Email:").GetValue<string>("DefaultFromName") ?? string.Empty;
 
         Configuration.ApplicationUrl.BackendUrl =
-            builder.Configuration.GetSection("ApplicationUrl").GetValue<string>("BackendUrl")
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("BackendUrl") ?? string.Empty;
+
         Configuration.ApplicationUrl.FrontendUrl =
-            builder.Configuration.GetSection("ApplicationUrl").GetValue<string>("FrontendUrl")
-            ?? string.Empty;
-        
+            Environment.GetEnvironmentVariable("FrontendUrl") ?? string.Empty;
+
         Configuration.Cors.CorsPolicyName =
-            builder.Configuration.GetSection("Cors").GetValue<string>("CorsPolicyName")
-            ?? string.Empty;
+            Environment.GetEnvironmentVariable("CorsPolicyName") ?? string.Empty;
     }
 
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(x =>
+        {
             x.UseSqlServer(
                 Configuration.Database.ConnectionString,
                 b => b.MigrationsAssembly("UxTracker.Api")
-            )
-        );
+            );
+        });
     }
     
     public static void AddFormOptions(this WebApplicationBuilder builder)
