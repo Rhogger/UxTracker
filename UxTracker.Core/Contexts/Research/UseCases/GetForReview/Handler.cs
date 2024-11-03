@@ -61,7 +61,9 @@ public class Handler(IRepository repository) : IRequestHandler<Request, Response
         
         try
         {
-            return new Response(string.Empty, new ResponseData(project, accepted));
+            var fileUrl = Path.Combine(Configuration.ApplicationUrl.BackendUrl, Configuration.ConsentTerm.Folder, project.Id.ToString());
+            
+            return new Response(string.Empty, new ResponseData(project, accepted, fileUrl));
         }
         catch
         {

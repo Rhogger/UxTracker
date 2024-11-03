@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\ConsentTerms\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\0db9f817-52fa-4fdc-b269-6a3b72a4aa66\Psyco - Rhogger.pdf" />
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\4a564d4f-7ffd-41be-a346-754610650b81\Psyco - Rhogger.pdf" />
     <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\7f025736-a93e-4a59-9239-0b5d3233b1ff\introducao_a_gestao_de_RH.pdf" />
