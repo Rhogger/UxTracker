@@ -24,7 +24,7 @@
 </div>
 @if (!IsBusy)
 {
-    <div class="w-full h-full d-flex flex-column justify-center align-center gap-10">
+    <div class="w-full h-full d-flex flex-column justify-center align-center gap-20">
     <MudPaper
         Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
         Outlined="true">
@@ -406,7 +406,7 @@
         if (!Response.Data.Project.Status.Equals(Status.NotStarted))
         {
             <MudPaper
-                Class="d-flex flex-column align-center gap-10 pa-8 rounded-lg w-full r-paper"
+                Class="d-flex flex-column align-center gap-20 pa-8 rounded-lg w-full r-paper"
                 Outlined="true">
                 <MudText
                     Typo="Typo.h4"
@@ -419,41 +419,45 @@
                 {
                     foreach (var relatory in Response.Data.Project.Relatories)
                     {
-                        <MudText
-                            Align="Align.Center"
-                            Class=""
-                            Typo="Typo.h5">
-                            @relatory.Title    
-                        </MudText>
+                        <div class="d-flex flex-column w-full gap-10">
+                            <MudText
+                                Align="Align.Center"
+                                Class=""
+                                Typo="Typo.h5">
+                                @relatory.Title    
+                            </MudText>
 
-                        switch (relatory.Title)
-                        {
-                            case "Distribuição das avaliações por período":
-                                <BoxplotEvaluationDistribution
-                                    PeriodType="Response.Data.Project.PeriodType"
-                                    SurveyCollections="Response.Data.Project.SurveyCollections"
-                                    Rates="Response.Data.Project.Reviews"
-                                    ContainerClass="w-full r-no-graphics"/>
-                                break;
-                            case "Frequência das avaliações por período de tempo":
+                            @switch (relatory.Title)
                             {
-                                foreach (var group in Response.Data.Project.Reviews
-                                             .GroupBy(x => x.Index)
-                                             .Select(x => new ReviewsFrequency(x.Key, x.Select(rate => rate.Rate).ToList()))
-                                             .ToList())
-                                {
-                                    <BarsReviewFrequency
+                                case "Distribuição das avaliações por período":
+                                    <BoxplotEvaluationDistribution
                                         PeriodType="Response.Data.Project.PeriodType"
                                         SurveyCollections="Response.Data.Project.SurveyCollections"
-                                        Rates="group"
+                                        Rates="Response.Data.Project.Reviews"
                                         ContainerClass="w-full r-no-graphics"/>
+                                    break;
+                                case "Frequência das avaliações por período de tempo":
+                                {
+                                    @foreach (var group in Response.Data.Project.Reviews
+                                                  .GroupBy(x => x.Index)
+                                                  .Select(x => new ReviewsFrequency(x.Key, x.Select(rate => rate.Rate).ToList()))
+                                                  .ToList())
+                                    {
+                                        <BarsReviewFrequency
+                                            PeriodType="Response.Data.Project.PeriodType"
+                                            SurveyCollections="Response.Data.Project.SurveyCollections"
+                                            Rates="group"
+                                            ContainerClass="w-full r-no-graphics"/>
+                                    }
+                                    break;
                                 }
-                                break;
+                                case "Número adequado de clusters de usuário":
+                                    <ElbowChart ContainerClass="w-full r-no-graphics"/>
+                                    break;
                             }
-                            case "Número adequado de clusters de usuário":
-                                <ElbowChart ContainerClass="w-full r-no-graphics"/>
-                                break;
-                        }
+
+                        </div>
+                        
                     }
                 }
             </MudPaper>

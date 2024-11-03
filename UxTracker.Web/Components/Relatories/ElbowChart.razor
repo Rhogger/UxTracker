@@ -1,8 +1,9 @@
 @using ApexCharts
 @using UxTracker.Core.Contexts.Research.Enums
-@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Research.Handlers
+@using UxTracker.Core.Contexts.Research.UseCases.UpdateStatus
 @using UxTracker.Core.Contexts.Research.ValueObjects
-@using UxTracker.Core.Contexts.Review.ValueObjects
+@using UpdateCluster = UxTracker.Core.Contexts.Research.UseCases.UpdateNumberCluster
 @using ChartType = ApexCharts.ChartType
 @using UxTracker.Web.Components.Forms
 @using Color = MudBlazor.Color
@@ -29,19 +30,24 @@
             ButtonColor="Color.Success"
             ButtonIcon="@Icons.Material.Filled.Save"
             ButtonClass="py-2 r-max-btn w-full"
-            SubmitFunction=""
-            IsBusy="">
-            <MudNumericField/>
+            SubmitFunction="UpdateClusterNumber"
+            IsBusy="IsBusy">
+            <MudNumericField Min="1" Max="10" bind-Value="@Request.NumberCluster"/>
         </ValidateForm>
     </div>
 </div>
 
 @code{
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IResearchContextHandler ResearchContextHandler { get; set; } = null!;
+    
     [Parameter] public EventCallback Event { get; set; }
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
 
     private ApexChart<ElbowChartData>? Ref { get; set; }
     private ApexChartOptions<ElbowChartData> _options = null!;
+    private bool IsBusy { get; set; } = false;
+    private UpdateCluster.Request Request = new();
     
     private List<ElbowChartData> ElbowData { get; set; } =
     [
@@ -193,7 +199,6 @@
                 new YAxis
                 {
                     Min = 0,
-                    Max = 10,
                     Title = new AxisTitle
                     {
                         Text = "WCSS",
@@ -218,5 +223,41 @@
                 }
             ],
         };
+    }
+
+    private async Task UpdateClusterNumber()
+    {
+        try
+        {
+            IsBusy = true;
+            
+            var response = await ResearchContextHandler.UpdateNumberClusterAsync(Request);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
+                    await OnParametersSetAsync();
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+            StateHasChanged();
+        }
     }
 }
