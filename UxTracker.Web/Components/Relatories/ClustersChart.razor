@@ -1,0 +1,240 @@
+@using Accord.MachineLearning
+@using ApexCharts
+@using UxTracker.Core.Contexts.Research.DTOs
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Research.ValueObjects
+@using UxTracker.Core.Contexts.Review.ValueObjects
+@using ChartType = ApexCharts.ChartType
+
+<div class="@ContainerClass">
+    <ApexChart
+        TItem="ClusterLineData"
+        @ref="Ref"
+        Options="@_options">
+        @foreach (var clusterSeries in ClusterSeries)
+        {
+            <ApexPointSeries
+                TItem="ClusterLineData"
+                Items="clusterSeries.Data"
+                Name="@($"Cluster {clusterSeries.ClusterId}")"
+                SeriesType="SeriesType.Line"
+                XValue="@(e => e.Period)"
+                YValue="@(e => e.Value)"/>
+        }
+    </ApexChart>
+</div>
+
+@code {
+    [Parameter] public EventCallback Event { get; set; }
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
+    [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
+    [Parameter] public int NumberOfClusters { get; set; }
+    [Parameter] public PeriodType PeriodType { get; set; }
+    [Parameter] public int SurveyCollections { get; set; }
+
+    private ApexChart<ClusterLineData>? Ref { get; set; }
+    private ApexChartOptions<ClusterLineData> _options = null!;
+    private List<ClusterSeriesData> ClusterSeries { get; set; } = new();
+    
+    protected override Task OnParametersSetAsync()
+    {
+        StateHasChanged();
+        Ref?.UpdateSeriesAsync();
+
+        return Task.CompletedTask;
+    }
+
+    protected override void OnInitialized()
+    {
+        // Group Reviews by clusters and periods
+        var groupedReviews = Reviews
+            .GroupBy(r => r.Index)
+            .Select(g => new { Period = $"Dia {g.Key + 1}", Data = g.ToList() })
+            .ToList();
+
+        // Run KMeans
+        var data = Reviews.Select(r => new double[] { (double)r.Rate }).ToList();
+        var kmeans = new KMeans(NumberOfClusters);
+        var clusters = kmeans.Learn(data.ToArray());
+
+        // Populate ClusterSeries with averages for each period
+        foreach (var clusterId in Enumerable.Range(0, NumberOfClusters))
+        {
+            var seriesData = new List<ClusterLineData>();
+            foreach (var periodGroup in groupedReviews)
+            {
+                var clusterPoints = periodGroup.Data.Where(r => clusters.Decide(new double[] { (double)r.Rate }) == clusterId);
+                var averageValue = clusterPoints.Any() ? clusterPoints.Average(r => r.Rate) : 0;
+
+                seriesData.Add(new ClusterLineData
+                {
+                    Period = periodGroup.Period,
+                    Value = averageValue
+                });
+            }
+
+            ClusterSeries.Add(new ClusterSeriesData
+            {
+                ClusterId = clusterId,
+                Data = seriesData
+            });
+        }
+        _options = new ApexChartOptions<ClusterLineData>
+        {
+            Chart = new Chart
+            {
+                Background = "transparent",
+                Width = "100%",
+                FontFamily = "Inter",
+                Toolbar = new Toolbar
+                {
+                    Show = false
+                },
+                DropShadow = new DropShadow
+                {
+                    Enabled = true,
+                    Top = 18,
+                    Left = 7,
+                    Blur = 10,
+                    Opacity = 0.2d
+                },
+                Selection = new Selection
+                {
+                    Enabled = false
+                },
+                Sparkline = new ChartSparkline
+                {
+                    Enabled = false
+                },
+                Type = ChartType.Line,
+                Brush = new Brush
+                {
+                    Enabled = false,
+                },
+                Zoom = new Zoom
+                {
+                    Enabled = false,
+                },
+            },
+            Tooltip = new Tooltip
+            {
+                Style  = new TooltipStyle
+                {
+                    FontFamily = "Inter",
+                    FontSize = "12px",
+                },
+                CssClass = "apexcharts-tooltip",
+                Marker = new TooltipMarker
+                {
+                    FillColors = ["#2DC8B8"]
+                },
+                X = new TooltipX
+                {
+                    Show = false,
+                }
+            },
+            DataLabels = new DataLabels
+            {
+                OffsetY = -6d,
+            },
+            Grid = new Grid
+            {
+                BorderColor = "#e7e7e7",
+                Yaxis = new GridYAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    }
+                },
+                Xaxis = new GridXAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    },
+                },
+            },
+            Markers = new Markers 
+            { 
+                Shape = ShapeEnum.Circle,
+                Size = 5, 
+                FillOpacity = new Opacity(0.8d),
+                Colors = new List<string> { "#2DC8B8", "#FFFFFFB2" },
+            },
+            Stroke = new Stroke
+            {
+                Curve = Curve.MonotoneCubic, 
+                Colors = ["#2DC8B8"]
+            },
+            Legend = new Legend
+            {
+                FontFamily = "Inter",
+                FontSize = "14px",
+                FontWeight = "500",
+                Position = LegendPosition.Top,
+                HorizontalAlign = ApexCharts.Align.Right,
+                Floating = true,
+                OffsetX = -5,
+                OffsetY = -25,
+            },
+            
+            Xaxis = new XAxis
+            {
+                Min = 1,
+                Max = SurveyCollections,
+                Title = new AxisTitle
+                {
+                    Text = PeriodType.GetPeriod(),
+                    Style = new AxisTitleStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Color = "#FFFFFFB2"
+                    }
+                },
+                Labels = new XAxisLabels
+                {
+                    Style = new AxisLabelStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Colors = "#FFFFFFB2"
+                    }
+                }
+            },
+            Yaxis =
+            [
+                new YAxis
+                {
+                    Min = 0,
+                    Max = 10,
+                    Title = new AxisTitle
+                    {
+                        Text = "Avaliações",
+                        Style = new AxisTitleStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Color = "#FFFFFFB2"
+                        }
+                    },
+                    Labels = new YAxisLabels
+                    {
+                        Style = new AxisLabelStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Colors = "#FFFFFFB2"
+                        }
+                    }
+                }
+            ],
+        };
+    }
+}

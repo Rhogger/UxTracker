@@ -23,6 +23,7 @@ public class Repository(AppDbContext context) : IRepository
                 EndDate = x.EndDate,
                 PeriodType = x.PeriodType,
                 SurveyCollections = x.SurveyCollections,
+                ClusterNumber = x.ClusterNumber,
                 LastSurveyCollection = x.Reviews.Count > 0
                     ? x.Reviews
                         .GroupBy(rate => rate.UserId)

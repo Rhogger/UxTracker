@@ -291,7 +291,7 @@ public class Project: ComponentBase
                 if (response.IsSuccessful)
                 {
                     Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
-                    await OnParametersSetAsync();
+                    if (Response.Data != null) Response.Data.Project.ClusterNumber = UpdateClusterRequest.NumberCluster;
                 }
                 else
                 {
@@ -314,6 +314,8 @@ public class Project: ComponentBase
             StateHasChanged();
         }
     }
+
+    protected void UpdateClusterChart(){}
     
     protected async Task ChangeStatusAsync()
     {
