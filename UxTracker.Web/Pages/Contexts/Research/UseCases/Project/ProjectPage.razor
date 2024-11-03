@@ -380,7 +380,7 @@
                         </MudItem>
                     }
 
-                    if (SelectedRelatories.Where(x => x.IsChecked == false).ToList().Count == 0)
+                    if (SelectedRelatories.Where(x => x.IsChecked == true).ToList().Count == 0)
                     {
                         <MudText
                             Align="Align.Start"
@@ -450,6 +450,9 @@
                                 }
                                 break;
                             }
+                            case "Número adequado de clusters de usuário":
+                                <ElbowChart ContainerClass="w-full r-no-graphics"/>
+                                break;
                         }
                     }
                 }
