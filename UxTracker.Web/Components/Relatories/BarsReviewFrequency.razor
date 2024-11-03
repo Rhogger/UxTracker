@@ -1,45 +1,36 @@
 @using ApexCharts
-@using UxTracker.Core.Contexts.Research.DTOs
 @using UxTracker.Core.Contexts.Research.Enums
 @using UxTracker.Core.Contexts.Research.Extensions
 @using UxTracker.Core.Contexts.Research.ValueObjects
 @using ChartType = ApexCharts.ChartType
 
 <div class="@ContainerClass">
-    @for(var index = 0; index <= SurveyCollections; index++)
-    {
-        <ApexChart
-            TItem="ReviewsFrequency"
-            Options="_options"
-            Title="@(PeriodType.GetPeriod()+ " " + index + 1)">
-            <ApexPointSeries
-                Stroke="@(new SeriesStroke { Width = 1, Color = "#FFF" })"
-                TItem="ReviewsFrequency"
-                Items="_datas"
-                Name="Datas"
-                XValue="@(e => e.Rate)"
-                YValue="@(e => e.Count)"/>
-        </ApexChart>
-    }
+    <ApexChart
+        TItem="RatingFrequency"
+        Options="_options"
+        Title="@(PeriodType.GetPeriod()+ " " + Rates.Index)">
+        <ApexPointSeries
+            Stroke="@(new SeriesStroke { Width = 1, Color = "#FFF" })"
+            TItem="RatingFrequency"
+            Items="Rates.Rates.Select(rate => new RatingFrequency(rate, Rates.Count))"
+            Name="Frequência"
+            XValue="@(e => e.Rate)"
+            YValue="@(e => e.Count)"
+            SeriesType="SeriesType.Bar"/>
+    </ApexChart>
 </div>
 
 @code {
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
-    [Parameter] public List<ReviewsDto> Rates { get; set; } = [];
+    [Parameter] public ReviewsFrequency Rates { get; set; } = null!;
     [Parameter] public PeriodType PeriodType { get; set; }
     [Parameter] public int SurveyCollections { get; set; }
     
-    private ApexChartOptions<ReviewsFrequency> _options = null!;
-    private List<ReviewsFrequency> _datas = [];
+    private ApexChartOptions<RatingFrequency> _options = null!;
     
     protected override void OnInitialized()
     {
-        _datas = Rates
-            .GroupBy(x => x.Rate)
-            .Select(x => new ReviewsFrequency(x.Key, x.Count()))
-            .ToList();
-
-        _options = new ApexChartOptions<ReviewsFrequency>
+        _options = new ApexChartOptions<RatingFrequency>
         {
             Chart = new Chart
             {
