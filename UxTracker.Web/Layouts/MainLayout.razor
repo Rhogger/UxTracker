@@ -122,9 +122,9 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/"))
+        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/"))
         {
-            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/", string.Empty);
+            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/", string.Empty);
 
             await LocalStorage.SetItemAsync("researchCode", code);
             await LocalStorage.SetItemAsync("type", "reviewer");

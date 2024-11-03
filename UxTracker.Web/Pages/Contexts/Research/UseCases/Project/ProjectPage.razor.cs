@@ -6,6 +6,7 @@ using UxTracker.Core;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
+using UxTracker.Core.Contexts.Research.Validators;
 using UxTracker.Core.Contexts.Research.ValueObjects;
 using UxTracker.Web.Components.Dialogs;
 using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
@@ -33,9 +34,10 @@ public class Project: ComponentBase
     protected List<SelectedRelatories> SelectedRelatories { get; set;} = new();
 
     protected bool IsBusy { get; private set; } = true;
+    protected bool IsBusyUpdate { get; private set; } = false;
+    protected bool IsBusyDelete { get; private set; } = false;
     protected bool IsRelatoriesBusy { get; private set; } = true;
     protected bool IsEditState;
-    protected readonly bool IsValid = true;
     protected Color ColorButtonChangeStatus { get; private set; } = Color.Default;
     protected string TextChangeStatusButton { get; private set; } = string.Empty;
     private const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
@@ -147,6 +149,8 @@ public class Project: ComponentBase
     {
         try
         {
+            IsBusyUpdate = true;
+            
             foreach (var selected in SelectedRelatories.Where(selected => selected.IsChecked))
             {
                 UpdateRequest.Relatories.Add(selected.Id.ToString());
@@ -208,14 +212,16 @@ public class Project: ComponentBase
         }
         finally
         {
-            IsBusy = false;
+            IsBusyUpdate = false;
             StateHasChanged();
         }
     }
     
     protected async Task DeleteAsync()
     {
-        var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{{x => x.ProjectId, ProjectId.ToString()}};
+        var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{
+            {x => x.ProjectId, ProjectId.ToString()},
+            {x => x.IsBusy, IsBusyDelete}};
         var dialog = await DialogService.ShowAsync<DeleteProjectConfirmationDialog>("Delete Project", parameters);
         await dialog.Result;
     }
@@ -357,17 +363,19 @@ public class Project: ComponentBase
 
         if (file.ContentType == "application/pdf")
         {
-            FileName = file.Name;
-            _consentTerm = file;
+            if (file.Size > Configuration.ConsentTerm.MaxSize)
+            {
+                Snackbar.Add($"O tamanho máximo suportado é 2MB.", Severity.Error);
+            }
+            else
+            {
+                FileName = file.Name;
+                _consentTerm = file;
+            }
         }
         else
         {
             Snackbar.Add($"Arquivo '{file.Name}' não é um PDF.", Severity.Error);
-        }
-
-        if (file.Size > Configuration.ConsentTerm.MaxSize)
-        {
-            Snackbar.Add($"O tamanho máximo suportado é 2MB.", Severity.Error);
         }
     }
 

@@ -19,6 +19,10 @@ public class Project: Entity
         Description = description;
         StartDate = startDate ?? DateTime.UtcNow;
         EndDate = endDate;
+
+        if (endDate <= startDate)
+            throw new Exception("Data final não pode ser menor ou igual à data inicial");
+        
         PeriodType = periodType;
         SurveyCollections = surveyCollections;
         ConsentTermHash = consentTermHash;

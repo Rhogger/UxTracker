@@ -37,7 +37,14 @@
                 FullWidth="@FullWidthButton"
                 OnClick="SecondFunction"
                 EndIcon="@SecondButtonIcon">
-                @SecondTextButton
+                @if (!IsSecondBusy)
+                {
+                    @SecondTextButton
+                }
+                else
+                {
+                    <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4" />
+                }
             </MudButton>
                     
             <MudButton
@@ -77,6 +84,7 @@
     [Parameter] public EventCallback SecondFunction { get; set; }
     [Parameter] public bool FullWidthButton { get; set; } = true;
     [Parameter] public bool IsBusy { get; set; }
+    [Parameter] public bool IsSecondBusy { get; set; } = false;
     
     private MudForm _form = null!;
     private string[] _errors = [];
