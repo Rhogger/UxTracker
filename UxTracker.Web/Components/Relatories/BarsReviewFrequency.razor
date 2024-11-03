@@ -9,13 +9,13 @@
     <ApexChart
         TItem="RatingFrequency"
         Options="_options"
-        Title="@(PeriodType.GetPeriod()+ " " + (Rates.Index + 1))">
+        Title="@(PeriodType.GetPeriodSingle()+ " " + (Rates.Index + 1))">
         <ApexPointSeries
             Stroke="@(new SeriesStroke { Width = 1, Color = "#FFFFFFB2" })"
             TItem="RatingFrequency"
-            Items="Rates.Rates.Select(rate => new RatingFrequency(rate, Rates.Count))"
+            Items="RatingGrouper.GroupByIntervals(Rates.Rates)"
             Name="Frequência"
-            XValue="@(e => e.Rate)"
+            XValue="@(e => e.Label)"
             YValue="@(e => e.Count)"
             SeriesType="SeriesType.Bar"/>
     </ApexChart>
@@ -75,17 +75,6 @@
                     Show = false,
                 },
                 CssClass = "apexcharts-tooltip",
-                //         Custom = @"
-                // function({ series, seriesIndex, dataPointIndex, w }) {
-                //     var dataPoint = w.config.series[seriesIndex].data[dataPointIndex];
-                //     return '<div class=""apexcharts-tooltip-box apexcharts-tooltip-boxPlot"">'
-                //         + '<div>Mínimo: <span>' + dataPoint.y[0] + '</span></div>'
-                //         + '<div>Q1: <span>' + dataPoint.y[1] + '</span></div>'
-                //         + '<div>Mediana: <span>' + dataPoint.y[2] + '</span></div>'
-                //         + '<div>Q3: <span>' + dataPoint.y[3] + '</span></div>'
-                //         + '<div>Máximo: <span>' + dataPoint.y[4] + '</span></div>'
-                //         + '</div>';
-                // }"
             },
             DataLabels = new DataLabels
             {
@@ -101,7 +90,7 @@
                 FontSize = "14px",
                 FontWeight = "500",
                 Position = LegendPosition.Top,
-                HorizontalAlign = ApexCharts.Align.Right,
+                HorizontalAlign = Align.Right,
                 Floating = true,
                 OffsetX = -5,
                 OffsetY = -25,
@@ -190,7 +179,7 @@
                     Colors = new PlotOptionsBarColors
                     {
                         BackgroundBarColors = ["#26A69A"],
-                        BackgroundBarOpacity = 1,
+                        BackgroundBarOpacity = 0,
                     },
                 },
             }

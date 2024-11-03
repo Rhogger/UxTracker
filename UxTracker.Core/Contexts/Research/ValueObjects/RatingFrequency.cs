@@ -1,7 +1,7 @@
 namespace UxTracker.Core.Contexts.Research.ValueObjects;
 
-public class RatingFrequency(decimal rate, int count)
+public class RatingFrequency(string label, int count)
 {
-    public decimal Rate { get; set; } = rate;
+    public string Label { get; set; } = label;
     public int Count { get; set; } = count;
 }
