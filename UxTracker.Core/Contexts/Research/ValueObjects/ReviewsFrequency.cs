@@ -1,7 +1,8 @@
 namespace UxTracker.Core.Contexts.Research.ValueObjects;
 
-public class ReviewsFrequency(decimal rate, int count)
+public class ReviewsFrequency(int index, List<decimal> rate)
 {
-    public readonly decimal Rate = rate;
-    public readonly int Count = count;
+    public readonly int Index = index;
+    public readonly List<decimal> Rates = rate;
+    public readonly int Count = rate.Count;
 }

@@ -51,6 +51,10 @@ public class ProjectMap: IEntityTypeConfiguration<Project>
             .HasColumnType("NVARCHAR(64)")
             .IsRequired();
 
+        builder.Property(x => x.ClusterNumber)
+            .HasColumnName("ClusterNumber")
+            .HasColumnType("INTEGER");
+
         builder.HasOne(x => x.User)
             .WithMany(x => x.Projects)
             .HasForeignKey(x => x.UserId)

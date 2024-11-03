@@ -1,6 +1,7 @@
 @using UxTracker.Core.Contexts.Research.Enums
 @using UxTracker.Core.Contexts.Research.Extensions
 @using UxTracker.Core.Contexts.Research.Validators
+@using UxTracker.Core.Contexts.Research.ValueObjects
 @using UxTracker.Web.Components.Forms
 @using UxTracker.Web.Components.Relatories
 @using UxTracker.Web.Components.MudBlazorExtensions
@@ -425,22 +426,30 @@
                             @relatory.Title    
                         </MudText>
 
-                        if (relatory.Title.Equals("Distribuição das avaliações por período"))
+                        switch (relatory.Title)
                         {
-                            <BoxplotEvaluationDistribution
-                                PeriodType="Response.Data.Project.PeriodType"
-                                SurveyCollections="Response.Data.Project.SurveyCollections"
-                                Rates="Response.Data.Project.Reviews"
-                                ContainerClass="w-full r-no-graphics"/>
-                        }
-                        
-                        if (relatory.Title.Equals("Frequência das avaliações por período de tempo"))
-                        {
-                            <BarsReviewFrequency
-                                PeriodType="Response.Data.Project.PeriodType"
-                                SurveyCollections="Response.Data.Project.SurveyCollections"
-                                Rates="Response.Data.Project.Reviews"
-                                ContainerClass="w-full r-no-graphics"/>
+                            case "Distribuição das avaliações por período":
+                                <BoxplotEvaluationDistribution
+                                    PeriodType="Response.Data.Project.PeriodType"
+                                    SurveyCollections="Response.Data.Project.SurveyCollections"
+                                    Rates="Response.Data.Project.Reviews"
+                                    ContainerClass="w-full r-no-graphics"/>
+                                break;
+                            case "Frequência das avaliações por período de tempo":
+                            {
+                                foreach (var group in Response.Data.Project.Reviews
+                                             .GroupBy(x => x.Index)
+                                             .Select(x => new ReviewsFrequency(x.Key, x.Select(rate => rate.Rate).ToList()))
+                                             .ToList())
+                                {
+                                    <BarsReviewFrequency
+                                        PeriodType="Response.Data.Project.PeriodType"
+                                        SurveyCollections="Response.Data.Project.SurveyCollections"
+                                        Rates="group"
+                                        ContainerClass="w-full r-no-graphics"/>
+                                }
+                                break;
+                            }
                         }
                     }
                 }
