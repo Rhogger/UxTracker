@@ -38,6 +38,7 @@
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
     [Parameter] public string ProjectId { get; set; } = string.Empty;
+    [Parameter] public bool IsBusy { get; set; } = false;
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -47,6 +48,8 @@
     {
         try
         {
+            IsBusy = true;
+
             var response = await ResearchContextHandler.DeleteProjectAsync(ProjectId);
 
             if (response is not null)
@@ -70,6 +73,10 @@
         catch (Exception ex)
         {
             Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }

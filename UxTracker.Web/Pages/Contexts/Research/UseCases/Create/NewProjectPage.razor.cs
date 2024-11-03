@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using UxTracker.Core;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Research.Validators;
@@ -109,8 +110,15 @@ public class NewProject: ComponentBase
 
         if (file.ContentType == "application/pdf")
         {
-            FileName = file.Name;
-            _acceptTerm = file;
+            if (file.Size > Configuration.ConsentTerm.MaxSize)
+            {
+                Snackbar.Add($"O tamanho máximo suportado é 2MB.", Severity.Error);
+            }
+            else
+            {
+                FileName = file.Name;
+                _acceptTerm = file;
+            }
         }
         else
         {

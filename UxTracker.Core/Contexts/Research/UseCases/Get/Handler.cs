@@ -26,7 +26,7 @@ public class Handler(IRepository repository) : IRequestHandler<Request, Response
 
         #region 02. Gerar objetos
 
-        var projectUrl = $"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/{request.ProjectId}";
+        var projectUrl = $"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/{request.ProjectId}";
 
         #endregion
         
