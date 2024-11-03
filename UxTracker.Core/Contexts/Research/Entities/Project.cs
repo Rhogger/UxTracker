@@ -146,12 +146,9 @@ public class Project: Entity
     {
         if (IsInvalidToUpdateWhenFinishedStatus)
         {
-            if(number <= 0)
-                throw new Exception("O número de clusters não pode ser zero ou menor");
+            if(number is <= 0 or > 10)
+                throw new Exception("O número de clusters deve estar entre 1 e 10");
             
-            if(number > Reviews.GroupBy(x => x.UserId).Count())
-                throw new Exception("O número de clusters não pode ser maior que a quantidade de participantes");
-
             ClusterNumber = number;
         }
         else
