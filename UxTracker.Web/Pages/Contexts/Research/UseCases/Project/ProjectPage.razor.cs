@@ -283,6 +283,7 @@ public class Project: ComponentBase
         try
         {
             IsBusyCluster = true;
+            UpdateClusterRequest.ProjectId = ProjectId.ToString();
             
             var response = await ResearchContextHandler.UpdateNumberClusterAsync(UpdateClusterRequest);
 
