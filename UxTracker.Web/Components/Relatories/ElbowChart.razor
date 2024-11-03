@@ -4,6 +4,8 @@
 @using UxTracker.Core.Contexts.Research.ValueObjects
 @using UxTracker.Core.Contexts.Review.ValueObjects
 @using ChartType = ApexCharts.ChartType
+@using UxTracker.Web.Components.Forms
+@using Color = MudBlazor.Color
 
 <div class="@ContainerClass">
     <ApexChart 
@@ -18,6 +20,20 @@
             XValue="@(e => e.K)"
             YValue="@(e => e.WCSS)"/>
     </ApexChart>
+    
+    <div class="d-flex flex-column justify-center align-center">
+        <MudText></MudText>
+        
+        <ValidateForm
+            Class="d-flex"
+            ButtonColor="Color.Success"
+            ButtonIcon="@Icons.Material.Filled.Save"
+            ButtonClass="py-2 r-max-btn w-full"
+            SubmitFunction=""
+            IsBusy="">
+            <MudNumericField/>
+        </ValidateForm>
+    </div>
 </div>
 
 @code{
@@ -127,7 +143,7 @@
                 Shape = ShapeEnum.Circle,
                 Size = 5, 
                 FillOpacity = new Opacity(0.8d),
-                Colors = new List<string> { "#2DC8B8", "#fff" },
+                Colors = new List<string> { "#2DC8B8", "#FFFFFFB2" },
             },
             Stroke = new Stroke
             {
@@ -158,7 +174,7 @@
                         FontFamily = "Inter",
                         FontSize = "14px",
                         FontWeight = "500",
-                        Color = "#fff"
+                        Color = "#FFFFFFB2"
                     }
                 },
                 Labels = new XAxisLabels
@@ -168,7 +184,7 @@
                         FontFamily = "Inter",
                         FontSize = "14px",
                         FontWeight = "500",
-                        Colors = "#fff"
+                        Colors = "#FFFFFFB2"
                     }
                 }
             },
@@ -186,7 +202,7 @@
                             FontFamily = "Inter",
                             FontSize = "14px",
                             FontWeight = "500",
-                            Color = "#fff"
+                            Color = "#FFFFFFB2"
                         }
                     },
                     Labels = new YAxisLabels
@@ -196,7 +212,7 @@
                             FontFamily = "Inter",
                             FontSize = "14px",
                             FontWeight = "500",
-                            Colors = "#fff"
+                            Colors = "#FFFFFFB2"
                         }
                     }
                 }

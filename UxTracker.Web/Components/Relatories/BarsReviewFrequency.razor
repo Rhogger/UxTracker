@@ -2,15 +2,16 @@
 @using UxTracker.Core.Contexts.Research.Enums
 @using UxTracker.Core.Contexts.Research.Extensions
 @using UxTracker.Core.Contexts.Research.ValueObjects
+@using Align = ApexCharts.Align
 @using ChartType = ApexCharts.ChartType
 
 <div class="@ContainerClass">
     <ApexChart
         TItem="RatingFrequency"
         Options="_options"
-        Title="@(PeriodType.GetPeriod()+ " " + Rates.Index)">
+        Title="@(PeriodType.GetPeriod()+ " " + (Rates.Index + 1))">
         <ApexPointSeries
-            Stroke="@(new SeriesStroke { Width = 1, Color = "#FFF" })"
+            Stroke="@(new SeriesStroke { Width = 1, Color = "#FFFFFFB2" })"
             TItem="RatingFrequency"
             Items="Rates.Rates.Select(rate => new RatingFrequency(rate, Rates.Count))"
             Name="Frequência"
@@ -105,6 +106,17 @@
                 OffsetX = -5,
                 OffsetY = -25,
             },
+            Title = new Title
+            {
+                Align  = Align.Center,
+                Style = new TitleStyle
+                {
+                    FontFamily = "Inter",
+                    FontWeight = "500",
+                    FontSize = "16px",
+                    Color = "#FFFFFFB2"
+                }
+            },
             Xaxis = new XAxis
             {
                 Min = 1,
@@ -117,7 +129,7 @@
                         FontFamily = "Inter",
                         FontSize = "14px",
                         FontWeight = "500",
-                        Color = "#fff"
+                        Color = "#FFFFFFB2"
                     }
                 },
                 Labels = new XAxisLabels
@@ -127,7 +139,7 @@
                         FontFamily = "Inter",
                         FontSize = "14px",
                         FontWeight = "500",
-                        Colors = "#fff"
+                        Colors = "#FFFFFFB2"
                     },
                 },
                 Tooltip = new XAxisTooltip
@@ -156,7 +168,7 @@
                             FontFamily = "Inter",
                             FontSize = "14px",
                             FontWeight = "500",
-                            Color = "#fff"
+                            Color = "#FFFFFFB2"
                         }
                     },
                     Labels = new YAxisLabels
@@ -166,7 +178,7 @@
                             FontFamily = "Inter",
                             FontSize = "14px",
                             FontWeight = "500",
-                            Colors = "#fff"
+                            Colors = "#FFFFFFB2"
                         }
                     }
                 }
@@ -177,8 +189,9 @@
                 {
                     Colors = new PlotOptionsBarColors
                     {
-                        BackgroundBarColors = ["#26A69A"]
-                    }
+                        BackgroundBarColors = ["#26A69A"],
+                        BackgroundBarOpacity = 1,
+                    },
                 },
             }
         };
