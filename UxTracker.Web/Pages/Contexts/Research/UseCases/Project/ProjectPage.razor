@@ -456,7 +456,7 @@
                                         Event="UpdateClusterNumber"
                                         Reviews="Response.Data.Project.Reviews"/>
                                     
-                                    <div class="d-flex gap-3 cluster-container">
+                                    <div class="cluster-container">
                                         <MudNumericField
                                             T="int"
                                             ShrinkLabel="true"
@@ -468,8 +468,9 @@
                                             HelperText="Entre 1 e 10"/>
                                         
                                         <MudButton
-                                            Class="py-2 px-2"
+                                            Class="btn-cluster"
                                             Color="Color.Success"
+                                            Variant="Variant.Filled"
                                             StartIcon="@Icons.Material.Filled.Save"
                                             OnClick="UpdateClusterNumber">
                                             @if (!IsBusyCluster)

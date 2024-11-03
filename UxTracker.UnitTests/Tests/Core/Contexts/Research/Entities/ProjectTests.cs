@@ -505,7 +505,9 @@ public class ProjectTests
         // Arrange
         typeof(Project).GetProperty("StartDate")?.SetValue(_project, DateTime.UtcNow.AddDays(-1)); 
         typeof(Project).GetProperty("EndDate")?.SetValue(_project, DateTime.UtcNow.AddDays(2)); 
-        _project = new Project(Guid.NewGuid(), "Test", "Test", DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(2), PeriodType.Daily, 5, "hash123", new List<Relatory>());
+        _project = new Project(Guid.NewGuid(), "Test", "Test", 
+            DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(2), PeriodType.Daily, 5, 
+            "hash123", new List<Relatory>());
 
         // Act
         _project?.UpdatePeriodType(PeriodType.Weekly);

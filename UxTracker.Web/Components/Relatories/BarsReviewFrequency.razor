@@ -11,6 +11,7 @@
         Options="_options"
         Title="@(PeriodType.GetPeriodSingle()+ " " + (Rates.Index + 1))">
         <ApexPointSeries
+            Color="#26A69A"
             Stroke="@(new SeriesStroke { Width = 1, Color = "#FFFFFFB2" })"
             TItem="RatingFrequency"
             Items="RatingGrouper.GroupByIntervals(Rates.Rates)"
@@ -76,6 +77,10 @@
                     Show = false,
                 },
                 CssClass = "apexcharts-tooltip",
+                Marker = new TooltipMarker
+                {
+                    FillColors = ["#26A69A"]
+                }
             },
             DataLabels = new DataLabels
             {

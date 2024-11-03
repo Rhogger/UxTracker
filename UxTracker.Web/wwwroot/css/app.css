@@ -21,8 +21,18 @@
 }
 
 .cluster-container{
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     max-width: 30%;
+}
+
+.btn-cluster{
+    width: 100%;
+    max-width: 120px;
+    height: 56px;
 }
 
 .r-paper{
