@@ -26,6 +26,7 @@
     [Parameter] public ReviewsFrequency Rates { get; set; } = null!;
     [Parameter] public PeriodType PeriodType { get; set; }
     [Parameter] public int SurveyCollections { get; set; }
+    [Parameter] public int ReviewersCount { get; set; }
     
     private ApexChartOptions<RatingFrequency> _options = null!;
     
@@ -108,7 +109,7 @@
             },
             Xaxis = new XAxis
             {
-                Min = 1,
+                Min = 0,
                 Max = 10,
                 Title = new AxisTitle
                 {
@@ -149,6 +150,7 @@
                 new YAxis
                 {
                     Min = 0,
+                    Max = ReviewersCount,
                     Title = new AxisTitle
                     {
                         Text = "Frequência",
@@ -180,6 +182,13 @@
                     {
                         BackgroundBarColors = ["#26A69A"],
                         BackgroundBarOpacity = 0,
+                        Ranges = new List<PlotOptionsBarColorRange>
+                        {
+                            new()
+                            {
+                                Color = "#26A69A"
+                            }
+                        }
                     },
                 },
             }

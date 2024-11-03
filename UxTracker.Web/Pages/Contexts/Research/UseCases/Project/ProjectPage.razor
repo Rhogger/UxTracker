@@ -60,7 +60,6 @@
             ButtonClass="py-2 r-max-btn-icon w-full"
             TextButton="Editar"
             ButtonColor="Color.Info"
-            ButtonIcon="@Icons.Material.Filled.Edit"
             SubmitFunction="ChangeState"
             SecondTextButton="@TextChangeStatusButton"
             SecondFunction="ChangeStatusAsync"
@@ -234,7 +233,6 @@
             TwoOptions="true"
             ButtonClass="py-2 r-max-btn w-full"
             TextButton="Salvar"
-            ButtonIcon="@Icons.Material.Filled.Save"
             ButtonColor="Color.Success"
             SubmitFunction="UpdateAsync"
             IsBusy="IsBusyUpdate"
@@ -446,6 +444,7 @@
                                         <BarsReviewFrequency
                                             PeriodType="Response.Data.Project.PeriodType"
                                             SurveyCollections="Response.Data.Project.SurveyCollections"
+                                            ReviewersCount="Response.Data.Project.ReviewersCount"
                                             Rates="group"
                                             ContainerClass="w-full r-no-graphics"/>
                                     }
@@ -454,28 +453,37 @@
                                 case "Número adequado de clusters de usuário":
                                     <ElbowChart 
                                         ContainerClass="w-full r-no-graphics"
-                                        Event="UpdateClusterNumber"/>
+                                        Event="UpdateClusterNumber"
+                                        Reviews="Response.Data.Project.Reviews"/>
                                     
-                                    <div class="d-flex flex-column justify-center align-center">
-                                        <MudText
-                                            Align="Align.Center"
-                                            Typo="Typo.body1">
-                                            Número de Clusters
-                                        </MudText>
-        
-                                        <ValidateForm
-                                            Class="d-flex"
-                                            ButtonColor="Color.Success"
-                                            ButtonIcon="@Icons.Material.Filled.Save"
-                                            ButtonClass="py-2 r-max-btn w-full"
-                                            SubmitFunction="UpdateClusterNumber"
-                                            IsBusy="IsBusyCluster">
-                                            <MudNumericField Min="1" Max="10" bind-Value="@UpdateClusterRequest.NumberCluster"/>
-                                        </ValidateForm>
+                                    <div class="d-flex gap-3 cluster-container">
+                                        <MudNumericField
+                                            T="int"
+                                            ShrinkLabel="true"
+                                            Min="1"
+                                            Max="10"
+                                            Variant="Variant.Filled"
+                                            Required="true"
+                                            bind-Value="@UpdateClusterRequest.NumberCluster"
+                                            HelperText="Entre 1 e 10"/>
+                                        
+                                        <MudButton
+                                            Class="py-2 px-2"
+                                            Color="Color.Success"
+                                            StartIcon="@Icons.Material.Filled.Save"
+                                            OnClick="UpdateClusterNumber">
+                                            @if (!IsBusyCluster)
+                                            {
+                                                @("Salvar")
+                                            }
+                                            else
+                                            {
+                                                <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4" />
+                                            }
+                                        </MudButton>
                                     </div>
                                     break;
                             }
-
                         </div>
                         
                     }

@@ -1,17 +1,17 @@
 @using ApexCharts
-@using UxTracker.Core.Contexts.Research.UseCases.UpdateStatus
+@using UxTracker.Core.Contexts.Research.DTOs
 @using UxTracker.Core.Contexts.Research.ValueObjects
 @using ChartType = ApexCharts.ChartType
 
 <div class="@ContainerClass">
-    <ApexChart 
+    <ApexChart
         TItem="ElbowChartData"
         @ref="Ref"
         Options="@_options">
         <ApexPointSeries
-            TItem="ElbowChartData" 
-            Items="ElbowData" 
-            Name="WCSS" 
+            TItem="ElbowChartData"
+            Items="ElbowData"
+            Name="WCSS"
             SeriesType="SeriesType.Line"
             XValue="@(e => e.K)"
             YValue="@(e => e.WCSS)"/>
@@ -21,18 +21,11 @@
 @code{
     [Parameter] public EventCallback Event { get; set; }
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
+    [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
 
     private ApexChart<ElbowChartData>? Ref { get; set; }
     private ApexChartOptions<ElbowChartData> _options = null!;
-    
-    private List<ElbowChartData> ElbowData { get; set; } =
-    [
-        new ElbowChartData(1, 1000),
-        new ElbowChartData(2, 600),
-        new ElbowChartData(3, 300),
-        new ElbowChartData(4, 200),
-        new ElbowChartData(5, 150)
-    ];
+    private List<ElbowChartData> ElbowData { get; set; } = new List<ElbowChartData>();
     
     protected override Task OnParametersSetAsync()
     {
@@ -44,6 +37,11 @@
 
     protected override void OnInitialized()
     {
+        var data = Reviews.Select(r => new double[] { (double)r.Rate }).ToList();
+        
+        var elbowCalculator = new ElbowCalculator();
+        ElbowData = elbowCalculator.CalculateElbowChartData(data, 10);
+        
         _options = new ApexChartOptions<ElbowChartData>
         {
             Chart = new Chart

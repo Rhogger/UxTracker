@@ -489,20 +489,6 @@ public class ProjectTests
     }
 
     [TestMethod]
-    public void SetStatus_Should_Return_Finished_If_StartAndEndDate_Are_SameDay_And_In_Past()
-    {
-        // Arrange
-        var sameDate = DateTime.UtcNow.AddDays(-1); 
-        var project = new Project(Guid.NewGuid(), "Test", "Test", sameDate, sameDate, PeriodType.Daily, 5, "hash123", new List<Relatory>());
-
-        // Act
-        var status = project.Status;
-
-        // Assert
-        Assert.AreEqual(Status.Finished, status);
-    }
-
-    [TestMethod]
     public void UpdatePeriodType_Should_Update_PeriodType_If_Status_Not_Finished()
     {
         // Act

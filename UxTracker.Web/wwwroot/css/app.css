@@ -20,6 +20,11 @@
     max-width: 100%;
 }
 
+.cluster-container{
+    width: 100%;
+    max-width: 30%;
+}
+
 .r-paper{
     width: 100%;
 }
