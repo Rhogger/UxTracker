@@ -54,23 +54,23 @@ public class Review: ComponentBase
                     if (Response.Data is { Accepted: false })
                         await OpenDialogAsync();
 
-                    if (Response.Data?.Project is { Reviews.Count: > 0 })
-                    {
-                        if (Response.Data.Project.Reviews.Count < Response.Data.Project.SurveyCollections)
-                        {
-                            IsDisabled = false;
-                        }
-
-                        if (!UserRates.ValidToRate(
-                                Response.Data.Project.PeriodType,
-                                Response.Data.Project.Reviews.Last().RatedAt))
-                        {
-                            StartCountDown();
-                            IsDisabled = true;
-                        }
-                    }
-                    else
-                        IsDisabled = false;
+                    // if (Response.Data?.Project is { Reviews.Count: > 0 })
+                    // {
+                    //     if (Response.Data.Project.Reviews.Count < Response.Data.Project.SurveyCollections)
+                    //     {
+                    //         IsDisabled = false;
+                    //     }
+                    //
+                    //     if (!UserRates.ValidToRate(
+                    //             Response.Data.Project.PeriodType,
+                    //             Response.Data.Project.Reviews.Last().RatedAt))
+                    //     {
+                    //         StartCountDown();
+                    //         IsDisabled = true;
+                    //     }
+                    // }
+                    // else
+                    //     IsDisabled = false;
                 }
                 else
                 {
@@ -123,7 +123,7 @@ public class Review: ComponentBase
 
                     Response.Data?.Project?.Reviews.Add(rate);
 
-                    StartCountDown();
+                    // StartCountDown();
                     
                     StateHasChanged();
                 }
