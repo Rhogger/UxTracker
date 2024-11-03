@@ -1,11 +1,7 @@
 @using ApexCharts
-@using UxTracker.Core.Contexts.Research.Enums
-@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Research.UseCases.UpdateStatus
 @using UxTracker.Core.Contexts.Research.ValueObjects
-@using UxTracker.Core.Contexts.Review.ValueObjects
 @using ChartType = ApexCharts.ChartType
-@using UxTracker.Web.Components.Forms
-@using Color = MudBlazor.Color
 
 <div class="@ContainerClass">
     <ApexChart 
@@ -20,20 +16,6 @@
             XValue="@(e => e.K)"
             YValue="@(e => e.WCSS)"/>
     </ApexChart>
-    
-    <div class="d-flex flex-column justify-center align-center">
-        <MudText></MudText>
-        
-        <ValidateForm
-            Class="d-flex"
-            ButtonColor="Color.Success"
-            ButtonIcon="@Icons.Material.Filled.Save"
-            ButtonClass="py-2 r-max-btn w-full"
-            SubmitFunction=""
-            IsBusy="">
-            <MudNumericField/>
-        </ValidateForm>
-    </div>
 </div>
 
 @code{
@@ -193,7 +175,6 @@
                 new YAxis
                 {
                     Min = 0,
-                    Max = 10,
                     Title = new AxisTitle
                     {
                         Text = "WCSS",

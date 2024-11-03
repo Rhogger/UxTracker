@@ -6,13 +6,12 @@ using UxTracker.Core;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
-using UxTracker.Core.Contexts.Research.Validators;
 using UxTracker.Core.Contexts.Research.ValueObjects;
 using UxTracker.Web.Components.Dialogs;
 using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
 using UpdateUseCase = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateStatusUseCase = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
-
+using UpdateCluster = UxTracker.Core.Contexts.Research.UseCases.UpdateNumberCluster;
 
 namespace UxTracker.Web.Pages.Contexts.Research.UseCases.Project;
 
@@ -30,6 +29,8 @@ public class Project: ComponentBase
     private UpdateUseCase.Response? UpdateResponse { get; set; }
     protected UpdateUseCase.Request UpdateRequest { get; set; } = new();
     private UpdateStatusUseCase.Request UpdateStatusRequest { get; set; } = new();
+    protected UpdateCluster.Request UpdateClusterRequest = new();
+
     private List<GetRelatoriesDto>? Relatories { get; set; }= new();
     protected List<SelectedRelatories> SelectedRelatories { get; set;} = new();
 
@@ -37,6 +38,8 @@ public class Project: ComponentBase
     protected bool IsBusyUpdate { get; private set; } = false;
     protected bool IsBusyDelete { get; private set; } = false;
     protected bool IsRelatoriesBusy { get; private set; } = true;
+    protected bool IsBusyCluster { get; set; } = false;
+
     protected bool IsEditState;
     protected Color ColorButtonChangeStatus { get; private set; } = Color.Default;
     protected string TextChangeStatusButton { get; private set; } = string.Empty;
@@ -271,6 +274,42 @@ public class Project: ComponentBase
         finally
         {
             IsBusy = false;
+            StateHasChanged();
+        }
+    }
+    
+    protected async Task UpdateClusterNumber()
+    {
+        try
+        {
+            IsBusyCluster = true;
+            
+            var response = await ResearchContextHandler.UpdateNumberClusterAsync(UpdateClusterRequest);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
+                    await OnParametersSetAsync();
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusyCluster = false;
             StateHasChanged();
         }
     }
