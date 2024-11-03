@@ -417,13 +417,16 @@
                 {
                     foreach (var relatory in Response.Data.Project.Relatories)
                     {
-                        <div class="d-flex flex-column w-full gap-10">
-                            <MudText
-                                Align="Align.Center"
-                                Class=""
-                                Typo="Typo.h5">
-                                @relatory.Title    
-                            </MudText>
+                        <div class="d-flex flex-column w-full gap-10 align-center">
+                            @if (relatory.Title.Equals("Média da experiência do usuário ao longo do tempo"))
+                            {
+                                <MudText
+                                    Align="Align.Center"
+                                    Class=""
+                                    Typo="Typo.h5">
+                                    @relatory.Title
+                                </MudText>
+                            }
 
                             @switch (relatory.Title)
                             {
@@ -448,25 +451,26 @@
                                             Rates="group"
                                             ContainerClass="w-full r-no-graphics"/>
                                     }
+
                                     break;
                                 }
                                 case "Número adequado de clusters de usuário":
-                                    <ElbowChart 
+                                    <ElbowChart
                                         ContainerClass="w-full r-no-graphics"
-                                        Event="UpdateClusterNumber"
                                         Reviews="Response.Data.Project.Reviews"/>
-                                    
+
                                     <div class="cluster-container">
                                         <MudNumericField
                                             T="int"
                                             ShrinkLabel="true"
+                                            Label="Clusters"
                                             Min="1"
                                             Max="10"
                                             Variant="Variant.Filled"
                                             Required="true"
                                             bind-Value="@UpdateClusterRequest.NumberCluster"
                                             HelperText="Entre 1 e 10"/>
-                                        
+
                                         <MudButton
                                             Class="btn-cluster"
                                             Color="Color.Success"
@@ -479,10 +483,28 @@
                                             }
                                             else
                                             {
-                                                <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4" />
+                                                <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4"/>
                                             }
                                         </MudButton>
                                     </div>
+                                    
+                                    @if (Response.Data.Project.ClusterNumber != 0)
+                                    {
+                                        <MudText
+                                            Align="Align.Center"
+                                            Class=""
+                                            Typo="Typo.h5">
+                                            Média da experiência do usuário ao longo do tempo
+                                        </MudText>
+                                    
+                                        <ClustersChart
+                                            Event="UpdateClusterChart"
+                                            Reviews="Response.Data.Project.Reviews"
+                                            ContainerClass="w-full r-no-graphics"
+                                            PeriodType="Response.Data.Project.PeriodType"
+                                            SurveyCollections="Response.Data.Project.SurveyCollections"
+                                            NumberOfClusters="Response.Data.Project.ClusterNumber"/>
+                                    }
                                     break;
                             }
                         </div>

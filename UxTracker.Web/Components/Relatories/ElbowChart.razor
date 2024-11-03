@@ -1,7 +1,6 @@
 @using ApexCharts
 @using UxTracker.Core.Contexts.Research.DTOs
 @using UxTracker.Core.Contexts.Research.ValueObjects
-@using ChartType = ApexCharts.ChartType
 
 <div class="@ContainerClass">
     <ApexChart
@@ -14,26 +13,17 @@
             Name="WCSS"
             SeriesType="SeriesType.Line"
             XValue="@(e => e.K)"
-            YValue="@(e => e.WCSS)"/>
+            YValue="@(e => Math.Round(e.WCSS))"/>
     </ApexChart>
 </div>
 
 @code{
-    [Parameter] public EventCallback Event { get; set; }
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
     [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
 
     private ApexChart<ElbowChartData>? Ref { get; set; }
     private ApexChartOptions<ElbowChartData> _options = null!;
-    private List<ElbowChartData> ElbowData { get; set; } = new List<ElbowChartData>();
-    
-    protected override Task OnParametersSetAsync()
-    {
-        StateHasChanged();
-        Ref?.UpdateSeriesAsync();
-
-        return Task.CompletedTask;
-    }
+    private List<ElbowChartData> ElbowData { get; set; } = new();
 
     protected override void OnInitialized()
     {
@@ -61,40 +51,10 @@
                     Blur = 10,
                     Opacity = 0.2d
                 },
-                Selection = new Selection
-                {
-                    Enabled = false
-                },
-                Sparkline = new ChartSparkline
-                {
-                    Enabled = false
-                },
-                Type = ChartType.Line,
-                Brush = new Brush
-                {
-                    Enabled = false,
-                },
-                Zoom = new Zoom
-                {
-                    Enabled = false,
-                },
             },
             Tooltip = new Tooltip
             {
-                Style  = new TooltipStyle
-                {
-                    FontFamily = "Inter",
-                    FontSize = "12px",
-                },
-                CssClass = "apexcharts-tooltip",
-                Marker = new TooltipMarker
-                {
-                    FillColors = ["#2DC8B8"]
-                },
-                X = new TooltipX
-                {
-                    Show = false,
-                }
+                Enabled = false
             },
             DataLabels = new DataLabels
             {
@@ -118,16 +78,9 @@
                     },
                 },
             },
-            Markers = new Markers 
-            { 
-                Shape = ShapeEnum.Circle,
-                Size = 5, 
-                FillOpacity = new Opacity(0.8d),
-                Colors = new List<string> { "#2DC8B8", "#FFFFFFB2" },
-            },
             Stroke = new Stroke
             {
-                Curve = Curve.Smooth, 
+                Curve = Curve.Straight, 
                 Colors = ["#2DC8B8"]
             },
             Legend = new Legend
@@ -141,7 +94,6 @@
                 OffsetX = -5,
                 OffsetY = -25,
             },
-            
             Xaxis = new XAxis
             {
                 Min = 1,
