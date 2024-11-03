@@ -6,12 +6,12 @@
 @using ChartType = ApexCharts.ChartType
 
 <div class="@ContainerClass">
-    @while (_index <= SurveyCollections)
+    @for(var index = 0; index <= SurveyCollections; index++)
     {
         <ApexChart
             TItem="ReviewsFrequency"
             Options="_options"
-            Title="@(PeriodType.GetPeriod()+ " " + _index + 1)">
+            Title="@(PeriodType.GetPeriod()+ " " + index + 1)">
             <ApexPointSeries
                 Stroke="@(new SeriesStroke { Width = 1, Color = "#FFF" })"
                 TItem="ReviewsFrequency"
@@ -20,8 +20,6 @@
                 XValue="@(e => e.Rate)"
                 YValue="@(e => e.Count)"/>
         </ApexChart>
-
-        _index++;
     }
 </div>
 
@@ -33,7 +31,6 @@
     
     private ApexChartOptions<ReviewsFrequency> _options = null!;
     private List<ReviewsFrequency> _datas = [];
-    private int _index = 0;
     
     protected override void OnInitialized()
     {
