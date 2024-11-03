@@ -433,6 +433,15 @@
                                 Rates="Response.Data.Project.Reviews"
                                 ContainerClass="w-full r-no-graphics"/>
                         }
+                        
+                        if (relatory.Title.Equals("Frequência das avaliações por período de tempo"))
+                        {
+                            <BarsReviewFrequency
+                                PeriodType="Response.Data.Project.PeriodType"
+                                SurveyCollections="Response.Data.Project.SurveyCollections"
+                                Rates="Response.Data.Project.Reviews"
+                                ContainerClass="w-full r-no-graphics"/>
+                        }
                     }
                 }
             </MudPaper>
