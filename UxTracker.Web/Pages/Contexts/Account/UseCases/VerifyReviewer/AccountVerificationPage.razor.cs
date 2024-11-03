@@ -2,19 +2,23 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UxTracker.Core.Contexts.Account.Handlers;
+using UxTracker.Core.Security;
 using VerifyReviewerUseCase = UxTracker.Core.Contexts.Account.UseCases.VerifyReviewer;
+using AuthenticateReviewerUseCase = UxTracker.Core.Contexts.Account.UseCases.AuthenticateReviewer;
 using ResendVerificationCodeReviewerUseCase = UxTracker.Core.Contexts.Account.UseCases.ResendVerificationCodeReviewer;
 
 namespace UxTracker.Web.Pages.Contexts.Account.UseCases.VerifyReviewer;
 
 public class AccountVerification: ComponentBase
 {
+    [Inject] protected IBlazorAuthenticationStateProvider BlazorAuthenticationStateProvider { get; set; } = null!;
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-    
+
     protected readonly VerifyReviewerUseCase.Request Request = new();
+    protected readonly AuthenticateReviewerUseCase.Request AuthenticateRequest = new();
     protected bool IsBusy { get; set; }
     protected bool IsBusyResend { get; private set; }
 
@@ -34,6 +38,8 @@ public class AccountVerification: ComponentBase
             if (response is not null)
                 if (response.IsSuccessful)
                 {
+                    BlazorAuthenticationStateProvider.NotifyAuthenticationStateChanged();
+                    
                     Snackbar.Add("Conta verificada com sucesso!", Severity.Success);
                     
                     Navigation.NavigateTo(string.IsNullOrEmpty(response.Data?.Data?.ResearchCode)
