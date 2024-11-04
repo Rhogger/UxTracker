@@ -37,15 +37,20 @@
     private List<ClusterSeriesData> ClusterSeries { get; set; } = new();
     private int PreviousClusterNumber { get; set; }
     
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        if (NumberOfClusters == PreviousClusterNumber) return Task.CompletedTask;
-        
-        StateHasChanged();
-        Ref?.UpdateSeriesAsync();
-
-        return Task.CompletedTask;
+        if (NumberOfClusters != PreviousClusterNumber)
+        {
+            PreviousClusterNumber = NumberOfClusters;
+            await LoadClusterData();
+            StateHasChanged();
+            Ref?.UpdateSeriesAsync();
+        }
     }
+
+    private Task LoadClusterData() => Task.FromResult(ClusterSeries = ComputeClusterData(NumberOfClusters));
+    
+    private List<ClusterSeriesData> ComputeClusterData(int clusters) => new();
 
     protected override void OnInitialized()
     {
