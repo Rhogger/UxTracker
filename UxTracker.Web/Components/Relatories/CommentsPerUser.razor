@@ -1,15 +1,18 @@
 @using UxTracker.Core.Contexts.Research.DTOs
 
 <MudTable 
+    Outlined="true"
     Class="w-full"
     Hover="true" 
     Breakpoint="Breakpoint.Sm" 
     Height="500px" 
+    HorizontalScrollbar=""
     FixedHeader="true"
     Items="@GroupedReviews"
     GroupBy="@_groupDefinition">
     <ColGroup>
         <col style="width: 40px;" />
+        <col style="width: 360px;" />
         <col/>
     </ColGroup>
     <HeaderContent>
@@ -17,7 +20,7 @@
         <MudTh>Comentário</MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
-        <MudTh colspan="2" Class="mud-table-cell-custom-group">@($"Usuário: {context.Key}")</MudTh>
+        <MudTh colspan="2" Style="overflow-wrap: anywhere;">@($"Usuário: {context.Key}")</MudTh>
     </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Dia">@($"Dia {context.Index + 1}")</MudTd>
