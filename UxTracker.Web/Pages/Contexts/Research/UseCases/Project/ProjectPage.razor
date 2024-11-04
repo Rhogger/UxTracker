@@ -524,25 +524,25 @@
                                         <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4"/>
                                     }
                                 </MudButton>
-
-                                @if (Response.Data.Project.ClusterNumber != 0)
-                                {
-                                    <MudText
-                                        Align="Align.Center"
-                                        Class=""
-                                        Typo="Typo.h5">
-                                        Média da experiência do usuário ao longo do tempo
-                                    </MudText>
-
-                                    <ClustersChart
-                                        Event="UpdateClusterNumber"
-                                        Reviews="Response.Data.Project.Reviews"
-                                        ContainerClass="w-full r-no-graphics"
-                                        PeriodType="Response.Data.Project.PeriodType"
-                                        SurveyCollections="Response.Data.Project.SurveyCollections"
-                                        NumberOfClusters="Response.Data.Project.ClusterNumber"/>
-                                }
                             </div>
+                            
+                            @if (Response.Data.Project.ClusterNumber != 0)
+                            {
+                                <MudText
+                                    Align="Align.Center"
+                                    Class=""
+                                    Typo="Typo.h5">
+                                    Média da experiência do usuário ao longo do tempo
+                                </MudText>
+
+                                <ClustersChart
+                                    Event="UpdateClusterNumber"
+                                    Reviews="Response.Data.Project.Reviews"
+                                    ContainerClass="w-full r-no-graphics"
+                                    PeriodType="Response.Data.Project.PeriodType"
+                                    SurveyCollections="Response.Data.Project.SurveyCollections"
+                                    NumberOfClusters="Response.Data.Project.ClusterNumber"/>
+                            }
                         }
                     </div>
                         
