@@ -426,9 +426,7 @@ public static class ResearchContextExtension
 
                 var fileName = Path.GetFileName(files[0]);
 
-                var fileUrl = Path.Combine(Configuration.ApplicationUrl.BackendUrl, Configuration.ConsentTerm.Folder, projectId, fileName);
-                
-                if (result.Data != null) result.Data = result.Data with { TermUrl = fileUrl };
+                if (result.Data != null) result.Data = result.Data with { Filename = fileName };
 
                 return result.IsSuccess
                     ? Results.Ok(result)

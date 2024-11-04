@@ -347,10 +347,10 @@ public class ResearchContextHandler(
             throw new Exception($"{ex.Message}");
         }
     }
-
-    public async Task GetConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
+    
+   public async Task DownloadConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
     {
-        var request = new RestRequest($"/api/v1/term/{projectId}");
+        var request = new RestRequest($"/api/v1/terms/{projectId}");
 
         try
         {

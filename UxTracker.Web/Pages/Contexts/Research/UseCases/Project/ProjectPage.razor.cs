@@ -338,7 +338,7 @@ public class Project: ComponentBase
     {
         try
         {
-            await ResearchContextHandler.GetConsentTermAsync(ProjectId.ToString(), FileName, JsRuntime);
+            await ResearchContextHandler.DownloadConsentTermAsync(ProjectId.ToString(), FileName, JsRuntime);
         }
         catch (Exception ex)
         {

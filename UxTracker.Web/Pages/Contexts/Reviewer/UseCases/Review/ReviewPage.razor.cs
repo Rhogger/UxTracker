@@ -162,7 +162,6 @@ public class Review: ComponentBase
         
         var parameters = new DialogParameters
         {
-            { nameof(ShowAcceptTerm.TermUrl), Response.Data?.TermUrl },
             { nameof(ShowAcceptTerm.ProjectId), ProjectId }
         };
         
