@@ -3,63 +3,28 @@
 @using UxTracker.Core.Contexts.Research.Enums
 @using UxTracker.Core.Contexts.Research.Extensions
 
-<MudTable Items="GroupedReviews" HorizontalScrollbar="true">
+<MudTable Items="GroupedReviews" HorizontalScrollbar="true" FixedHeader="true">
     <HeaderContent>
-        <MudTh>@PeriodType.GetPeriod()</MudTh>
-        <MudTh>Média</MudTh>
-        <MudTh>Mediana</MudTh>
-        <MudTh>Moda</MudTh>
-        <MudTh>Desvio Padrão</MudTh>
-        <MudTh>Maior Valor</MudTh>
-        <MudTh>Menor Valor</MudTh>
-        <MudTh>Avaliações positivas</MudTh>
-        <MudTh>Avaliações negativas</MudTh>
+        <MudTh Style="text-align: center;">Dias</MudTh>
+        <MudTh Style="text-align: center;">Média</MudTh>
+        <MudTh Style="text-align: center;">Mediana</MudTh>
+        <MudTh Style="text-align: center;">Moda</MudTh>
+        <MudTh Style="text-align: center;">Desvio Padrão</MudTh>
+        <MudTh Style="text-align: center;">Maior Valor</MudTh>
+        <MudTh Style="text-align: center;">Menor Valor</MudTh>
+        <MudTh Style="text-align: center;">Avaliações positivas</MudTh>
+        <MudTh Style="text-align: center;">Avaliações negativas</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <!-- Exibindo o índice do período -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="@PeriodType.GetPeriod()">
-            @context.Key
-        </MudTd>
-        
-        <!-- Calculando Média -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Média">
-            @context.Average(r => r.Rate).ToString("F1")
-        </MudTd>
-        
-        <!-- Calculando Mediana -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Mediana">
-            @Median(context.Select(r => r.Rate)).ToString("F1")
-        </MudTd>
-        
-        <!-- Calculando Moda -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Moda">
-            @Mode(context.Select(r => r.Rate)).ToString("F1")
-        </MudTd>
-        
-        <!-- Calculando Desvio Padrão -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Desvio Padrão">
-            @StandardDeviation(context.Select(r => r.Rate)).ToString("F1")
-        </MudTd>
-        
-        <!-- Calculando Maior Valor -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Maior Valor">
-            @context.Max(r => r.Rate).ToString("F1")
-        </MudTd>
-        
-        <!-- Calculando Menor Valor -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Menor Valor">
-            @context.Min(r => r.Rate).ToString("F1")
-        </MudTd>
-        
-        <!-- Contando Avaliações Positivas -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Avaliações positivas">
-            @context.Count(r => r.Rate > 5)
-        </MudTd>
-        
-        <!-- Contando Avaliações Negativas -->
-        <MudTd Style="display: flex; justify-content: center; align-items: center;" DataLabel="Avaliações negativas">
-            @context.Count(r => r.Rate <= 5)
-        </MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Dias">@context.Key</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Média">@context.Average(r => r.Rate).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Mediana">@Median(context.Select(r => r.Rate)).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Moda">@Mode(context.Select(r => r.Rate)).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Desvio Padrão">@StandardDeviation(context.Select(r => r.Rate)).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Maior Valor">@context.Max(r => r.Rate).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Menor Valor">@context.Min(r => r.Rate).ToString("F1")</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Avaliações positivas">@context.Count(r => r.Rate > 5)</MudTd>
+        <MudTd Style="text-align: center;" DataLabel="Avaliações negativas">@context.Count(r => r.Rate <= 5)</MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -67,10 +32,9 @@
     [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
     [Parameter] public PeriodType PeriodType { get; set; }
 
-    // Agrupando Reviews por Index (Período)
+// Agrupando Reviews por Index (Período)
     private IEnumerable<IGrouping<int, ReviewsDto>> GroupedReviews => Reviews.GroupBy(r => r.Index);
 
-    // Função para calcular a mediana
     private decimal Median(IEnumerable<decimal> numbers)
     {
         var sortedNumbers = numbers.OrderBy(n => n).ToList();
@@ -82,7 +46,6 @@
         return sortedNumbers[count / 2];
     }
 
-    // Função para calcular a moda
     private decimal Mode(IEnumerable<decimal> numbers)
     {
         return numbers.GroupBy(n => n)
@@ -90,7 +53,6 @@
             .First().Key;
     }
 
-    // Função para calcular o desvio padrão
     private decimal StandardDeviation(IEnumerable<decimal> numbers)
     {
         var mean = numbers.Average();
