@@ -39,29 +39,75 @@
     private List<ClusterSeriesData> ClusterSeries { get; set; } = new();
     private int PreviousClusterNumber { get; set; }
     
-    protected async Task RerenderGraph()
+    public async Task RecalculateAndRender()
+    {
+        await LoadClusterData();
+        StateHasChanged();
+        if (Ref != null)
+        {
+            await Ref.UpdateSeriesAsync();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
     {
         if (NumberOfClusters != PreviousClusterNumber)
         {
             PreviousClusterNumber = NumberOfClusters;
-            await LoadClusterData();
-            StateHasChanged();
-            Ref?.UpdateSeriesAsync();
-        }
-        else
-        {
-            Console.WriteLine("Caiu aqui");
+            await RecalculateAndRender();
         }
     }
 
-    private Task LoadClusterData() => Task.FromResult(ClusterSeries = ComputeClusterData(NumberOfClusters));
-    
-    private List<ClusterSeriesData> ComputeClusterData(int clusters) => new();
+    private Task LoadClusterData()
+    {
+        ClusterSeries = ComputeClusterData(NumberOfClusters);
+        return Task.CompletedTask;
+    }
+
+    private List<ClusterSeriesData> ComputeClusterData(int clusters)
+    {
+        // Implementação de cálculo para gerar os dados dos clusters
+        var groupedReviews = Reviews
+            .GroupBy(r => r.Index)
+            .Select(g => new { Period = $"Dia {g.Key + 1}", Data = g.ToList() })
+            .ToList();
+
+        var data = Reviews.Select(r => new double[] { (double)r.Rate }).ToList();
+        var kmeans = new KMeans(clusters);
+        var clustersResult = kmeans.Learn(data.ToArray());
+
+        var clusterSeriesList = new List<ClusterSeriesData>();
+
+        for (var clusterId = 0; clusterId < clusters; clusterId++)
+        {
+            var seriesData = new List<ClusterLineData>();
+
+            foreach (var periodGroup in groupedReviews)
+            {
+                var clusterPoints = periodGroup.Data.Where(r => clustersResult.Decide(new double[] { (double)r.Rate }) == clusterId);
+                var averageValue = clusterPoints.Any() ? clusterPoints.Average(r => r.Rate) : 0;
+
+                seriesData.Add(new ClusterLineData
+                {
+                    Period = periodGroup.Period,
+                    Value = Math.Round(averageValue, 2)
+                });
+            }
+
+            clusterSeriesList.Add(new ClusterSeriesData
+            {
+                ClusterId = clusterId,
+                Data = seriesData
+            });
+        }
+
+        return clusterSeriesList;
+    }
 
     protected override void OnInitialized()
     {
         PreviousClusterNumber = NumberOfClusters;
-        
+            
         var groupedReviews = Reviews
             .GroupBy(r => r.Index)
             .Select(g => new { Period = $"Dia {g.Key + 1}", Data = g.ToList() })

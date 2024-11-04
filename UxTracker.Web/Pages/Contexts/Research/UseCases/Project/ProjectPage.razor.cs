@@ -302,9 +302,7 @@ public class Project: ComponentBase
                 {
                     Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
                     if (Response.Data != null) Response.Data.Project.ClusterNumber = UpdateClusterRequest.NumberCluster;
-                    if (ClustersChartRef != null)
-                        if (Response.Data != null)
-                            ClustersChartRef.NumberOfClusters = Response.Data.Project.ClusterNumber;
+                    if (ClustersChartRef != null) await ClustersChartRef.RecalculateAndRender();
                 }
                 else
                 {
