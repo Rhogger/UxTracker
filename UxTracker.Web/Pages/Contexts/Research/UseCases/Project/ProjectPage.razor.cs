@@ -9,6 +9,7 @@ using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Research.ValueObjects;
 using UxTracker.Web.Components.Dialogs;
+using UxTracker.Web.Components.Relatories;
 using Color = MudBlazor.Color;
 using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
 using UpdateUseCase = UxTracker.Core.Contexts.Research.UseCases.Update;
@@ -51,7 +52,8 @@ public class Project: ComponentBase
     protected string? FileName = string.Empty;
     private IBrowserFile? _consentTerm;
     protected MudTextField<string> CopyTextField = null!;
-    protected ApexChart<ClusterLineData>? Ref { get; set; }
+    protected ClustersChart? ClustersChartRef;
+
 
 
     
@@ -300,6 +302,9 @@ public class Project: ComponentBase
                 {
                     Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
                     if (Response.Data != null) Response.Data.Project.ClusterNumber = UpdateClusterRequest.NumberCluster;
+                    if (ClustersChartRef != null)
+                        if (Response.Data != null)
+                            ClustersChartRef.NumberOfClusters = Response.Data.Project.ClusterNumber;
                 }
                 else
                 {
