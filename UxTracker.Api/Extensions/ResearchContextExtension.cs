@@ -21,6 +21,8 @@ using Update = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateInfra = UxTracker.Infra.Contexts.Research.UseCases.Update;
 using UpdateStatus = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
 using UpdateStatusInfra = UxTracker.Infra.Contexts.Research.UseCases.UpdateStatus;
+using UpdateNumberCluster = UxTracker.Core.Contexts.Research.UseCases.UpdateNumberCluster;
+using UpdateNumberClusterInfra = UxTracker.Infra.Contexts.Research.UseCases.UpdateNumberCluster;
 
 namespace UxTracker.Api.Extensions;
 
@@ -111,6 +113,20 @@ public static class ResearchContextExtension
         builder.Services.AddTransient<
             IRequestHandler<UpdateStatus.Request, UpdateStatus.Response>, 
             UpdateStatus.Handler
+        >();
+        
+        #endregion
+        
+        #region UpdateNumberCluster
+
+        builder.Services.AddTransient<
+            UpdateNumberCluster.Contracts.IRepository,
+            UpdateNumberClusterInfra.Repository
+        >();
+        
+        builder.Services.AddTransient<
+            IRequestHandler<UpdateNumberCluster.Request, UpdateNumberCluster.Response>, 
+            UpdateNumberCluster.Handler
         >();
         
         #endregion
@@ -230,7 +246,7 @@ public static class ResearchContextExtension
                     return Results.Json(result, statusCode: result.StatusCode);
                 }
 
-                var directory = $"{Configuration.ConsentTerm.Url}{projectId}";
+                var directory = $"{Configuration.ConsentTerm.Url}/{projectId}";
 
                 try
                 {
@@ -343,7 +359,7 @@ public static class ResearchContextExtension
         #region GetConsentTerm
 
         app.MapGet(
-            $"api/v1/term/{{projectId}}",
+            $"api/v1/terms/{{projectId}}",
             async ([FromRoute] string projectId) =>
             {
                 var consentTermFolder = Path.Combine(Configuration.ConsentTerm.Url, projectId);
@@ -410,9 +426,7 @@ public static class ResearchContextExtension
 
                 var fileName = Path.GetFileName(files[0]);
 
-                var fileUrl = Path.Combine(Configuration.ApplicationUrl.BackendUrl, Configuration.ConsentTerm.Folder, projectId, fileName);
-                
-                if (result.Data != null) result.Data = result.Data with { TermUrl = fileUrl };
+                if (result.Data != null) result.Data = result.Data with { Filename = fileName };
 
                 return result.IsSuccess
                     ? Results.Ok(result)
@@ -556,6 +570,40 @@ public static class ResearchContextExtension
                 [FromServices] IRequestHandler<
                     UpdateStatus.Request,
                     UpdateStatus.Response
+                > handler
+            ) =>
+            {
+                var userId = httpContext.User.FindFirst("Id")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized();
+
+                request.UserId = userId;
+
+                request.ProjectId = projectId;
+
+                var result = await handler.Handle(request, new CancellationToken());
+        
+                return result.IsSuccess 
+                    ? Results.Ok(result) 
+                    : Results.Json(result, statusCode: result.StatusCode);
+            }
+        ).DisableAntiforgery();
+        
+        #endregion
+        
+        #region UpdateNumberCluster
+
+        app.MapPatch(
+            $"api/v1/projects/{{projectId}}/cluster",
+            [Authorize (Roles = "Researcher")]
+            async (
+                HttpContext httpContext,
+                UpdateNumberCluster.Request request,
+                [FromRoute] string projectId,
+                [FromServices] IRequestHandler<
+                    UpdateNumberCluster.Request,
+                    UpdateNumberCluster.Response
                 > handler
             ) =>
             {

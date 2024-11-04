@@ -1,4 +1,5 @@
 using System.Text;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public static class BuilderExtensions
 {
     public static void AddConfiguration(this WebApplicationBuilder builder)
     {
+        Env.Load("../.env");
+        
         Configuration.Database.ConnectionString =
             Environment.GetEnvironmentVariable("Database__ConnectionString") ?? string.Empty;
 
@@ -41,6 +44,17 @@ public static class BuilderExtensions
 
         Configuration.Cors.CorsPolicyName =
             Environment.GetEnvironmentVariable("CorsPolicyName") ?? string.Empty;
+        
+        Console.WriteLine($"Database Connection String: {Configuration.Database.ConnectionString}");
+        Console.WriteLine($"Jwt Private Key: {Configuration.Secrets.JwtPrivateKey}");
+        Console.WriteLine($"Password Salt Key: {Configuration.Secrets.PasswordSaltKey}");
+        Console.WriteLine($"SendGrid API Key: {Configuration.SendGrid.ApiKey}");
+        Console.WriteLine($"Default From Email: {Configuration.Email.DefaultFromEmail}");
+        Console.WriteLine($"Default From Name: {Configuration.Email.DefaultFromName}");
+        Console.WriteLine($"Backend URL: {Configuration.ApplicationUrl.BackendUrl}");
+        Console.WriteLine($"Frontend URL: {Configuration.ApplicationUrl.FrontendUrl}");
+        Console.WriteLine($"CORS Policy Name: {Configuration.Cors.CorsPolicyName}");
+
     }
 
     public static void AddDatabase(this WebApplicationBuilder builder)

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using UxTracker.Core.Contexts.Research.Enums;
 
 namespace UxTracker.Core.Contexts.Research.DTOs;
@@ -17,6 +18,7 @@ public class GetDto
     public string? ConsentTermName { get; set; } = string.Empty;
     public string ConsentTermUrl { get; set; } = string.Empty;
     public string ResearchUrl { get; set; } = string.Empty;
+    public int ClusterNumber { get; set; }
     public List<GetRelatoriesDto>? Relatories { get; set; } = [];
     public List<ReviewsDto>? Reviews { get; set; } = [];
 }

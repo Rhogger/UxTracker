@@ -17,13 +17,5 @@ public class RoleMap: IEntityTypeConfiguration<Role>
             .HasColumnType("NVARCHAR")
             .HasMaxLength(20)
             .IsRequired();
-        
-        /*===================Seeding===================*/
-
-        builder.HasData(
-            new Role("Admin"),
-            new Role("Researcher"),
-            new Role("Reviewer")
-        );
     }
 }

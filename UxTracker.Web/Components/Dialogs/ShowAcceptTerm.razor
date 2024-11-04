@@ -1,3 +1,4 @@
+@using UxTracker.Core.Contexts.Research.Handlers
 @using UxTracker.Core.Contexts.Review.Handlers
 @using AcceptTerm = UxTracker.Core.Contexts.Review.UseCases.AcceptTerm
 
@@ -8,7 +9,7 @@
     
     <DialogContent>
         <iframe 
-            src="@(TermUrl)" 
+            id="consent-term"
             style="width: 100%; height: 700px;"
             allowfullscreen></iframe>
     </DialogContent>
@@ -26,11 +27,15 @@
 @code {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
 
+    [Inject] protected IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] protected IReviewContextHandler ReviewContextHandler { get; set; } = null!;
+    [Inject] protected IResearchContextHandler ResearchContextHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     
-    [Parameter] public string? TermUrl { get; set; }
+    [Parameter] public string? Filename { get; set; }
     [Parameter] public Guid ProjectId { get; set; }
+
+    protected override async Task OnInitializedAsync() => await ResearchContextHandler.GetConsentTermAsync(ProjectId.ToString(), Filename, JsRuntime);
 
     private readonly AcceptTerm.Request _request = new();
     

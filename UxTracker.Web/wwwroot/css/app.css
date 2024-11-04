@@ -20,6 +20,21 @@
     max-width: 100%;
 }
 
+.cluster-container{
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: start;
+    width: 100%;
+    max-width: 30%;
+}
+
+.btn-cluster{
+    width: 100%;
+    max-width: 120px;
+    height: 56px;
+}
+
 .r-paper{
     width: 100%;
 }

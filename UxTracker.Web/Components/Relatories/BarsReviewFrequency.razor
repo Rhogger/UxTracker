@@ -1,0 +1,202 @@
+@using ApexCharts
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Extensions
+@using UxTracker.Core.Contexts.Research.ValueObjects
+@using Align = ApexCharts.Align
+@using ChartType = ApexCharts.ChartType
+
+<div class="@ContainerClass">
+    <ApexChart
+        TItem="RatingFrequency"
+        Options="_options"
+        Title="@(PeriodType.GetPeriodSingle()+ " " + (Rates.Index + 1))">
+        <ApexPointSeries
+            Color="#26A69A"
+            Stroke="@(new SeriesStroke { Width = 1, Color = "#FFFFFFB2" })"
+            TItem="RatingFrequency"
+            Items="RatingGrouper.GroupByIntervals(Rates.Rates)"
+            Name="Frequência"
+            XValue="@(e => e.Label)"
+            YValue="@(e => e.Count)"
+            SeriesType="SeriesType.Bar"/>
+    </ApexChart>
+</div>
+
+@code {
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
+    [Parameter] public ReviewsFrequency Rates { get; set; } = null!;
+    [Parameter] public PeriodType PeriodType { get; set; }
+    [Parameter] public int SurveyCollections { get; set; }
+    [Parameter] public int ReviewersCount { get; set; }
+    
+    private ApexChartOptions<RatingFrequency> _options = null!;
+    
+    protected override void OnInitialized()
+    {
+        _options = new ApexChartOptions<RatingFrequency>
+        {
+            Chart = new Chart
+            {
+                Background = "#161B22",
+                Width = "100%",
+                FontFamily = "Inter",
+                Toolbar = new Toolbar
+                {
+                    Show = true,
+                    Export = new ExportOptions
+                    {
+                        Png = new ExportPng
+                        {
+                            Filename = "UxTracker-FrequencyBars"
+                        },
+                        Csv = new ExportCSV
+                        {
+                            Filename = "UxTracker-FrequencyBars",
+                            HeaderCategory = "sep=|" + Environment.NewLine + "Boxes",
+                            ColumnDelimiter = "|",
+                            CategoryFormatter = "function (value) {  return value }",
+                            ValueFormatter = "function (value) {  return value }",
+                        },
+                        Svg = new ExportSvg
+                        {
+                            Filename = "UxTracker-FrequencyBars"
+                        }
+                    }
+                },
+                Type = ChartType.Bar,
+            },
+            Tooltip = new Tooltip
+            {
+                Style = new TooltipStyle
+                {
+                    FontFamily = "Inter",
+                    FontSize = "12px",
+                },
+                X = new TooltipX
+                {
+                    Show = false,
+                },
+                CssClass = "apexcharts-tooltip",
+                Marker = new TooltipMarker
+                {
+                    FillColors = ["#26A69A"]
+                }
+            },
+            DataLabels = new DataLabels
+            {
+                OffsetY = -6d,
+            },
+            Grid = new Grid
+            {
+                BorderColor = "#313945",
+            },
+            Legend = new Legend
+            {
+                FontFamily = "Inter",
+                FontSize = "14px",
+                FontWeight = "500",
+                Position = LegendPosition.Top,
+                HorizontalAlign = Align.Right,
+                Floating = true,
+                OffsetX = -5,
+                OffsetY = -25,
+            },
+            Title = new Title
+            {
+                Align  = Align.Center,
+                Style = new TitleStyle
+                {
+                    FontFamily = "Inter",
+                    FontWeight = "500",
+                    FontSize = "16px",
+                    Color = "#FFFFFFB2"
+                }
+            },
+            Xaxis = new XAxis
+            {
+                Min = 0,
+                Max = 10,
+                Title = new AxisTitle
+                {
+                    Text = "Nota atribuída na avaliação",
+                    Style = new AxisTitleStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Color = "#FFFFFFB2"
+                    }
+                },
+                Labels = new XAxisLabels
+                {
+                    Style = new AxisLabelStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Colors = "#FFFFFFB2"
+                    },
+                },
+                Tooltip = new XAxisTooltip
+                {
+                    Enabled = false,
+                },
+                AxisTicks = new AxisTicks
+                {
+                    Color = "#313945"
+                },
+                AxisBorder = new AxisBorder
+                {
+                    Color = "#313945"
+                },
+            },
+            Yaxis =
+            [
+                new YAxis
+                {
+                    Min = 0,
+                    Max = ReviewersCount,
+                    Title = new AxisTitle
+                    {
+                        Text = "Frequência",
+                        Style = new AxisTitleStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Color = "#FFFFFFB2"
+                        }
+                    },
+                    Labels = new YAxisLabels
+                    {
+                        Style = new AxisLabelStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Colors = "#FFFFFFB2"
+                        }
+                    }
+                }
+            ],
+            PlotOptions = new PlotOptions
+            {
+                Bar = new PlotOptionsBar
+                {
+                    Colors = new PlotOptionsBarColors
+                    {
+                        BackgroundBarColors = ["#26A69A"],
+                        BackgroundBarOpacity = 0,
+                        Ranges = new List<PlotOptionsBarColorRange>
+                        {
+                            new()
+                            {
+                                Color = "#26A69A"
+                            }
+                        }
+                    },
+                },
+            }
+        };
+    }
+}

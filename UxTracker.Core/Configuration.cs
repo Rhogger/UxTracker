@@ -35,13 +35,8 @@ public static class Configuration
 
     public class ApplicationUrlConfiguration
     {
-<<<<<<< Updated upstream
-        public string BackendUrl { get; set; } = "http://uxtracker.duckdns.org/";
-        public string FrontendUrl { get; set; } = "http://uxtracker.duckdns.org/";
-=======
         public string BackendUrl { get; set; } = "https://uxtracker.duckdns.org/";
         public string FrontendUrl { get; set; } = "https://uxtracker.duckdns.org/";
->>>>>>> Stashed changes
     }
     
     public class CorsConfiguration
@@ -57,13 +52,8 @@ public static class Configuration
     
     public class ConsentTermConfiguration
     {
-<<<<<<< Updated upstream
-        public string Url { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ConsentTerms");
-        public string Folder { get; set; } = "ConsentTerms/";
-=======
         public string Url { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "media", "terms");
         public string Folder { get; set; } = "terms/";
->>>>>>> Stashed changes
         public long MaxSize { get; set; } = 2 * 1024 * 1024;
     }
 }

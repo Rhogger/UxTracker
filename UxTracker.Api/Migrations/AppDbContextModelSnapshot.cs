@@ -71,17 +71,17 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("64401e1d-cac4-4692-8ec9-6cf695d4364a"),
+                            Id = new Guid("a8a54c26-7e79-4674-98b1-50e7e3b7d6a2"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("4be05ca3-7782-481d-b3f0-c748228bf802"),
+                            Id = new Guid("edc2d66e-c78b-4193-937d-2bd52841baa0"),
                             Name = "Researcher"
                         },
                         new
                         {
-                            Id = new Guid("76802828-5553-4a6c-b35e-fbd1e51d4205"),
+                            Id = new Guid("36681477-a691-442c-84f3-6a7daaca5bef"),
                             Name = "Reviewer"
                         });
                 });
@@ -108,6 +108,10 @@ namespace UxTracker.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ClusterNumber")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ClusterNumber");
 
                     b.Property<string>("ConsentTermHash")
                         .IsRequired()
@@ -178,32 +182,32 @@ namespace UxTracker.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("81d07f64-84d7-41a1-b836-2c7f2c36ce72"),
+                            Id = new Guid("7dd83ed9-747e-4fe2-853e-819eca046aec"),
                             Title = "Visão geral da evolução das avaliações"
                         },
                         new
                         {
-                            Id = new Guid("e02ba04d-e550-4e59-a3a0-11dda84794a4"),
+                            Id = new Guid("8d018137-ba6d-417c-b1c2-63e103e6858d"),
                             Title = "Avaliações de cada usuário por período"
                         },
                         new
                         {
-                            Id = new Guid("a4427852-71b7-4bd8-acee-b3436261e814"),
+                            Id = new Guid("90824ab9-b4b0-48aa-a080-215fbcd6fc45"),
                             Title = "Distribuição das avaliações por período"
                         },
                         new
                         {
-                            Id = new Guid("65e80003-298c-401d-b18c-7652c942ce49"),
+                            Id = new Guid("7434c19a-501b-455c-8741-d3ae6480df68"),
                             Title = "Frequência das avaliações por período de tempo"
                         },
                         new
                         {
-                            Id = new Guid("c5f0026d-062b-433a-973f-be7f74604301"),
+                            Id = new Guid("734a51a9-f130-45c2-bd6a-07ca4e72bfcf"),
                             Title = "Número adequado de clusters de usuário"
                         },
                         new
                         {
-                            Id = new Guid("bcb23374-e4ad-414c-a28a-9ede7326930c"),
+                            Id = new Guid("86899042-3360-483e-bfc2-cee243c7b4a8"),
                             Title = "Média da experiência do usuário ao longo do tempo"
                         });
                 });

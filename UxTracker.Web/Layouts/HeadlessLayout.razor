@@ -1,4 +1,5 @@
 ﻿@using Blazored.LocalStorage
+@using UxTracker.Core
 @using UxTracker.Core.Security
 @using UxTracker.Web.Utils.Theme
 @inherits LayoutComponentBase
@@ -21,6 +22,14 @@
     
     protected override async Task OnInitializedAsync()
     {
+        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/"))
+        {
+            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/", string.Empty);
+
+            await LocalStorage.SetItemAsync("researchCode", code);
+            await LocalStorage.SetItemAsync("type", "reviewer");
+        }
+        
         var authState = await BlazorAuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
