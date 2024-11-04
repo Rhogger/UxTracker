@@ -348,7 +348,37 @@ public class ResearchContextHandler(
         }
     }
     
-   public async Task DownloadConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
+    public async Task GetConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
+    {
+        var request = new RestRequest($"/api/v1/terms/{projectId}");
+
+        try
+        {
+            var response = await restClient.ExecuteAsync(request);
+
+            if (response is { IsSuccessful: true, RawBytes: not null })
+            {
+                var byteArray = response.RawBytes;
+                var base64String = Convert.ToBase64String(byteArray);
+                var dataUrl = $"data:application/pdf;base64,{base64String}";
+
+                if (!string.IsNullOrEmpty(dataUrl))
+                {
+                    await jsRuntime.InvokeVoidAsync("setIframeSrc", "consent-term", dataUrl);
+                }
+                else
+                {
+                    throw new Exception("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{ex.Message}");
+        }
+    }
+
+    public async Task DownloadConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime)
     {
         var request = new RestRequest($"/api/v1/terms/{projectId}");
 

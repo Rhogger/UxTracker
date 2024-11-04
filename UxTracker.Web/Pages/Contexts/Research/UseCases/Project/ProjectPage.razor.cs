@@ -40,6 +40,7 @@ public class Project: ComponentBase
     protected bool IsBusyUpdate { get; private set; } = false;
     protected bool IsBusyDelete { get; private set; } = false;
     protected bool IsRelatoriesBusy { get; private set; } = true;
+    protected bool IsChangeStatusBusy { get; private set; } = true;
     protected bool IsBusyCluster { get; set; } = false;
 
     protected bool IsEditState;
@@ -238,6 +239,8 @@ public class Project: ComponentBase
     {
         try
         {
+            IsChangeStatusBusy = true; 
+            
             var response = await ResearchContextHandler.UpdateStatusAsync(UpdateStatusRequest);
 
             if (response is not null)
@@ -278,7 +281,7 @@ public class Project: ComponentBase
         }
         finally
         {
-            IsBusy = false;
+            IsChangeStatusBusy = false;
             StateHasChanged();
         }
     }

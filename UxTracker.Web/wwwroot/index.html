@@ -32,6 +32,18 @@
         document.body.removeChild(link);
       }
     </script>
+    
+    <script>
+      function setIframeSrc(iframeId, dataUrl) {
+        const iframe = document.getElementById(iframeId);
+        if (iframe) {
+          iframe.src = dataUrl;
+        } else {
+          console.error(`Iframe with ID '${iframeId}' not found.`);
+        }
+      }
+
+    </script>
   </head>
 
   <body style="height: 100%;">

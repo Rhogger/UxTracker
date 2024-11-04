@@ -22,6 +22,7 @@ public interface IResearchContextHandler
     public Task<RestResponse<Get.Response>?> GetProjectAsync(string projectId);
     public Task<RestResponse<GetForReview.Response>?> GetProjectForReviewAsync(string projectId);
     public Task<RestResponse<GetRelatories.Response>?> GetRelatoriesAsync();
+    public Task GetConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime);
     public Task DownloadConsentTermAsync(string projectId, string? fileName, IJSRuntime jsRuntime);
     public Task<RestResponse<UpdateStatus.Response>?> UpdateStatusAsync(UpdateStatus.Request requestModel);
     public Task<RestResponse<UpdateNumberCluster.Response>?> UpdateNumberClusterAsync(UpdateNumberCluster.Request requestModel);
