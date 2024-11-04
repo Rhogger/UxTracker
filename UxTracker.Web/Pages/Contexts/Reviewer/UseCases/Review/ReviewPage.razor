@@ -1,3 +1,4 @@
+@using UxTracker.Core.Contexts.Research.Enums
 @using UxTracker.Core.Contexts.Review.Validators
 @using UxTracker.Web.Components.Skeletons
 @using UxTracker.Web.Components.Forms
@@ -120,7 +121,7 @@
                             </MudGrid>
                         </ValidateForm>
 
-                        @if (!IsDisabledCountdown)
+                        @if (Response.Data?.Project != null  && !IsDisabledCountdown && Response.Data.Project.Status.Equals(Status.InProgress))
                         {
                             <MudText
                                 Align="Align.Center"
