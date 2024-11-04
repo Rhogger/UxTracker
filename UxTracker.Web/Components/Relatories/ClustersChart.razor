@@ -36,9 +36,12 @@
     private ApexChart<ClusterLineData>? Ref { get; set; }
     private ApexChartOptions<ClusterLineData> _options = null!;
     private List<ClusterSeriesData> ClusterSeries { get; set; } = new();
+    private int PreviousClusterNumber { get; set; }
     
     protected override Task OnParametersSetAsync()
     {
+        if (NumberOfClusters == PreviousClusterNumber) return Task.CompletedTask;
+        
         StateHasChanged();
         Ref?.UpdateSeriesAsync();
 
@@ -47,6 +50,8 @@
 
     protected override void OnInitialized()
     {
+        PreviousClusterNumber = NumberOfClusters;
+        
         var groupedReviews = Reviews
             .GroupBy(r => r.Index)
             .Select(g => new { Period = $"Dia {g.Key + 1}", Data = g.ToList() })
@@ -109,7 +114,7 @@
                 X = new TooltipX
                 {
                     Show = false,
-                }
+                },
             },
             DataLabels = new DataLabels
             {
@@ -181,6 +186,10 @@
                         FontWeight = "500",
                         Colors = "#FFFFFFB2"
                     }
+                },
+                Tooltip = new XAxisTooltip
+                {
+                    Enabled = false,
                 }
             },
             Yaxis =
@@ -209,10 +218,6 @@
                             FontWeight = "500",
                             Colors = "#FFFFFFB2"
                         }
-                    },
-                    Tooltip = new YAxisTooltip
-                    {
-                        Enabled = false,
                     }
                 }
             ],
