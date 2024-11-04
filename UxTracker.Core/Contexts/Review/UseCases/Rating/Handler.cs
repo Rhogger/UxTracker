@@ -61,15 +61,15 @@ public class Handler(IRepository repository) : IRequestHandler<Request, Response
 
         try
         {
-            // if(infos != null && infos.Status.Equals(Status.NotStarted))
-            //     return new Response("Não é possível avaliar se a pesquisa não iniciou.", 400);        
-            //
-            // if(infos != null && rates != null && rates.Count >= infos.SurveyCollections)
-            //     return new Response("Você já finalizou as avaliações.", 400);
-            //
-            // if (rates is { Count: > 0 })
-            //     if (!Rate.ValidToRate(infos?.PeriodType, rates.Last().RatedAt))
-            //         return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
+            if(infos != null && infos.Status.Equals(Status.NotStarted))
+                return new Response("Não é possível avaliar se a pesquisa não iniciou.", 400);        
+            
+            if(infos != null && rates != null && rates.Count >= infos.SurveyCollections)
+                return new Response("Você já finalizou as avaliações.", 400);
+            
+            if (rates is { Count: > 0 })
+                if (!Rate.ValidToRate(infos?.PeriodType, rates.Last().RatedAt))
+                    return new Response("Não é possível avaliar nesse período, aguarde a próxima avaliação.", 400);
         }
         catch
         {

@@ -97,7 +97,7 @@
                                         @bind-Value="RatingRequest.Rating"
                                         Required="true"
                                         RequiredError="Informe a nota"
-                                        Disabled="false"
+                                        Disabled="IsDisabled"
                                         Validation="RateValidator.Validate"/>
                                 </MudItem>
 
@@ -114,7 +114,7 @@
                                         @bind-Value="RatingRequest.Comment"
                                         Required="true"
                                         RequiredError="Dê a sua justificativa"
-                                        Disabled="false"
+                                        Disabled="IsDisabled"
                                         Validation="CommentValidator.Validate"/>
                                 </MudItem>
                             </MudGrid>
