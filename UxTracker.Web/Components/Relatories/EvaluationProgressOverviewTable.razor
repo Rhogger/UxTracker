@@ -123,124 +123,124 @@
 <MudTable T="ReviewsDto" Dense="true" FixedHeader="true" HorizontalScrollbar="true" Height="400px">
     <ColGroup>
         <col style="width: fit-content;" />
-        @foreach (var _ in Days)
+        @for(var i = 0; i < 5; i++)
         {
             <col style="width: fit-content;" />
         }
     </ColGroup>
     <HeaderContent>
         <MudTh>Estatísticas</MudTh>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTh>@($"Dia {day.Key + 1}")</MudTh>
+            <MudTh>2</MudTh>
         }
     </HeaderContent>
     <RowTemplate>
         <MudTd>Média</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(day.Value.Average(r => r.Rate).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Mediana</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(Median(day.Value.Select(r => r.Rate)).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Moda</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(Mode(day.Value.Select(r => r.Rate)).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Desvio Padrão</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(StandardDeviation(day.Value.Select(r => r.Rate)).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Maior valor</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(day.Value.Max(r => r.Rate).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Menor valor</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(day.Value.Min(r => r.Rate).ToString("F1"))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Avaliações positivas</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(day.Value.Count(r => r.Rate > 5))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
     <RowTemplate>
         <MudTd>Avaliações negativas</MudTd>
-        @foreach (var day in Days)
+        @for(var i = 0; i < 5; i++)
         {
-            <MudTd>@(day.Value.Count(r => r.Rate <= 5))</MudTd>
+            <MudTd>2</MudTd>
         }
     </RowTemplate>
 </MudTable>
 
 @code {
     [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
-    private Dictionary<int, List<ReviewsDto>> Days { get; set; } = new();
-
-    protected override void OnInitialized()
-    {
-        // Mock data
-        Reviews = new List<ReviewsDto>
-        {
-            new() { Index = 0, Rate = 4.5m },
-            new() { Index = 0, Rate = 3.0m },
-            new() { Index = 1, Rate = 5.0m },
-            new() { Index = 1, Rate = 6.5m },
-            new() { Index = 2, Rate = 2.0m },
-            new() { Index = 2, Rate = 7.5m },
-            new() { Index = 3, Rate = 8.0m },
-            new() { Index = 3, Rate = 4.0m },
-            new() { Index = 4, Rate = 6.0m },
-            new() { Index = 4, Rate = 9.0m },
-        };
-
-        Days = Reviews
-            .GroupBy(r => r.Index)
-            .ToDictionary(g => g.Key, g => g.ToList());
-    }
-
-    private decimal Median(IEnumerable<decimal> numbers)
-    {
-        var sortedNumbers = numbers.OrderBy(n => n).ToList();
-        int count = sortedNumbers.Count;
-        if (count % 2 == 0)
-        {
-            return (sortedNumbers[count / 2 - 1] + sortedNumbers[count / 2]) / 2;
-        }
-        return sortedNumbers[count / 2];
-    }
-
-    private decimal Mode(IEnumerable<decimal> numbers)
-    {
-        return numbers.GroupBy(n => n)
-            .OrderByDescending(g => g.Count())
-            .First().Key;
-    }
-
-    private decimal StandardDeviation(IEnumerable<decimal> numbers)
-    {
-        var mean = numbers.Average();
-        var variance = numbers.Average(n => (double)(n - mean) * (double)(n - mean));
-        return (decimal)Math.Sqrt(variance);
-    }
+    // private Dictionary<int, List<ReviewsDto>> Days { get; set; } = new();
+    //
+    // protected override void OnInitialized()
+    // {
+    //     // Mock data
+    //     Reviews = new List<ReviewsDto>
+    //     {
+    //         new() { Index = 0, Rate = 4.5m },
+    //         new() { Index = 0, Rate = 3.0m },
+    //         new() { Index = 1, Rate = 5.0m },
+    //         new() { Index = 1, Rate = 6.5m },
+    //         new() { Index = 2, Rate = 2.0m },
+    //         new() { Index = 2, Rate = 7.5m },
+    //         new() { Index = 3, Rate = 8.0m },
+    //         new() { Index = 3, Rate = 4.0m },
+    //         new() { Index = 4, Rate = 6.0m },
+    //         new() { Index = 4, Rate = 9.0m },
+    //     };
+    //
+    //     Days = Reviews
+    //         .GroupBy(r => r.Index)
+    //         .ToDictionary(g => g.Key, g => g.ToList());
+    // }
+    //
+    // private decimal Median(IEnumerable<decimal> numbers)
+    // {
+    //     var sortedNumbers = numbers.OrderBy(n => n).ToList();
+    //     int count = sortedNumbers.Count;
+    //     if (count % 2 == 0)
+    //     {
+    //         return (sortedNumbers[count / 2 - 1] + sortedNumbers[count / 2]) / 2;
+    //     }
+    //     return sortedNumbers[count / 2];
+    // }
+    //
+    // private decimal Mode(IEnumerable<decimal> numbers)
+    // {
+    //     return numbers.GroupBy(n => n)
+    //         .OrderByDescending(g => g.Count())
+    //         .First().Key;
+    // }
+    //
+    // private decimal StandardDeviation(IEnumerable<decimal> numbers)
+    // {
+    //     var mean = numbers.Average();
+    //     var variance = numbers.Average(n => (double)(n - mean) * (double)(n - mean));
+    //     return (decimal)Math.Sqrt(variance);
+    // }
 }

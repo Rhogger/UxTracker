@@ -84,10 +84,6 @@
                 Background = "transparent",
                 Width = "100%",
                 FontFamily = "Inter",
-                Toolbar = new Toolbar
-                {
-                    Show = false
-                },
                 DropShadow = new DropShadow
                 {
                     Enabled = true,
@@ -213,6 +209,10 @@
                             FontWeight = "500",
                             Colors = "#FFFFFFB2"
                         }
+                    },
+                    Tooltip = new YAxisTooltip
+                    {
+                        Enabled = false,
                     }
                 }
             ],

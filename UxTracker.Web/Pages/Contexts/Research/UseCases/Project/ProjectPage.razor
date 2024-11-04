@@ -415,7 +415,7 @@
                 
                 @if (Response.Data.Project.Status.Equals(Status.InProgress) && Response.Data.Project.Relatories != null)
                 {
-                    <div class="d-flex flex-column gap-10">
+                    <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                         <MudText
                             Align="Align.Center"
                             Class=""
@@ -432,7 +432,7 @@
                     <div class="d-flex flex-column w-full gap-20 align-center">
                         @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Visão geral da evolução das avaliações"))
                         {
-                            <div class="d-flex flex-column gap-10">
+                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                 <MudText
                                     Align="Align.Center"
                                     Class=""
@@ -446,7 +446,7 @@
 
                         @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Avaliações de cada usuário por período"))
                         {
-                            <div class="d-flex flex-column gap-10">
+                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                 <MudText
                                     Align="Align.Center"
                                     Class=""
@@ -460,7 +460,7 @@
 
                         @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Distribuição das avaliações por período"))
                         {
-                            <div class="d-flex flex-column gap-10">
+                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                 <MudText
                                     Align="Align.Center"
                                     Class=""
@@ -478,7 +478,7 @@
 
                         @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Frequência das avaliações por período de tempo"))
                         {
-                            <div class="d-flex flex-column gap-10">
+                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                 <MudText
                                     Align="Align.Center"
                                     Class=""
@@ -503,7 +503,7 @@
 
                         @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Número adequado de clusters de usuário"))
                         {
-                            <div class="d-flex flex-column gap-10">
+                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                 <MudText
                                     Align="Align.Center"
                                     Class=""
@@ -547,7 +547,7 @@
                             
                             @if (Response.Data.Project.ClusterNumber != 0)
                             {
-                                <div class="d-flex flex-column gap-10">
+                                <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                     <MudText
                                         Align="Align.Center"
                                         Class=""
