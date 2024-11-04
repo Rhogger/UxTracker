@@ -61,7 +61,7 @@ public class Handler(IRepository repository) : IRequestHandler<Request, Response
 
         try
         {
-            if(infos != null && infos.Status.Equals(Status.NotStarted))
+            if(infos is { Status: Status.NotStarted })
                 return new Response("Não é possível avaliar se a pesquisa não iniciou.", 400);        
             
             if(infos != null && rates != null && rates.Count >= infos.SurveyCollections)

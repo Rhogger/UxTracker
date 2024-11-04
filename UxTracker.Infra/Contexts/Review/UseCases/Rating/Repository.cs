@@ -32,6 +32,6 @@ public class Repository(AppDbContext context) : IRepository
         await context
             .Reviews
             .AsNoTracking()
-            .Where(x => x.UserId.ToString() == userId)
+            .Where(x => x.UserId.ToString() == userId && x.ProjectId.ToString() == projectId)
             .ToListAsync(cancellationToken);
 }
