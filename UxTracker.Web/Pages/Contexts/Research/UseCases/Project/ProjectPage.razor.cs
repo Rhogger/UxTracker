@@ -65,9 +65,10 @@ public class Project: ComponentBase
                     UpdateRequest.ProjectId = ProjectId.ToString();
                     UpdateStatusRequest.ProjectId = ProjectId.ToString();
                     FileName = Response.Data?.Project.ConsentTermName;
-                    
                     if (Response.Data != null)
                     {
+                        UpdateClusterRequest.NumberCluster = Response.Data.Project.ClusterNumber;
+
                         TextChangeStatusButton = Response.Data.Project.Status switch
                         {
                             Status.NotStarted => "Iniciar Pesquisa",
@@ -75,11 +76,11 @@ public class Project: ComponentBase
                             Status.Finished => "Retomar Pesquisa",
                             _ => TextChangeStatusButton
                         };
-                    }
 
-                    ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
-                        ? Color.Success
-                        : Color.Warning;
+                        ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
+                            ? Color.Success
+                            : Color.Warning;
+                    }
                 }
                 else
                 {
@@ -314,8 +315,6 @@ public class Project: ComponentBase
             StateHasChanged();
         }
     }
-
-    protected void UpdateClusterChart(){}
     
     protected async Task ChangeStatusAsync()
     {

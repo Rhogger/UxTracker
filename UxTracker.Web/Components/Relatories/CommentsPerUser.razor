@@ -1,0 +1,41 @@
+@using UxTracker.Core.Contexts.Research.DTOs
+
+<MudTable Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true"
+          Items="@GroupedReviews"
+          GroupBy="@_groupDefinition"
+          Dense="true"
+          @ref="_tableRef">
+    <HeaderContent>
+        <MudTh>Dia</MudTh>
+        <MudTh>Comentário</MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        <MudTh colspan="2" Class="mud-table-cell-custom-group">@($"Usuário: {context.GroupName}")</MudTh>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Dia">@($"Dia {context.Index + 1}")</MudTd>
+        <MudTd DataLabel="Comentário">@context.Comment</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] public List<ReviewsDto> Reviews { get; set; } = new List<ReviewsDto>();
+
+    private MudTable<ReviewsDto> _tableRef;
+
+    private TableGroupDefinition<ReviewsDto> _groupDefinition = new()
+    {
+        GroupName = "Usuário",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        Selector = (review) => review.Email // Agrupa por Email do usuário
+    };
+
+    private IEnumerable<ReviewsDto> GroupedReviews => Reviews.OrderBy(r => r.Index);
+
+    protected override void OnInitialized()
+    {
+        // Aqui você poderia carregar ou manipular os dados se necessário
+    }
+}

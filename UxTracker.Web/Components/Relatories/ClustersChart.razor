@@ -20,7 +20,7 @@
                 Name="@($"Cluster {clusterSeries.ClusterId}")"
                 SeriesType="SeriesType.Line"
                 XValue="@(e => e.Period)"
-                YValue="@(e => e.Value)"/>
+                YValue="@(e => Math.Truncate(e.Value))"/>
         }
     </ApexChart>
 </div>
@@ -47,18 +47,15 @@
 
     protected override void OnInitialized()
     {
-        // Group Reviews by clusters and periods
         var groupedReviews = Reviews
             .GroupBy(r => r.Index)
             .Select(g => new { Period = $"Dia {g.Key + 1}", Data = g.ToList() })
             .ToList();
-
-        // Run KMeans
+        
         var data = Reviews.Select(r => new double[] { (double)r.Rate }).ToList();
         var kmeans = new KMeans(NumberOfClusters);
         var clusters = kmeans.Learn(data.ToArray());
-
-        // Populate ClusterSeries with averages for each period
+        
         foreach (var clusterId in Enumerable.Range(0, NumberOfClusters))
         {
             var seriesData = new List<ClusterLineData>();
@@ -70,7 +67,7 @@
                 seriesData.Add(new ClusterLineData
                 {
                     Period = periodGroup.Period,
-                    Value = averageValue
+                    Value = Math.Round(averageValue, 2)
                 });
             }
 
@@ -99,23 +96,7 @@
                     Blur = 10,
                     Opacity = 0.2d
                 },
-                Selection = new Selection
-                {
-                    Enabled = false
-                },
-                Sparkline = new ChartSparkline
-                {
-                    Enabled = false
-                },
                 Type = ChartType.Line,
-                Brush = new Brush
-                {
-                    Enabled = false,
-                },
-                Zoom = new Zoom
-                {
-                    Enabled = false,
-                },
             },
             Tooltip = new Tooltip
             {
@@ -127,7 +108,7 @@
                 CssClass = "apexcharts-tooltip",
                 Marker = new TooltipMarker
                 {
-                    FillColors = ["#2DC8B8"]
+                    FillColors = ["#2DC8B8"],
                 },
                 X = new TooltipX
                 {
@@ -166,7 +147,7 @@
             Stroke = new Stroke
             {
                 Curve = Curve.MonotoneCubic, 
-                Colors = ["#2DC8B8"]
+                Colors = ["#2DC8B8", "#d23747", "#309489", "#ffa500", "#fff5ee", "#675cbd"]
             },
             Legend = new Legend
             {
