@@ -230,11 +230,18 @@ public class Project: ComponentBase
     
     protected async Task DeleteAsync()
     {
-        var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{
-            {x => x.ProjectId, ProjectId.ToString()},
-            {x => x.IsBusy, IsBusyDelete}};
-        var dialog = await DialogService.ShowAsync<DeleteProjectConfirmationDialog>("Delete Project", parameters);
-        await dialog.Result;
+        if (ProjectId.ToString().Equals("521dd4e8-82cc-4668-abf3-7ab14b3906da"))
+        {
+            Snackbar.Add("Essa pesquisa não pode ser excluída!", Severity.Error);
+        }
+        else
+        {
+            var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{
+                {x => x.ProjectId, ProjectId.ToString()},
+                {x => x.IsBusy, IsBusyDelete}};
+            var dialog = await DialogService.ShowAsync<DeleteProjectConfirmationDialog>("Delete Project", parameters);
+            await dialog.Result;
+        }
     }
     
     private async Task UpdateStatusAsync()
