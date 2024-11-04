@@ -1,9 +1,13 @@
 @using System.Linq
 @using UxTracker.Core.Contexts.Research.DTOs
 @using UxTracker.Core.Contexts.Research.Enums
-@using UxTracker.Core.Contexts.Research.Extensions
 
-<MudTable Items="GroupedReviews" HorizontalScrollbar="true" FixedHeader="true">
+<MudTable 
+    Items="GroupedReviews" 
+    FixedHeader="true" 
+    Bordered="true" 
+    Breakpoint="Breakpoint.Sm" 
+    Class="w-full">
     <HeaderContent>
         <MudTh Style="text-align: center;">Dias</MudTh>
         <MudTh Style="text-align: center;">Média</MudTh>
