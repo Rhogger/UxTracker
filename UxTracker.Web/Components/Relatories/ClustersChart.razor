@@ -16,7 +16,7 @@
             <ApexPointSeries
                 TItem="ClusterLineData"
                 Items="clusterSeries.Data"
-                Name="@($"Cluster {clusterSeries.ClusterId}")"
+                Name="@($"Cluster {clusterSeries.ClusterId + 1}")"
                 SeriesType="SeriesType.Line"
                 XValue="@(e => e.Period)"
                 YValue="@(e => Math.Truncate(e.Value))"/>

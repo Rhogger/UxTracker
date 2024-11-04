@@ -13,11 +13,11 @@
         <col/>
     </ColGroup>
     <HeaderContent>
-        <MudTh colspan="2">Dia</MudTh>
+        <MudTh>Dia</MudTh>
         <MudTh>Comentário</MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
-        <MudTh Class="mud-table-cell-custom-group">@($"Usuário: {context.Key}")</MudTh>
+        <MudTh colspan="2" Class="mud-table-cell-custom-group">@($"Usuário: {context.Key}")</MudTh>
     </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Dia">@($"Dia {context.Index + 1}")</MudTd>

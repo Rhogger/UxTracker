@@ -40,7 +40,7 @@ public class Project: ComponentBase
     protected bool IsBusyUpdate { get; private set; } = false;
     protected bool IsBusyDelete { get; private set; } = false;
     protected bool IsRelatoriesBusy { get; private set; } = true;
-    protected bool IsChangeStatusBusy { get; private set; } = true;
+    protected bool IsChangeStatusBusy { get; private set; } = false;
     protected bool IsBusyCluster { get; set; } = false;
 
     protected bool IsEditState;
