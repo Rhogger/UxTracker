@@ -1,8 +1,7 @@
-@using MudBlazor
 @using System.Linq
 @using UxTracker.Core.Contexts.Research.DTOs
 
-<MudTable Dense="true">
+<MudTable T="ReviewsDto" Dense="true">
     <HeaderContent>
         <MudTh>Estatísticas</MudTh>
         @foreach (var day in Days)
@@ -10,7 +9,7 @@
             <MudTh>@($"Dia {day.Key + 1}")</MudTh>
         }
     </HeaderContent>
-    <RowContent>
+    <RowTemplate>
         <MudTr>
             <MudTd>Média</MudTd>
             @foreach (var day in Days)
@@ -67,7 +66,7 @@
                 <MudTd>@(day.Value.Count(r => r.Rate <= 5))</MudTd>
             }
         </MudTr>
-    </RowContent>
+    </RowTemplate>
 </MudTable>
 
 @code {
