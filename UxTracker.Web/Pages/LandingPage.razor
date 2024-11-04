@@ -43,9 +43,7 @@
             </MudText>
             
             <MudText Typo="Typo.body1">
-                O Ux Tracker é um software desenvolvido para automatizar e facilitar a vida dos profissionais
-                que trabalham no ramo da experiência do usuário. Avalie de forma longitudinal e obtenha
-                feedbacks valiosos para melhorar a usabilidade do seu produto ou serviço.
+                Nossa ferramenta online revoluciona a avaliação de Experiência do Usuário (UX) ao longo do tempo, eliminando as limitações das abordagens tradicionais baseadas em papel e caneta. Com base no método UX Curve, a plataforma oferece uma interface intuitiva para pesquisadores e profissionais monitorarem e analisarem a evolução da UX de maneira contínua ou retrospectiva. Coletando dados em tempo real, a ferramenta permite identificar pontos críticos de satisfação e frustração dos usuários, facilitando decisões informadas para o desenvolvimento de produtos e serviços. A análise integrada de dados qualitativos e quantitativos gera insights precisos, promovendo uma experiência de usuário mais rica e satisfatória.
             </MudText>
             
             <MudButton 
@@ -72,29 +70,43 @@
                     ShowBullets="true"
                     EnableSwipeGesture="true" 
                     AutoCycle="true">
-                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
-                        @* <img  *@
-                        @*     src="images/Gráficos.png"  *@
-                        @*     alt="BoxPlot"  *@
-                        @*     class="obj-fit" *@
-                        @*     style="max-height:100%; max-width:100%;" /> *@
-                        <div class="w-full h-full obj-fit" style="background-color: white; max-height: 220px;"></div>
+                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-8">
+                        <img
+                            src="images/Boxplot.png"
+                            alt="BoxPlot"
+                            class="obj-fit"
+                            style="max-height:100%; max-width:100%;" />
                     </MudCarouselItem>
 
                     <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
-                        @* <img  *@
-                        @*     src="images/UxCurve.png"  *@
-                        @*     alt="UxCurve"  *@
-                        @*     class="obj-fit" *@
-                        @*     style="max-height:100%; max-width:100%;" /> *@
-                        <div class="w-full h-full obj-fit" style="background-color: white; max-height: 220px;"></div>
+                        <img
+                            src="images/Frequency.png"
+                            alt="UxCurve"
+                            class="w-full h-full obj-fit"
+                            style="max-height:100%; max-width:100%;" />
+                    </MudCarouselItem>
+
+                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
+                        <img
+                            src="images/WCSS.png"
+                            alt="UxCurve"
+                            class="obj-fit"
+                            style="max-height:100%; max-width:100%;" />
+                    </MudCarouselItem>
+
+                    <MudCarouselItem Transition="Transition.Slide" Class="d-flex align-center obj-fit px-14 pb-12">
+                        <img
+                            src="images/Comments.png"
+                            alt="UxCurve"
+                            class="obj-fit"
+                            style="max-height:100%; max-width:100%;" />
                     </MudCarouselItem>
                 </MudCarousel>
             </MudPaper>
         </MudItem>
 
         <MudItem 
-            Class="py-14 mt-16" 
+            Class="py-14 my-16" 
             xs="12" sm="12" 
             md="12" lg="12" 
             xl="12" xxl="12">
@@ -112,9 +124,8 @@
             xs="12" sm="12"
             md="6" lg="6"
             xl="6" xxl="6">
-            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
-            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
-            @*      style="max-height:100%; max-width:100%;" /> *@
+            <img src="images/Projetos.jpeg" alt="Home" class="mx-auto my-auto"
+                 style="max-height:100%; max-width:100%;" />
         </MudItem>
         
         <MudItem
@@ -122,10 +133,10 @@
             xs="12" sm="12"
             md="6" lg="6"
             xl="6" xxl="6">
-            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Interface Intuitiva
+            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Crie e gerencie projetos
             </MudText>
             <MudText Typo="Typo.body1">
-                Interface amigável que facilita a curva de aprendizado dos fluxos do sistema.
+                Organize e acompanhe todos os seus projetos de pesquisa de forma clara e eficiente. Tenha uma visão completa do status, participantes, entregas e cronograma de cada projeto. Facilite o monitoramento e o progresso de suas avaliações com uma interface intuitiva e visualmente organizada, permitindo foco total no desenvolvimento de insights e melhorias contínuas.
             </MudText>
         </MudItem>
     </MudGrid>
@@ -136,10 +147,10 @@
             xs="12" sm="12"
             md="6" lg="6"
             xl="6" xxl="6">
-            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Análise Longitudinal
+            <MudText Typo="Typo.h5" GutterBottom="true" Color="Color.Primary" Style="font-weight: bold;">Acompanhamento do Usuário com UX Curve
             </MudText>
             <MudText Typo="Typo.body1">
-                Avalie e acompanhe a evolução da experiência do usuário ao longo do tempo.
+                Monitore a evolução da experiência do usuário ao longo do tempo com a metodologia UX Curve. Este gráfico permite avaliar de forma contínua como os usuários percebem o produto ou serviço, identificando altos e baixos da interação em diferentes momentos. Com insights precisos e baseados em dados longitudinais, você pode visualizar tendências, entender momentos críticos e tomar decisões estratégicas para aprimorar a experiência do usuário de maneira eficaz e informada.
             </MudText>
         </MudItem>
         
@@ -148,9 +159,8 @@
             xs="12" sm="12"
             md="6" lg="6"
             xl="6" xxl="6">
-            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
-            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
-            @*      style="max-height:100%; max-width:100%;" /> *@
+            <img src="images/UxCurve.png" alt="Home" class="mx-auto my-auto"
+                 style="max-height:100%; max-width:100%;" />
         </MudItem>
     </MudGrid>
 
@@ -160,9 +170,8 @@
             xs="12" sm="12"
             md="6" lg="6"
             xl="6" xxl="6">
-            <div class="w-full h-full" style="background-color: white; min-height: 260px;"></div>
-            @* <img src="images/HomePage.png" alt="Home" class="mx-auto my-auto" *@
-            @*      style="max-height:100%; max-width:100%;" /> *@
+            <img src="images/Clusters.png" alt="Home" class="mx-auto my-auto"
+                 style="max-height:100%; max-width:100%;" />
         </MudItem>
         
         <MudItem
@@ -177,8 +186,7 @@
             </MudText>
             
             <MudText Typo="Typo.body1">
-                Obtenha relatórios precisos e detalhados sem a necessidade de transfêrencia de dados para softwares externos
-                e de forma manual.
+                Nossos relatórios detalhados oferecem uma análise profunda das avaliações de experiência do usuário, fornecendo informações essenciais para aprimorar produtos e serviços. Com dados precisos e insights relevantes, você pode identificar padrões, acompanhar o desempenho ao longo do tempo e entender melhor as percepções dos usuários. Essas análises permitem decisões estratégicas mais informadas, garantindo melhorias contínuas e uma experiência de usuário otimizada. Transforme feedbacks em ações concretas com relatórios que destacam o que realmente importa.
             </MudText>
         </MudItem>
     </MudGrid>
