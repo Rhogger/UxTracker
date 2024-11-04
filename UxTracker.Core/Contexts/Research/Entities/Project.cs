@@ -19,6 +19,10 @@ public class Project: Entity
         Description = description;
         StartDate = startDate ?? DateTime.UtcNow;
         EndDate = endDate;
+
+        if (endDate <= startDate)
+            throw new Exception("Data final não pode ser menor ou igual à data inicial");
+        
         PeriodType = periodType;
         SurveyCollections = surveyCollections;
         ConsentTermHash = consentTermHash;
@@ -62,6 +66,7 @@ public class Project: Entity
         }
     }
     public string ConsentTermHash { get; private set; } = null!;
+    public int ClusterNumber { get; private set; }
 
     [JsonIgnore]
     public Researcher User { get; } = null!;
@@ -136,6 +141,19 @@ public class Project: Entity
         
         ConsentTermHash = hash;
     }
+
+    public void UpdateClusterNumber(int number)
+    {
+        if (IsInvalidToUpdateWhenFinishedStatus)
+        {
+            if(number is <= 0 or > 10)
+                throw new Exception("O número de clusters deve estar entre 1 e 10");
+            
+            ClusterNumber = number;
+        }
+        else
+            throw new Exception("Não pode alterar o número de clusters se a pesquisa não finalizou");
+    }
     
     public void UpdateRelatories(List<Relatory> relatories)
     {
@@ -160,7 +178,7 @@ public class Project: Entity
         
         return false;
     }
-
+    public bool IsNewNumberCluster(int number) => !ClusterNumber.Equals(number);
     public bool IsNewsRelatories(List<string> relatories)
     {
         if (IsValidToUpdateWhenDiffRelatoriesLength(relatories)) return true;

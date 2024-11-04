@@ -7,7 +7,6 @@
 
 @inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="CustomTheme.Theme" />
 <MudDialogProvider />
 <MudPopoverProvider />
 <MudSnackbarProvider />
@@ -43,11 +42,6 @@
                     <MudSpacer/>
 
                     <div class="d-flex gap-3">
-                        <MudIconButton
-                            Icon="@_icon"
-                            Color="Color.Inherit"
-                            OnClick="ChangeMode"/>
-
                         @if (User.IsInRole("Researcher"))
                         {
                             <MudIconButton
@@ -111,9 +105,6 @@ else
     [Inject] protected IAccountContextHandler AccountContextHandler { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
-    
-    private bool _isDarkMode = true;
-    private string _icon = Icons.Material.Filled.WbSunny;
 
     private ClaimsPrincipal User { get; set; } = null!;
     private bool IsBusy { get; set; } = true;
@@ -122,9 +113,9 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/"))
+        if (Navigation.Uri.Contains($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/"))
         {
-            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}/reviewers/research/", string.Empty);
+            var code = Navigation.Uri.Replace($"{Configuration.ApplicationUrl.FrontendUrl}reviewers/research/", string.Empty);
 
             await LocalStorage.SetItemAsync("researchCode", code);
             await LocalStorage.SetItemAsync("type", "reviewer");
@@ -144,12 +135,6 @@ else
         }
 
         IsBusy = false;
-    }
-    
-    private void ChangeMode()
-    {
-        _isDarkMode = !_isDarkMode;
-        _icon = _isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.WbSunny;
     }
 
     private async void SignOutAsync()

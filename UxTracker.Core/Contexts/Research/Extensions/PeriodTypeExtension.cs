@@ -23,4 +23,14 @@ public static class PeriodTypeExtension
             PeriodType.Yearly => "Anos",
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
+    
+    public static string GetPeriodSingle(this PeriodType status) =>
+        status switch
+        {
+            PeriodType.Daily => "Dia",
+            PeriodType.Weekly => "Semana",
+            PeriodType.Monthly => "Mese",
+            PeriodType.Yearly => "Ano",
+            _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
+        };
 }

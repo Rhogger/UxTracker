@@ -1,16 +1,20 @@
+using ApexCharts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using MudBlazor;
+using UxTracker.Core;
 using UxTracker.Core.Contexts.Research.DTOs;
 using UxTracker.Core.Contexts.Research.Enums;
 using UxTracker.Core.Contexts.Research.Handlers;
 using UxTracker.Core.Contexts.Research.ValueObjects;
 using UxTracker.Web.Components.Dialogs;
+using UxTracker.Web.Components.Relatories;
+using Color = MudBlazor.Color;
 using GetUseCase = UxTracker.Core.Contexts.Research.UseCases.Get;
 using UpdateUseCase = UxTracker.Core.Contexts.Research.UseCases.Update;
 using UpdateStatusUseCase = UxTracker.Core.Contexts.Research.UseCases.UpdateStatus;
-
+using UpdateCluster = UxTracker.Core.Contexts.Research.UseCases.UpdateNumberCluster;
 
 namespace UxTracker.Web.Pages.Contexts.Research.UseCases.Project;
 
@@ -28,13 +32,19 @@ public class Project: ComponentBase
     private UpdateUseCase.Response? UpdateResponse { get; set; }
     protected UpdateUseCase.Request UpdateRequest { get; set; } = new();
     private UpdateStatusUseCase.Request UpdateStatusRequest { get; set; } = new();
+    protected UpdateCluster.Request UpdateClusterRequest = new();
+
     private List<GetRelatoriesDto>? Relatories { get; set; }= new();
     protected List<SelectedRelatories> SelectedRelatories { get; set;} = new();
 
     protected bool IsBusy { get; private set; } = true;
+    protected bool IsBusyUpdate { get; private set; } = false;
+    protected bool IsBusyDelete { get; private set; } = false;
     protected bool IsRelatoriesBusy { get; private set; } = true;
+    protected bool IsChangeStatusBusy { get; private set; } = false;
+    protected bool IsBusyCluster { get; set; } = false;
+
     protected bool IsEditState;
-    protected readonly bool IsValid = true;
     protected Color ColorButtonChangeStatus { get; private set; } = Color.Default;
     protected string TextChangeStatusButton { get; private set; } = string.Empty;
     private const string DefaultDragClass = "d-flex flex-column justify-center align-center relative rounded-lg border-2 border-dashed w-full h-full";
@@ -42,6 +52,9 @@ public class Project: ComponentBase
     protected string? FileName = string.Empty;
     private IBrowserFile? _consentTerm;
     protected MudTextField<string> CopyTextField = null!;
+    protected ClustersChart? ClustersChartRef;
+
+
 
     
     protected override async Task OnInitializedAsync() => await GetProjectAsync();
@@ -59,9 +72,10 @@ public class Project: ComponentBase
                     UpdateRequest.ProjectId = ProjectId.ToString();
                     UpdateStatusRequest.ProjectId = ProjectId.ToString();
                     FileName = Response.Data?.Project.ConsentTermName;
-                    
                     if (Response.Data != null)
                     {
+                        UpdateClusterRequest.NumberCluster = Response.Data.Project.ClusterNumber;
+
                         TextChangeStatusButton = Response.Data.Project.Status switch
                         {
                             Status.NotStarted => "Iniciar Pesquisa",
@@ -69,11 +83,11 @@ public class Project: ComponentBase
                             Status.Finished => "Retomar Pesquisa",
                             _ => TextChangeStatusButton
                         };
-                    }
 
-                    ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
-                        ? Color.Success
-                        : Color.Warning;
+                        ColorButtonChangeStatus = Response.Data is { Project.Status: Status.InProgress }
+                            ? Color.Success
+                            : Color.Warning;
+                    }
                 }
                 else
                 {
@@ -146,6 +160,8 @@ public class Project: ComponentBase
     {
         try
         {
+            IsBusyUpdate = true;
+            
             foreach (var selected in SelectedRelatories.Where(selected => selected.IsChecked))
             {
                 UpdateRequest.Relatories.Add(selected.Id.ToString());
@@ -207,22 +223,33 @@ public class Project: ComponentBase
         }
         finally
         {
-            IsBusy = false;
+            IsBusyUpdate = false;
             StateHasChanged();
         }
     }
     
     protected async Task DeleteAsync()
     {
-        var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{{x => x.ProjectId, ProjectId.ToString()}};
-        var dialog = await DialogService.ShowAsync<DeleteProjectConfirmationDialog>("Delete Project", parameters);
-        await dialog.Result;
+        if (ProjectId.ToString().Equals("521dd4e8-82cc-4668-abf3-7ab14b3906da"))
+        {
+            Snackbar.Add("Essa pesquisa não pode ser excluída!", Severity.Error);
+        }
+        else
+        {
+            var parameters = new DialogParameters<DeleteProjectConfirmationDialog>{
+                {x => x.ProjectId, ProjectId.ToString()},
+                {x => x.IsBusy, IsBusyDelete}};
+            var dialog = await DialogService.ShowAsync<DeleteProjectConfirmationDialog>("Delete Project", parameters);
+            await dialog.Result;
+        }
     }
     
     private async Task UpdateStatusAsync()
     {
         try
         {
+            IsChangeStatusBusy = true; 
+            
             var response = await ResearchContextHandler.UpdateStatusAsync(UpdateStatusRequest);
 
             if (response is not null)
@@ -263,7 +290,45 @@ public class Project: ComponentBase
         }
         finally
         {
-            IsBusy = false;
+            IsChangeStatusBusy = false;
+            StateHasChanged();
+        }
+    }
+    
+    protected async Task UpdateClusterNumber()
+    {
+        try
+        {
+            IsBusyCluster = true;
+            UpdateClusterRequest.ProjectId = ProjectId.ToString();
+            
+            var response = await ResearchContextHandler.UpdateNumberClusterAsync(UpdateClusterRequest);
+
+            if (response is not null)
+                if (response.IsSuccessful)
+                {
+                    Snackbar.Add("Quantidade de clusters alterada com sucesso", Severity.Success);
+                    if (Response.Data != null) Response.Data.Project.ClusterNumber = UpdateClusterRequest.NumberCluster;
+                    if (ClustersChartRef != null) await ClustersChartRef.RecalculateAndRender();
+                }
+                else
+                {
+                    if (response.Data!.Notifications is not null)
+                        foreach (var notification in response.Data.Notifications)
+                            Snackbar.Add(notification.Message, Severity.Error);
+                    else
+                        Snackbar.Add($"Erro: {response.Data.StatusCode} - {response.Data.Message}", Severity.Error);
+                }
+            else
+                Snackbar.Add("Ocorreu algum erro no nosso servidor. Por favor, tente mais tarde.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            IsBusyCluster = false;
             StateHasChanged();
         }
     }
@@ -286,7 +351,7 @@ public class Project: ComponentBase
     {
         try
         {
-            await ResearchContextHandler.GetConsentTermAsync(ProjectId.ToString(), FileName, JsRuntime);
+            await ResearchContextHandler.DownloadConsentTermAsync(ProjectId.ToString(), FileName, JsRuntime);
         }
         catch (Exception ex)
         {
@@ -356,8 +421,15 @@ public class Project: ComponentBase
 
         if (file.ContentType == "application/pdf")
         {
-            FileName = file.Name;
-            _consentTerm = file;
+            if (file.Size > Configuration.ConsentTerm.MaxSize)
+            {
+                Snackbar.Add($"O tamanho máximo suportado é 2MB.", Severity.Error);
+            }
+            else
+            {
+                FileName = file.Name;
+                _consentTerm = file;
+            }
         }
         else
         {

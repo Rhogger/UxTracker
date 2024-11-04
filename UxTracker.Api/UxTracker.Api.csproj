@@ -6,36 +6,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\ConsentTerms\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\0db9f817-52fa-4fdc-b269-6a3b72a4aa66\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\4a564d4f-7ffd-41be-a346-754610650b81\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\7f025736-a93e-4a59-9239-0b5d3233b1ff\introducao_a_gestao_de_RH.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\8cb7640c-9542-48a2-b946-51c96f9194ce\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\42b69999-a16b-4a1b-a7f2-766f5867d3cc\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\79786af1-6562-40cd-aefe-25f3c4a9048f\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\bea10989-dbf4-4d57-9443-79dafc230660\introducao_a_gestao_de_RH.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\caddbd25-abee-4372-8e35-3bc0ed816b22\Psyco - Rhogger.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\e07fb2c4-5af7-4cdc-a69f-e32079bd4419\CNH-e.pdf.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\779a5b77-8e85-4988-bf40-9c102751948e\TermoDeConsentimento.pdf" />
-    <_ContentIncludedByDefault Remove="wwwroot\ConsentTerms\eb1fb9ca-2e9c-4a58-ac7d-834d229b1473\TermoDeConsentimento.pdf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
   </ItemGroup>
 
   <PropertyGroup>

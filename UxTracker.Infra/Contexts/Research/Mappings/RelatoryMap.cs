@@ -16,16 +16,5 @@ public class RelatoryMap: IEntityTypeConfiguration<Relatory>
             .HasColumnType("NVARCHAR")
             .HasMaxLength(80)
             .IsRequired();
-        
-        /*===================Seeding===================*/
-
-        builder.HasData(
-            new Relatory { Title = "Visão geral da evolução das avaliações" },
-            new Relatory { Title = "Avaliações de cada usuário por período" },
-            new Relatory { Title = "Distribuição das avaliações por período" },
-            new Relatory { Title = "Frequência das avaliações por período de tempo" },
-            new Relatory { Title = "Número adequado de clusters de usuário" },
-            new Relatory { Title = "Média da experiência do usuário ao longo do tempo" }
-            );
     }
 }

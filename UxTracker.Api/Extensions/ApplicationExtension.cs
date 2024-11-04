@@ -18,5 +18,6 @@ public static class ApplicationExtension
         using var serviceScoped = app.ApplicationServices.CreateScope();
         var dbContext = serviceScoped.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
+        dbContext.SeedData();
     }
 }

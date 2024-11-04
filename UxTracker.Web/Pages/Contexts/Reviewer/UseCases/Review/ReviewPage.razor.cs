@@ -60,7 +60,7 @@ public class Review: ComponentBase
                         {
                             IsDisabled = false;
                         }
-
+                    
                         if (!UserRates.ValidToRate(
                                 Response.Data.Project.PeriodType,
                                 Response.Data.Project.Reviews.Last().RatedAt))
@@ -162,7 +162,6 @@ public class Review: ComponentBase
         
         var parameters = new DialogParameters
         {
-            { nameof(ShowAcceptTerm.TermUrl), Response.Data?.TermUrl },
             { nameof(ShowAcceptTerm.ProjectId), ProjectId }
         };
         

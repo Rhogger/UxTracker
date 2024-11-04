@@ -105,9 +105,16 @@ public class Profile : ComponentBase
 
     protected async Task DeleteAccountAsync(string password)
     {
-        var parameters = new DialogParameters<DeleteResearchConfirmationDialog> { { x => x.Password, password} };
-        var dialog = await DialogService.ShowAsync<DeleteResearchConfirmationDialog>("Delete Researcher", parameters);
-        await dialog.Result;
+        if (Response?.Data is { Email: "rhoggerrv@gmail.com" })
+        {
+            Snackbar.Add("Usuário Admin não pode ser excluído!", Severity.Error);
+        }
+        else
+        {
+            var parameters = new DialogParameters<DeleteResearchConfirmationDialog> { { x => x.Password, password} };
+            var dialog = await DialogService.ShowAsync<DeleteResearchConfirmationDialog>("Delete Researcher", parameters);
+            await dialog.Result;
+        }
     }
 
     protected void ChangeState()

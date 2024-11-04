@@ -1,0 +1,43 @@
+@using UxTracker.Core.Contexts.Research.DTOs
+
+<MudTable 
+    Outlined="true"
+    Class="w-full"
+    Hover="true" 
+    Breakpoint="Breakpoint.Sm" 
+    Height="500px" 
+    FixedHeader="true"
+    Items="@GroupedReviews"
+    GroupBy="@_groupDefinition">
+    <ColGroup>
+        <col style="width: 40px;" />
+        <col style="width: 360px;" />
+        <col/>
+    </ColGroup>
+    <HeaderContent>
+        <MudTh>Dia</MudTh>
+        <MudTh>Comentário</MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        <MudTh colspan="2" Style="overflow-wrap: anywhere;">@($"Usuário: {context.Key}")</MudTh>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Dia">@($"Dia {context.Index + 1}")</MudTd>
+        <MudTd DataLabel="Comentário">@context.Comment</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
+
+    private TableGroupDefinition<ReviewsDto> _groupDefinition = new()
+    {
+        GroupName = "Usuário",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        Selector = (review) => review.Email
+    };
+
+    private IEnumerable<ReviewsDto> GroupedReviews => Reviews.OrderBy(r => r.Index);
+}

@@ -25,4 +25,4 @@ public class Response : Shared.UseCases.Response
     public ResponseData? Data { get; set; }
 }
 
-public record ResponseData(GetForReviewDto? Project, bool Accepted, string? TermUrl = null);
+public record ResponseData(GetForReviewDto? Project, bool Accepted, string? Filename = null);

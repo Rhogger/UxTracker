@@ -1,0 +1,151 @@
+@using ApexCharts
+@using UxTracker.Core.Contexts.Research.DTOs
+@using UxTracker.Core.Contexts.Research.ValueObjects
+@using ChartType = ApexCharts.ChartType
+
+<div class="@ContainerClass">
+    <ApexChart
+        TItem="ElbowChartData"
+        @ref="Ref"
+        Options="@_options">
+        <ApexPointSeries
+            TItem="ElbowChartData"
+            Items="ElbowData"
+            Name="WCSS"
+            SeriesType="SeriesType.Line"
+            XValue="@(e => e.K)"
+            YValue="@(e => Math.Round(e.WCSS))"/>
+    </ApexChart>
+</div>
+
+@code{
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
+    [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
+
+    private ApexChart<ElbowChartData>? Ref { get; set; }
+    private ApexChartOptions<ElbowChartData> _options = null!;
+    private List<ElbowChartData> ElbowData { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        var data = Reviews.Select(r => new double[] { (double)r.Rate }).ToList();
+        
+        var elbowCalculator = new ElbowCalculator();
+        ElbowData = elbowCalculator.CalculateElbowChartData(data, 10);
+        
+        _options = new ApexChartOptions<ElbowChartData>
+        {
+            Chart = new Chart
+            {
+                Background = "transparent",
+                Width = "100%",
+                FontFamily = "Inter",
+                DropShadow = new DropShadow
+                {
+                    Enabled = true,
+                    Top = 18,
+                    Left = 7,
+                    Blur = 10,
+                    Opacity = 0.2d
+                },
+                Type = ChartType.Line
+            },
+            Tooltip = new Tooltip
+            {
+                Enabled = false
+            },
+            DataLabels = new DataLabels
+            {
+                OffsetY = -6d,
+            },
+            Grid = new Grid
+            {
+                BorderColor = "#e7e7e7",
+                Yaxis = new GridYAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    }
+                },
+                Xaxis = new GridXAxis
+                {
+                    Lines = new Lines
+                    {
+                        Show = true
+                    },
+                },
+            },
+            Stroke = new Stroke
+            {
+                Curve = Curve.Straight, 
+                Colors = ["#2DC8B8"]
+            },
+            Legend = new Legend
+            {
+                FontFamily = "Inter",
+                FontSize = "14px",
+                FontWeight = "500",
+                Position = LegendPosition.Top,
+                HorizontalAlign = ApexCharts.Align.Right,
+                Floating = true,
+                OffsetX = -5,
+                OffsetY = -25,
+            },
+            Xaxis = new XAxis
+            {
+                Min = 1,
+                Max = 10,
+                Title = new AxisTitle
+                {
+                    Text = "Número de Clusters",
+                    Style = new AxisTitleStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Color = "#FFFFFFB2"
+                    }
+                },
+                Labels = new XAxisLabels
+                {
+                    Style = new AxisLabelStyle
+                    {
+                        FontFamily = "Inter",
+                        FontSize = "14px",
+                        FontWeight = "500",
+                        Colors = "#FFFFFFB2"
+                    }
+                }
+            },
+            Yaxis =
+            [
+                new YAxis
+                {
+                    Min = 0,
+                    Title = new AxisTitle
+                    {
+                        Text = "WCSS",
+                        Style = new AxisTitleStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Color = "#FFFFFFB2"
+                        }
+                    },
+                    Labels = new YAxisLabels
+                    {
+                        Style = new AxisLabelStyle
+                        {
+                            FontFamily = "Inter",
+                            FontSize = "14px",
+                            FontWeight = "500",
+                            Colors = "#FFFFFFB2"
+                        }
+                    }
+                }
+            ],
+        };
+    }
+}

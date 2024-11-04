@@ -30,4 +30,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new AcceptedTermMap());
         modelBuilder.ApplyConfiguration(new ReviewMap());
     }
+    
+    public void SeedData()
+    {
+        if (!Relatories.Any())
+            Relatories.AddRange(
+                new Relatory { Title = "Visão geral da evolução das avaliações" },
+                new Relatory { Title = "Avaliações de cada usuário por período" },
+                new Relatory { Title = "Distribuição das avaliações por período" },
+                new Relatory { Title = "Frequência das avaliações por período de tempo" },
+                new Relatory { Title = "Número adequado de clusters de usuário" },
+                new Relatory { Title = "Média da experiência do usuário ao longo do tempo" }
+            );
+    
+        if (!Roles.Any())
+            Roles.AddRange(
+                new Role("Admin"),
+                new Role("Researcher"),
+                new Role("Reviewer")
+            );
+    
+        SaveChanges();
+    }
 }
