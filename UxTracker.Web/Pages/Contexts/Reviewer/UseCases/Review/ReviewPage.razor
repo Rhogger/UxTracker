@@ -121,7 +121,10 @@
                             </MudGrid>
                         </ValidateForm>
 
-                        @if (Response.Data?.Project != null  && !IsDisabledCountdown && Response.Data.Project.Status.Equals(Status.InProgress))
+                        @if (Response.Data?.Project != null  && 
+                             !IsDisabledCountdown && 
+                             Response.Data.Project.Status.Equals(Status.InProgress) &&
+                             Response.Data?.Project?.Reviews.Count < Response.Data?.Project?.SurveyCollections)
                         {
                             <MudText
                                 Align="Align.Center"
