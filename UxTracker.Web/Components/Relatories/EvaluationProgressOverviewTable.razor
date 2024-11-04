@@ -119,82 +119,43 @@
 
 @using System.Linq
 @using UxTracker.Core.Contexts.Research.DTOs
+@using UxTracker.Core.Contexts.Research.Enums
+@using UxTracker.Core.Contexts.Research.Extensions
 
-<MudTable T="ReviewsDto" Dense="true" FixedHeader="true" HorizontalScrollbar="true" Height="400px">
-    <ColGroup>
-        <col style="width: fit-content;" />
-        @for(var i = 0; i < 5; i++)
-        {
-            <col style="width: fit-content;" />
-        }
-    </ColGroup>
+<MudTable Items="GroupedReviews" HorizontalScrollbar="true">
     <HeaderContent>
-        <MudTh>Estatísticas</MudTh>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTh>2</MudTh>
-        }
+        <MudTh>@PeriodType.GetPeriod()</MudTh>
+        <MudTh>Média</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Mediana</MudTh>
+        <MudTh>Moda</MudTh>
+        <MudTh>Desvio Padrão</MudTh>
+        <MudTh>Maior Valor</MudTh>
+        <MudTh>Menor Valor</MudTh>
+        <MudTh>Avaliações positivas</MudTh>
+        <MudTh>Avaliações negativas</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>Média</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Mediana</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Moda</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Desvio Padrão</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Maior valor</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Menor valor</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Avaliações positivas</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
-    </RowTemplate>
-    <RowTemplate>
-        <MudTd>Avaliações negativas</MudTd>
-        @for(var i = 0; i < 5; i++)
-        {
-            <MudTd>2</MudTd>
-        }
+        <MudTd DataLabel="@PeriodType.GetPeriod()">1</MudTd>
+        <MudTd DataLabel="Média">2</MudTd>
+        <MudTd DataLabel="Name">3</MudTd>
+        <MudTd DataLabel="Mediana">4</MudTd>
+        <MudTd DataLabel="Moda">5</MudTd>
+        <MudTd DataLabel="Desvio Padrão">6</MudTd>
+        <MudTd DataLabel="Maior Valor">7</MudTd>
+        <MudTd DataLabel="Menor Valor">8</MudTd>
+        <MudTd DataLabel="Avaliações positivas">9</MudTd>
+        <MudTd DataLabel="Avaliações negativas">10</MudTd>
     </RowTemplate>
 </MudTable>
 
 @code {
     [Parameter] public List<ReviewsDto> Reviews { get; set; } = new();
+    [Parameter] public PeriodType PeriodType { get; set; }
+    [Parameter] public int SurveyCollections { get; set; }
+
+    private IEnumerable<ReviewsDto> GroupedReviews => Reviews.OrderBy(r => r.Index);
+    
     // private Dictionary<int, List<ReviewsDto>> Days { get; set; } = new();
     //
     // protected override void OnInitialized()
