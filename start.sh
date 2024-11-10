@@ -14,4 +14,4 @@ docker rmi $(docker images -q)
 
 # Executar docker-compose up --build
 echo "Iniciando docker-compose up --build..."
-docker-compose up --build
+docker-compose up --build --no-cache
