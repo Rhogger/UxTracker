@@ -12,6 +12,10 @@ docker rm $(docker ps -aq)
 echo "Removendo todas as imagens..."
 docker rmi $(docker images -q)
 
-# Executar docker-compose up --build
+# Executar docker-compose build --no-cache
 echo "Iniciando docker-compose up --build..."
-docker-compose up --build
+docker-compose build --no-cache
+
+# Executar docker-compose up --build
+echo "Iniciando docker-compose up..."
+docker-compose up
