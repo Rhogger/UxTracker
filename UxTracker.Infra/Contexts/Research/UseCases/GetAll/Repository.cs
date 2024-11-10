@@ -24,8 +24,7 @@ public class Repository(AppDbContext context) : IRepository
                 ReviewersCount = x.Reviews.Count > 0 
                     ? x.Reviews
                         .GroupBy(rate => rate.UserId)
-                        .Select(rates => rates.Count())
-                        .FirstOrDefault()
+                        .Count()
                     : 0,
             })
             .OrderBy(x => x.Status == Status.InProgress ? 0 
