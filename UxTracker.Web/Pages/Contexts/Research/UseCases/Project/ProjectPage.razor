@@ -401,7 +401,6 @@
 
     @if (!IsEditState && Response.Data != null && !Response.Data.Project.Status.Equals(Status.NotStarted))
     {
-
         @if (Response.Data.Project.ReviewsCount > 0)
         {
             <MudPaper
@@ -569,30 +568,7 @@
                     }
                 </div>
             </MudPaper>
-        }
-                
-        @if (Response.Data.Project.ReviewsCount > 0)
-        {
-            <MudPaper
-                Class="d-flex flex-column align-center gap-8 pa-8 rounded-lg r-paper"
-                Outlined="true">
-                <MudText
-                    Typo="Typo.h4"
-                    Align="Align.Center"
-                    Class="r-paper-title">
-                    Relatórios
-                </MudText>
-
-                <MudText
-                    Align="Align.Center"
-                    Typo="Typo.body1"
-                    Color="Color.Inherit">
-                    Relatórios só estão disponíveis se houver avaliações.
-                </MudText>
-            </MudPaper>
-        }
-        else
-        {
+            
             <MudPaper
                 Class="pa-8 rounded-lg r-paper d-none r-graphics-warning"
                 Outlined="true">
@@ -611,6 +587,26 @@
                         Para visualizar o acompanhamento das suas avaliações, gire a tela ou visualize em dispositivos maiores.
                     </MudText>
                 </div>
+            </MudPaper>
+        }
+        else
+        {
+            <MudPaper
+                Class="d-flex flex-column align-center gap-8 pa-8 rounded-lg r-paper"
+                Outlined="true">
+                <MudText
+                    Typo="Typo.h4"
+                    Align="Align.Center"
+                    Class="r-paper-title">
+                    Relatórios
+                </MudText>
+
+                <MudText
+                    Align="Align.Center"
+                    Typo="Typo.body1"
+                    Color="Color.Inherit">
+                    Relatórios só estão disponíveis se houver avaliações.
+                </MudText>
             </MudPaper>
         }
     }
