@@ -190,6 +190,22 @@ public class Project: ComponentBase
                         
                         Response.Data.Project.ConsentTermName = FileName;
 
+                        if (Response.Data.Project.Relatories != null)
+                        {
+                            SelectedRelatories = [];
+                        
+                            foreach (var selected in Response.Data.Project.Relatories.Select(relatory =>
+                                         new SelectedRelatories
+                                         {
+                                             Id = relatory.Id,
+                                             Title = relatory.Title,
+                                             IsChecked = CheckRelatory(relatory.Id.ToString()),
+                                         }))
+                            {
+                                SelectedRelatories.Add(selected);
+                            }
+                        }
+
                         TextChangeStatusButton = Response.Data.Project.Status switch
                         {
                             Status.NotStarted => "Iniciar Pesquisa",
