@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using AuthenticateResearcher = UxTracker.Core.Contexts.Account.UseCases.AuthenticateResearcher;
@@ -26,7 +27,8 @@ namespace UxTracker.Web.Handlers;
 public class AccountContextHandler(
     IRestClient restClient,
     ICookieHandler cookieHandler,
-    ILocalStorageService localStorage)
+    ILocalStorageService localStorage,
+    NavigationManager navigation)
     : IAccountContextHandler
 {
     public async Task<RestResponse<AuthenticateResearcher.Response>?> SignInResearcherAsync(AuthenticateResearcher.Request requestModel)
@@ -128,6 +130,7 @@ public class AccountContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -175,6 +178,7 @@ public class AccountContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }

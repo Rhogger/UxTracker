@@ -188,6 +188,7 @@ public class Project: ComponentBase
                             Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
                         }
 
+                        
                         Response.Data.Project.ConsentTermName = FileName;
 
                         TextChangeStatusButton = Response.Data.Project.Status switch
@@ -202,6 +203,20 @@ public class Project: ComponentBase
                             ? Color.Success
                             : Color.Warning;
                     }
+
+                    SelectedRelatories = new List<SelectedRelatories>();
+
+                    if (Response.Data?.Project.Relatories != null)
+                        foreach (var selected in Response.Data?.Project.Relatories.Select(relatory =>
+                                     new SelectedRelatories
+                                     {
+                                         Id = relatory.Id,
+                                         Title = relatory.Title,
+                                         IsChecked = CheckRelatory(relatory.Id.ToString()),
+                                     })!)
+                        {
+                            SelectedRelatories.Add(selected);
+                        }
 
                     IsEditState = !IsEditState;
                     Snackbar.Add("Projeto atualizado com sucesso", Severity.Success);

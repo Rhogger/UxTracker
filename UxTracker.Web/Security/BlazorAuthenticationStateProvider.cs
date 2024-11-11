@@ -5,13 +5,15 @@ using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Account.ValueObjects;
 using UxTracker.Core.Security;
 using UxTracker.Core.Services;
+using UxTracker.Web.Services;
 
 namespace UxTracker.Web.Security;
 
 public class BlazorAuthenticationStateProvider(
     ICookieHandler cookieHandler,
     IIdentityClaimsService claimsService,
-    IAccountContextHandler accountContextHandler)
+    IAccountContextHandler accountContextHandler,
+    FocusMonitorService focusMonitorService)
     : AuthenticationStateProvider, IBlazorAuthenticationStateProvider
 {
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
@@ -28,6 +30,9 @@ public class BlazorAuthenticationStateProvider(
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        focusMonitorService.OnFocusGained += () => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        await focusMonitorService.InitializeAsync();
+        
         Cookie? accessCookie;
         Cookie? refreshCookie;
 

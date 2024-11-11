@@ -42,7 +42,14 @@
           console.error(`Iframe with ID '${iframeId}' not found.`);
         }
       }
+    </script>
 
+    <script>
+      function setupFocusEvent(dotNetHelper) {
+        window.addEventListener('focus', () => {
+          dotNetHelper.invokeMethodAsync('NotifyFocusGained');
+        });
+      }
     </script>
   </head>
 

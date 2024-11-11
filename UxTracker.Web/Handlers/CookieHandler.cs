@@ -35,6 +35,8 @@ public class CookieHandler(ICookieService cookieService): ICookieHandler
 
         var cookie = CreateCookie(RefreshCookieName, token);
         
+        cookie.Expiration = DateTime.UtcNow.AddDays(6); 
+        
         await cookieService.SetAsync(cookie);
     }
 
