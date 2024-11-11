@@ -188,6 +188,7 @@ public class Project: ComponentBase
                             Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
                         }
 
+                        
                         Response.Data.Project.ConsentTermName = FileName;
 
                         TextChangeStatusButton = Response.Data.Project.Status switch
@@ -203,7 +204,8 @@ public class Project: ComponentBase
                             : Color.Warning;
                     }
 
-                    IsEditState = !IsEditState;
+                    ChangeState();
+                    
                     Snackbar.Add("Projeto atualizado com sucesso", Severity.Success);
                 }
                 else

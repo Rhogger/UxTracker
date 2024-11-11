@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using RestSharp;
 using UxTracker.Core.Contexts.Account.Handlers;
 using UxTracker.Core.Contexts.Review.Handlers;
@@ -9,7 +10,8 @@ namespace UxTracker.Web.Handlers;
 public class ReviewContextHandler(
     IAccountContextHandler accountContextHandler,
     IRestClient restClient,
-    ICookieHandler cookieHandler)
+    ICookieHandler cookieHandler,
+    NavigationManager navigation)
     : IReviewContextHandler
 {
     public async Task<RestResponse<AcceptTerm.Response>?> AcceptTermAsync(AcceptTerm.Request requestModel)
@@ -37,6 +39,7 @@ public class ReviewContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/reviewers/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -85,6 +88,7 @@ public class ReviewContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/reviewers/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }

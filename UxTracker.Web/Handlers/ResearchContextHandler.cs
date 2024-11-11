@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using RestSharp;
@@ -19,7 +20,8 @@ namespace UxTracker.Web.Handlers;
 public class ResearchContextHandler(
     IAccountContextHandler accountContextHandler,
     IRestClient restClient,
-    ICookieHandler cookieHandler)
+    ICookieHandler cookieHandler,
+    NavigationManager navigation)
     : IResearchContextHandler
 {
     public async Task<RestResponse<Create.Response>?> CreateProjectAsync(Create.Request requestModel, IBrowserFile file)
@@ -27,14 +29,26 @@ public class ResearchContextHandler(
         var request = new RestRequest("/api/v1/projects/", Method.Post);
 
         var token = await cookieHandler.GetAccessToken();
-
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
         }
         else
         {
-            throw new Exception("Token JWT não encontrado.");
+            var refreshToken = await cookieHandler.GetRefreshToken();
+            if (!string.IsNullOrEmpty(refreshToken?.Value))
+            {
+                await accountContextHandler.RefreshTokenAsync();
+                    
+                var newToken = await cookieHandler.GetAccessToken();
+                    
+                request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+            }
+            else
+            {
+                navigation.NavigateTo("/login");
+                throw new Exception("Necessário logar novamente.");
+            }
         }
         
         request.AddParameter("title", requestModel.Title);
@@ -91,14 +105,26 @@ public class ResearchContextHandler(
         var request = new RestRequest($"/api/v1/projects/{requestModel.ProjectId}", Method.Patch);
 
         var token = await cookieHandler.GetAccessToken();
-
         if (!string.IsNullOrEmpty(token?.Value))
         {
             request.AddHeader("Authorization", $"Bearer {token.Value}");
         }
         else
         {
-            throw new Exception("Token JWT não encontrado.");
+            var refreshToken = await cookieHandler.GetRefreshToken();
+            if (!string.IsNullOrEmpty(refreshToken?.Value))
+            {
+                await accountContextHandler.RefreshTokenAsync();
+                    
+                var newToken = await cookieHandler.GetAccessToken();
+                    
+                request.AddHeader("Authorization", $"Bearer {newToken?.Value}");
+            }
+            else
+            {
+                navigation.NavigateTo("/login");
+                throw new Exception("Necessário logar novamente.");
+            }
         }
         
         request.AddParameter("title", requestModel.Title);
@@ -184,6 +210,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -231,6 +258,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -278,6 +306,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -325,6 +354,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -438,6 +468,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -486,6 +517,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
@@ -534,6 +566,7 @@ public class ResearchContextHandler(
                 }
                 else
                 {
+                    navigation.NavigateTo("/login");
                     throw new Exception("Necessário logar novamente.");
                 }
             }
