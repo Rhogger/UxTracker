@@ -405,172 +405,170 @@
             Class="pa-8 rounded-lg r-paper r-no-graphics"
             Outlined="true">
             <div class="d-flex flex-column align-center gap-20 w-full">
-                
-            </div>
-            <MudText
-                Typo="Typo.h4"
-                Align="Align.Center"
-                Class="r-paper-title">
-                Relatórios
-            </MudText>
+                <MudText
+                    Typo="Typo.h4"
+                    Align="Align.Center"
+                    Class="r-paper-title">
+                    Relatórios
+                </MudText>
 
-            @if (Response.Data.Project.ReviewsCount > 0)
-            {
-                @if (Response.Data.Project.Status.Equals(Status.InProgress) && Response.Data.Project.Relatories != null)
+                @if (Response.Data.Project.ReviewsCount > 0)
                 {
-                    <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                        <MudText
-                            Align="Align.Center"
-                            Class=""
-                            Typo="Typo.h5">
-                            Avaliações de cada usuário por período
-                        </MudText>
+                    @if (Response.Data.Project.Status.Equals(Status.InProgress) && Response.Data.Project.Relatories != null)
+                    {
+                        <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                            <MudText
+                                Align="Align.Center"
+                                Class=""
+                                Typo="Typo.h5">
+                                Avaliações de cada usuário por período
+                            </MudText>
 
-                        <CommentsPerUser Reviews="Response.Data.Project.Reviews"/>
-                    </div>
-                }
+                            <CommentsPerUser Reviews="Response.Data.Project.Reviews"/>
+                        </div>
+                    }
 
-                @if (Response.Data.Project.Status.Equals(Status.Finished) && Response.Data.Project.Relatories != null)
-                {
-                    <div class="d-flex flex-column w-full gap-20 align-center">
-                        @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Visão geral da evolução das avaliações"))
-                        {
-                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                                <MudText
-                                    Align="Align.Center"
-                                    Class=""
-                                    Typo="Typo.h5">
-                                    Visão geral da evolução das avaliações
-                                </MudText>
-
-                                <EvaluationProgressOverviewTable Reviews="Response.Data.Project.Reviews"/>
-                            </div>
-                        }
-
-                        @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Avaliações de cada usuário por período"))
-                        {
-                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                                <MudText
-                                    Align="Align.Center"
-                                    Class=""
-                                    Typo="Typo.h5">
-                                    Avaliações de cada usuário por período
-                                </MudText>
-
-                                <CommentsPerUser Reviews="Response.Data.Project.Reviews"/>
-                            </div>
-                        }
-
-                        @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Distribuição das avaliações por período"))
-                        {
-                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                                <MudText
-                                    Align="Align.Center"
-                                    Class=""
-                                    Typo="Typo.h5">
-                                    Distribuição das avaliações por período
-                                </MudText>
-
-                                <BoxplotEvaluationDistribution
-                                    PeriodType="Response.Data.Project.PeriodType"
-                                    SurveyCollections="Response.Data.Project.SurveyCollections"
-                                    Rates="Response.Data.Project.Reviews"
-                                    ContainerClass="w-full r-no-graphics"/>
-                            </div>
-                        }
-
-                        @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Frequência das avaliações por período de tempo"))
-                        {
-                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                                <MudText
-                                    Align="Align.Center"
-                                    Class=""
-                                    Typo="Typo.h5">
-                                    Frequência das avaliações por período de tempo
-                                </MudText>
-
-                                @foreach (var group in Response.Data.Project.Reviews
-                                              .GroupBy(x => x.Index)
-                                              .Select(x => new ReviewsFrequency(x.Key, x.Select(rate => rate.Rate).ToList()))
-                                              .ToList())
-                                {
-                                    <BarsReviewFrequency
-                                        PeriodType="Response.Data.Project.PeriodType"
-                                        SurveyCollections="Response.Data.Project.SurveyCollections"
-                                        ReviewersCount="Response.Data.Project.ReviewersCount"
-                                        Rates="group"
-                                        ContainerClass="w-full r-no-graphics"/>
-                                }
-                            </div>
-                        }
-
-                        @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Número adequado de clusters de usuário"))
-                        {
-                            <div class="d-flex flex-column gap-10 w-full align-center justify-center">
-                                <MudText
-                                    Align="Align.Center"
-                                    Class=""
-                                    Typo="Typo.h5">
-                                    Número adequado de clusters de usuário
-                                </MudText>
-
-                                <ElbowChart
-                                    ContainerClass="w-full r-no-graphics"
-                                    Reviews="Response.Data.Project.Reviews"/>
-
-                                <div class="cluster-container">
-                                    <MudNumericField
-                                        T="int"
-                                        ShrinkLabel="true"
-                                        Label="Clusters"
-                                        Min="1"
-                                        Max="10"
-                                        Variant="Variant.Filled"
-                                        Required="true"
-                                        @bind-Value="@UpdateClusterRequest.NumberCluster"
-                                        HelperText="Entre 1 e 10"/>
-
-                                    <MudButton
-                                        Class="btn-cluster"
-                                        Color="Color.Success"
-                                        Variant="Variant.Filled"
-                                        StartIcon="@Icons.Material.Filled.Save"
-                                        OnClick="UpdateClusterNumber">
-                                        @if (!IsBusyCluster)
-                                        {
-                                            @("Salvar")
-                                        }
-                                        else
-                                        {
-                                            <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4"/>
-                                        }
-                                    </MudButton>
-                                </div>
-                            </div>
-
-                            @if (Response.Data.Project.ClusterNumber != 0)
+                    @if (Response.Data.Project.Status.Equals(Status.Finished) && Response.Data.Project.Relatories != null)
+                    {
+                        <div class="d-flex flex-column w-full gap-20 align-center">
+                            @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Visão geral da evolução das avaliações"))
                             {
                                 <div class="d-flex flex-column gap-10 w-full align-center justify-center">
                                     <MudText
                                         Align="Align.Center"
                                         Class=""
                                         Typo="Typo.h5">
-                                        Média da experiência do usuário ao longo do tempo
+                                        Visão geral da evolução das avaliações
                                     </MudText>
 
-                                    <ClustersChart
-                                        Reviews="Response.Data.Project.Reviews"
-                                        ContainerClass="w-full r-no-graphics"
-                                        PeriodType="Response.Data.Project.PeriodType"
-                                        SurveyCollections="Response.Data.Project.SurveyCollections"
-                                        NumberOfClusters="Response.Data.Project.ClusterNumber"/>
+                                    <EvaluationProgressOverviewTable Reviews="Response.Data.Project.Reviews"/>
                                 </div>
                             }
-                        }
-                    </div>
 
+                            @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Avaliações de cada usuário por período"))
+                            {
+                                <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                                    <MudText
+                                        Align="Align.Center"
+                                        Class=""
+                                        Typo="Typo.h5">
+                                        Avaliações de cada usuário por período
+                                    </MudText>
+
+                                    <CommentsPerUser Reviews="Response.Data.Project.Reviews"/>
+                                </div>
+                            }
+
+                            @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Distribuição das avaliações por período"))
+                            {
+                                <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                                    <MudText
+                                        Align="Align.Center"
+                                        Class=""
+                                        Typo="Typo.h5">
+                                        Distribuição das avaliações por período
+                                    </MudText>
+
+                                    <BoxplotEvaluationDistribution
+                                        PeriodType="Response.Data.Project.PeriodType"
+                                        SurveyCollections="Response.Data.Project.SurveyCollections"
+                                        Rates="Response.Data.Project.Reviews"
+                                        ContainerClass="w-full r-no-graphics"/>
+                                </div>
+                            }
+
+                            @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Frequência das avaliações por período de tempo"))
+                            {
+                                <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                                    <MudText
+                                        Align="Align.Center"
+                                        Class=""
+                                        Typo="Typo.h5">
+                                        Frequência das avaliações por período de tempo
+                                    </MudText>
+
+                                    @foreach (var group in Response.Data.Project.Reviews
+                                                  .GroupBy(x => x.Index)
+                                                  .Select(x => new ReviewsFrequency(x.Key, x.Select(rate => rate.Rate).ToList()))
+                                                  .ToList())
+                                    {
+                                        <BarsReviewFrequency
+                                            PeriodType="Response.Data.Project.PeriodType"
+                                            SurveyCollections="Response.Data.Project.SurveyCollections"
+                                            ReviewersCount="Response.Data.Project.ReviewersCount"
+                                            Rates="group"
+                                            ContainerClass="w-full r-no-graphics"/>
+                                    }
+                                </div>
+                            }
+
+                            @if (Response.Data.Project.Relatories.Select(x => x.Title).Contains("Número adequado de clusters de usuário"))
+                            {
+                                <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                                    <MudText
+                                        Align="Align.Center"
+                                        Class=""
+                                        Typo="Typo.h5">
+                                        Número adequado de clusters de usuário
+                                    </MudText>
+
+                                    <ElbowChart
+                                        ContainerClass="w-full r-no-graphics"
+                                        Reviews="Response.Data.Project.Reviews"/>
+
+                                    <div class="cluster-container">
+                                        <MudNumericField
+                                            T="int"
+                                            ShrinkLabel="true"
+                                            Label="Clusters"
+                                            Min="1"
+                                            Max="10"
+                                            Variant="Variant.Filled"
+                                            Required="true"
+                                            @bind-Value="@UpdateClusterRequest.NumberCluster"
+                                            HelperText="Entre 1 e 10"/>
+
+                                        <MudButton
+                                            Class="btn-cluster"
+                                            Color="Color.Success"
+                                            Variant="Variant.Filled"
+                                            StartIcon="@Icons.Material.Filled.Save"
+                                            OnClick="UpdateClusterNumber">
+                                            @if (!IsBusyCluster)
+                                            {
+                                                @("Salvar")
+                                            }
+                                            else
+                                            {
+                                                <MudProgressCircular Indeterminate="true" Color="Color.Inherit" Size="Size.Small" StrokeWidth="4"/>
+                                            }
+                                        </MudButton>
+                                    </div>
+                                </div>
+
+                                @if (Response.Data.Project.ClusterNumber != 0)
+                                {
+                                    <div class="d-flex flex-column gap-10 w-full align-center justify-center">
+                                        <MudText
+                                            Align="Align.Center"
+                                            Class=""
+                                            Typo="Typo.h5">
+                                            Média da experiência do usuário ao longo do tempo
+                                        </MudText>
+
+                                        <ClustersChart
+                                            Reviews="Response.Data.Project.Reviews"
+                                            ContainerClass="w-full r-no-graphics"
+                                            PeriodType="Response.Data.Project.PeriodType"
+                                            SurveyCollections="Response.Data.Project.SurveyCollections"
+                                            NumberOfClusters="Response.Data.Project.ClusterNumber"/>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
                 }
-            }
+            </div>
         </MudPaper>
                 
         @if (Response.Data.Project.ReviewsCount > 0)
