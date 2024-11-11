@@ -28,6 +28,7 @@ public static class BuilderExtension
         });
 
         builder.Services.AddMudServices();
+        builder.Services.AddTransient<FocusMonitorService>();
     }
 
     public static void AddDataAllocation(this WebAssemblyHostBuilder builder)
