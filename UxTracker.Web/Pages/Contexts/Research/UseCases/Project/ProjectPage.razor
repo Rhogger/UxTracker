@@ -401,19 +401,19 @@
 
     @if (!IsEditState && Response.Data != null && !Response.Data.Project.Status.Equals(Status.NotStarted))
     {
-        <MudPaper
-            Class="pa-8 rounded-lg r-paper r-no-graphics"
-            Outlined="true">
-            <div class="d-flex flex-column align-center gap-20 w-full">
-                <MudText
-                    Typo="Typo.h4"
-                    Align="Align.Center"
-                    Class="r-paper-title">
-                    Relatórios
-                </MudText>
 
-                @if (Response.Data.Project.ReviewsCount > 0)
-                {
+        @if (Response.Data.Project.ReviewsCount > 0)
+        {
+            <MudPaper
+                Class="pa-8 rounded-lg r-paper r-no-graphics"
+                Outlined="true">
+                <div class="d-flex flex-column align-center gap-20 w-full">
+                    <MudText
+                        Typo="Typo.h4"
+                        Align="Align.Center"
+                        Class="r-paper-title">
+                        Relatórios
+                    </MudText>
                     @if (Response.Data.Project.Status.Equals(Status.InProgress) && Response.Data.Project.Relatories != null)
                     {
                         <div class="d-flex flex-column gap-10 w-full align-center justify-center">
@@ -567,9 +567,9 @@
                             }
                         </div>
                     }
-                }
-            </div>
-        </MudPaper>
+                </div>
+            </MudPaper>
+        }
                 
         @if (Response.Data.Project.ReviewsCount > 0)
         {

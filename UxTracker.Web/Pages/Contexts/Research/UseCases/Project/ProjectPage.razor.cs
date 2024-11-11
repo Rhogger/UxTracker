@@ -187,7 +187,6 @@ public class Project: ComponentBase
                             Response.Data.Project.Status = UpdateResponse.Data.Project.Status;
                             Response.Data.Project.Relatories = UpdateResponse.Data.Project.Relatories;
                         }
-
                         
                         Response.Data.Project.ConsentTermName = FileName;
 
